@@ -1,0 +1,57 @@
+{
+  "name": "@dineug/wysidoc-monorepo",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=20.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dineug/wysidoc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dineug/wysidoc/issues"
+  },
+  "homepage": "https://github.com/dineug/wysidoc#readme",
+  "author": "SeungHwan-Lee <dineug2@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "nx run-many -t build",
+    "test": "nx run-many -t test",
+    "nx:clear": "nx reset",
+    "nx:graph": "nx graph",
+    "prepare": "husky install",
+    "format": "npm run format:eslint && npm run format:prettier",
+    "format:eslint": "eslint --ignore-path .gitignore \"**/*.{js,ts}\" --fix",
+    "format:prettier": "prettier \"**/*.{js,ts}\" --write",
+    "lint": "eslint \"**/*.{js,ts}\""
+  },
+  "resolutions": {
+    "typescript": "5.5.4"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.0.1",
+    "@typescript-eslint/parser": "^8.0.1",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.9",
+    "husky": "^9.1.4",
+    "lint-staged": "^15.2.8",
+    "prettier": "^3.3.3",
+    "typescript": "5.5.4",
+    "vite": "^5.3.5",
+    "nx": "19.5.6"
+  },
+  "lint-staged": {
+    "**/*.{js,ts}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  }
+}
