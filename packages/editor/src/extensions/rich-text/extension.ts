@@ -1,14 +1,19 @@
-import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
-import { HeadingNode, QuoteNode } from '@lexical/rich-text';
+import {
+  $createHeadingNode,
+  HeadingNode,
+  type HeadingTagType,
+  QuoteNode,
+} from '@lexical/rich-text';
+import { $setBlocksType } from '@lexical/selection';
+import { $getSelection, $isRangeSelection } from 'lexical';
 
 import type { RegisterExtension } from '@/extensions/extensionManager';
+import type { SlashCommand } from '@/extensions/slash-command';
 
 import * as styles from './rich-text.css';
+import RichTextPlugin from './RichTextPlugin';
 
 export const registerExtensionRichText: RegisterExtension = context => {
-  const RichTextPlugin: React.FC = () => <TabIndentationPlugin />;
-  RichTextPlugin.displayName = 'RichTextPlugin';
-
   context.subscriptions
     .add(context.registerNode(HeadingNode, QuoteNode))
     .add(context.registerPlugin(RichTextPlugin))
@@ -37,6 +42,27 @@ export const registerExtensionRichText: RegisterExtension = context => {
           underlineStrikethrough: styles.underlineStrikethrough,
         },
         indent: styles.indent,
+      })
+    )
+    .add(
+      context.registerSlashCommand(({ editor, slashCommands }) => {
+        slashCommands.push(
+          ...[1, 2, 3].map<SlashCommand>(n => ({
+            title: `Heading ${n}`,
+            icon: null,
+            keywords: ['heading', 'header', `h${n}`],
+            onSelect: () => {
+              editor.update(() => {
+                const selection = $getSelection();
+                if ($isRangeSelection(selection)) {
+                  $setBlocksType(selection, () =>
+                    $createHeadingNode(`h${n}` as HeadingTagType)
+                  );
+                }
+              });
+            },
+          }))
+        );
       })
     );
 };

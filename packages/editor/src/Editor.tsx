@@ -1,3 +1,4 @@
+import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 import {
   type InitialConfigType,
   LexicalComposer,
@@ -5,45 +6,74 @@ import {
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { Theme, ThemePanel } from '@radix-ui/themes';
+import { assignInlineVars } from '@vanilla-extract/dynamic';
+import clsx from 'clsx';
+import { useMemo, useRef } from 'react';
 
+import { AppContext } from '@/components/app-context';
+import { ThemeProvider } from '@/components/theme-provider';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { extensions } from '@/extensions';
+import { ExtensionManagerContext } from '@/extensions/context';
 import { configureExtensions } from '@/extensions/extensionManager';
 
-const Editor: React.FC = () => {
-  const manager = configureExtensions({ extensions });
+import * as styles from './Editor.css';
+
+type EditorProps = {
+  minHeight?: string;
+};
+
+const Editor: React.FC<EditorProps> = ({ minHeight }) => {
+  const extensionManager = useMemo(
+    () => configureExtensions({ extensions }),
+    []
+  );
+  const { getNodes, getTheme, Plugins } = extensionManager;
   const initialConfig: InitialConfigType = {
     namespace: 'wysidoc',
-    theme: manager.getTheme(),
-    nodes: [...manager.getNodes()],
+    nodes: [...getNodes()],
+    theme: getTheme(),
     onError: (error: Error) => {
       throw error;
     },
   };
+  const root = useRef<HTMLDivElement>(null);
+  const appContext = useMemo(() => ({ root }), []);
 
   return (
-    <Theme>
+    <ExtensionManagerContext value={extensionManager}>
       <LexicalComposer initialConfig={initialConfig}>
-        <div
-          style={{
-            position: 'relative',
-            height: '100vh',
-          }}
-        >
-          <RichTextPlugin
-            contentEditable={
-              <ContentEditable
-                aria-placeholder={'placeholder...'}
-                placeholder={<div>placeholder...</div>}
-              />
-            }
-            ErrorBoundary={LexicalErrorBoundary}
-          />
-          <manager.Plugins />
-        </div>
+        <AppContext value={appContext}>
+          <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+            <div ref={root} className={clsx(['wysidoc-editor', styles.shell])}>
+              <ScrollArea className={styles.container}>
+                <div className={styles.editor}>
+                  <RichTextPlugin
+                    contentEditable={
+                      <ContentEditable
+                        className={styles.contentEditable}
+                        style={assignInlineVars({
+                          [styles.minHeightVar]: minHeight,
+                        })}
+                        aria-placeholder={'placeholder...'}
+                        placeholder={
+                          <div className={styles.placeholder}>
+                            placeholder...
+                          </div>
+                        }
+                      />
+                    }
+                    ErrorBoundary={LexicalErrorBoundary}
+                  />
+                  <Plugins />
+                  <AutoFocusPlugin />
+                </div>
+              </ScrollArea>
+            </div>
+          </ThemeProvider>
+        </AppContext>
       </LexicalComposer>
-      <ThemePanel />
-    </Theme>
+    </ExtensionManagerContext>
   );
 };
 

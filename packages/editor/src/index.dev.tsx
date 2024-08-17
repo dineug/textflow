@@ -1,14 +1,11 @@
-import './index.ts';
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-import Editor from './Editor.tsx';
+import { Editor } from './index.ts';
 
-const container = document.getElementById('root')!;
-const root = ReactDOM.createRoot(container);
+const root = ReactDOM.createRoot(document.body);
 root.render(
   <React.StrictMode>
-    <Editor />
+    <Editor minHeight="100vh" />
   </React.StrictMode>
 );

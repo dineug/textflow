@@ -1,3 +1,3 @@
-import '@radix-ui/themes/styles.css';
+import './index.css';
 
-export {};
+export { default as Editor } from './Editor';

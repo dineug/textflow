@@ -1,5 +1,17 @@
-import type { EditorThemeClasses, Klass, LexicalNode } from 'lexical';
+import type {
+  EditorThemeClasses,
+  Klass,
+  LexicalEditor,
+  LexicalNode,
+} from 'lexical';
 import { createElement, Fragment } from 'react';
+
+import {
+  type DynamicSlashCommand,
+  type SlashCommand,
+  type SlashCommandContext,
+  SlashCommandMenu,
+} from './slash-command';
 
 export type Dispose = () => void;
 
@@ -7,6 +19,9 @@ export type ExtensionContext = {
   registerNode: (...nodes: Array<Klass<LexicalNode>>) => Dispose;
   registerTheme: (theme: EditorThemeClasses) => Dispose;
   registerPlugin: (plugin: React.FC) => Dispose;
+  registerSlashCommand: (
+    render: (context: SlashCommandContext) => void
+  ) => Dispose;
   subscriptions: Set<Dispose>;
 };
 
@@ -16,22 +31,58 @@ export type ConfigureExtensionOptions = {
   extensions: RegisterExtension[];
 };
 
-class ExtensionManager {
+export class ExtensionManager {
   #disposeSet = new Set<Dispose>();
   #nodes = new Set<Klass<LexicalNode>>();
   #themes = new Set<EditorThemeClasses>();
   #plugins = new Set<React.FC>();
+  #slashCommands = new Set<(context: SlashCommandContext) => void>();
 
-  getNodes(): IterableIterator<Klass<LexicalNode>> {
+  getNodes = (): IterableIterator<Klass<LexicalNode>> => {
     return this.#nodes.values();
-  }
+  };
 
-  getTheme(): EditorThemeClasses {
+  getTheme = (): EditorThemeClasses => {
     return [...this.#themes].reduce(
       (prev: EditorThemeClasses, cur) => ({ ...prev, ...cur }),
       {}
     );
-  }
+  };
+
+  getSlashCommands = (
+    editor: LexicalEditor,
+    queryString: string
+  ): SlashCommandMenu[] => {
+    const commands: SlashCommand[] = [];
+    const dynamicCommands: DynamicSlashCommand[] = [];
+    [...this.#slashCommands].forEach(render => {
+      const context: SlashCommandContext = {
+        editor,
+        queryString,
+        slashCommands: [],
+        dynamicSlashCommands: [],
+      };
+      render(context);
+
+      commands.push(...context.slashCommands);
+      dynamicCommands.push(...context.dynamicSlashCommands);
+    });
+
+    if (!queryString) {
+      return commands.map(command => new SlashCommandMenu(command));
+    }
+
+    const regex = new RegExp(queryString, 'i');
+
+    return [
+      ...dynamicCommands,
+      ...commands.filter(
+        command =>
+          regex.test(command.title) ||
+          command.keywords?.some(keyword => regex.test(keyword))
+      ),
+    ].map(command => new SlashCommandMenu(command));
+  };
 
   Plugins = (): React.ReactNode => {
     return createElement(
@@ -43,63 +94,65 @@ class ExtensionManager {
     );
   };
 
-  registerNode(...nodes: Array<Klass<LexicalNode>>): Dispose {
+  registerNode = (...nodes: Array<Klass<LexicalNode>>): Dispose => {
     nodes.forEach(node => this.#nodes.add(node));
     return () => {
       nodes.forEach(node => this.#nodes.delete(node));
     };
-  }
+  };
 
-  registerTheme(theme: EditorThemeClasses): Dispose {
+  registerTheme = (theme: EditorThemeClasses): Dispose => {
     this.#themes.add(theme);
     return () => {
       this.#themes.delete(theme);
     };
-  }
+  };
 
-  registerPlugin(plugin: React.FC): Dispose {
+  registerPlugin = (plugin: React.FC): Dispose => {
     this.#plugins.add(plugin);
     return () => {
       this.#plugins.delete(plugin);
     };
-  }
+  };
 
-  registerDispose(dispose: Dispose): Dispose {
+  registerSlashCommand = (
+    render: (context: SlashCommandContext) => void
+  ): Dispose => {
+    this.#slashCommands.add(render);
+    return () => {
+      this.#slashCommands.delete(render);
+    };
+  };
+
+  registerDispose = (dispose: Dispose): Dispose => {
     this.#disposeSet.add(dispose);
     return () => {
       this.#disposeSet.delete(dispose);
     };
-  }
+  };
 
-  dispose() {
+  dispose = () => {
     this.#disposeSet.forEach(dispose => dispose());
     this.#disposeSet.clear();
     this.#nodes.clear();
     this.#themes.clear();
-  }
+    this.#plugins.clear();
+  };
 }
 
-export function createExtensionContext(
-  manager: ExtensionManager
-): ExtensionContext {
+export function createExtensionContext({
+  registerNode,
+  registerTheme,
+  registerPlugin,
+  registerSlashCommand,
+}: ExtensionManager): ExtensionContext {
   const subscriptions = new Set<Dispose>();
-
-  const registerNode = (...nodes: Array<Klass<LexicalNode>>) => {
-    return manager.registerNode(...nodes);
-  };
-
-  const registerTheme = (theme: EditorThemeClasses) => {
-    return manager.registerTheme(theme);
-  };
-
-  const registerPlugin = (plugin: React.FC) => {
-    return manager.registerPlugin(plugin);
-  };
 
   return {
     registerNode,
     registerTheme,
     registerPlugin,
+    registerSlashCommand,
     subscriptions,
   };
 }
