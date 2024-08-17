@@ -1,1 +1,1 @@
-# kv-editor
+# wysidoc-editor

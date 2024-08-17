@@ -36,18 +36,47 @@
     "nx:dev": "nx dev",
     "nx:build": "nx build"
   },
+  "peerDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "dependencies": {
+    "@lexical/clipboard": "0.17.0",
+    "@lexical/code": "0.17.0",
+    "@lexical/file": "0.17.0",
+    "@lexical/hashtag": "0.17.0",
+    "@lexical/link": "0.17.0",
+    "@lexical/list": "0.17.0",
+    "@lexical/mark": "0.17.0",
+    "@lexical/overflow": "0.17.0",
+    "@lexical/plain-text": "0.17.0",
+    "@lexical/react": "0.17.0",
+    "@lexical/rich-text": "0.17.0",
+    "@lexical/selection": "0.17.0",
+    "@lexical/table": "0.17.0",
+    "@lexical/utils": "0.17.0",
+    "@radix-ui/themes": "^3.1.3",
+    "@vanilla-extract/css": "^1.15.3",
+    "@vanilla-extract/css-utils": "^0.1.4",
+    "@vanilla-extract/dynamic": "^2.1.1",
+    "@vanilla-extract/recipes": "^0.5.3",
+    "katex": "^0.16.11",
+    "lexical": "0.17.0",
+    "lodash-es": "^4.17.21",
+    "react-error-boundary": "^4.0.13"
+  },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/lodash-es": "^4.17.12",
-    "@types/node": "^22.1.0",
+    "@types/node": "^22.4.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
+    "@vanilla-extract/vite-plugin": "^4.0.13",
     "@vitejs/plugin-react": "^4.3.1",
-    "lodash-es": "^4.17.21",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "typescript": "5.5.4",
-    "vite": "^5.3.5",
-    "vite-plugin-dts": "^3.9.1"
+    "vite": "^5.4.1",
+    "vite-plugin-dts": "^4.0.3"
   }
 }
