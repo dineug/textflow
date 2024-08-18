@@ -1,11 +1,13 @@
-import { createContext, createRef, useContext } from 'react';
+import { createContext, useContext } from 'react';
 
 type AppContextState = {
-  root: React.RefObject<HTMLDivElement>;
+  root: HTMLDivElement | null;
+  editor: HTMLDivElement | null;
 };
 
 const _AppContext = createContext<AppContextState>({
-  root: createRef(),
+  root: null,
+  editor: null,
 });
 
 export const AppContext = _AppContext.Provider;

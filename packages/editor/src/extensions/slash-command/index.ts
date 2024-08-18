@@ -4,26 +4,25 @@ import type { LexicalEditor } from 'lexical';
 export type SlashCommandContext = {
   editor: LexicalEditor;
   queryString: string;
-  slashCommands: SlashCommand[];
-  dynamicSlashCommands: DynamicSlashCommand[];
+  registerCommands: (commands: SlashCommand[], priority: number) => void;
+  registerDynamicCommands: (
+    commands: DynamicSlashCommand[],
+    priority: number
+  ) => void;
 };
 
 export type SlashCommand = {
   title: string;
-  icon?: React.ReactNode;
+  icon?: React.FC<React.SVGAttributes<SVGElement>>;
   keywords?: string[];
   onSelect: (queryString: string) => void;
 };
 
-export type DynamicSlashCommand = {
-  title: string;
-  icon?: React.ReactNode;
-  onSelect: (queryString: string) => void;
-};
+export type DynamicSlashCommand = Omit<SlashCommand, 'keywords'>;
 
 export class SlashCommandMenu extends MenuOption implements SlashCommand {
   title: string;
-  icon?: React.ReactNode;
+  icon?: React.FC<React.SVGAttributes<SVGElement>>;
   keywords?: Array<string>;
   onSelect: (queryString: string) => void;
 

@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom/client';
 
 import { Editor } from './index.ts';
 
-const root = ReactDOM.createRoot(document.body);
+const container = document.getElementById('root')!;
+const root = ReactDOM.createRoot(container);
 root.render(
   <React.StrictMode>
     <Editor minHeight="100vh" />

@@ -36,7 +36,7 @@ export const quote = style({
   marginLeft: 20,
   marginBottom: 10,
   fontSize: 15,
-  color: 'rgb(101, 103, 107)',
+  color: 'hsl(var(--muted-foreground))',
   borderLeftColor: 'rgb(206, 208, 212)',
   borderLeftWidth: 4,
   borderLeftStyle: 'solid',

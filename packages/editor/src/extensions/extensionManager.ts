@@ -53,20 +53,36 @@ export class ExtensionManager {
     editor: LexicalEditor,
     queryString: string
   ): SlashCommandMenu[] => {
-    const commands: SlashCommand[] = [];
-    const dynamicCommands: DynamicSlashCommand[] = [];
+    const priorityCommandsMap = new Map<number, Array<SlashCommand>>();
+    const priorityDynamicCommandsMap = new Map<
+      number,
+      Array<DynamicSlashCommand>
+    >();
+
     [...this.#slashCommands].forEach(render => {
       const context: SlashCommandContext = {
         editor,
         queryString,
-        slashCommands: [],
-        dynamicSlashCommands: [],
+        registerCommands: (commands, priority) => {
+          const accCommands = priorityCommandsMap.get(priority) ?? [];
+          accCommands.push(...commands);
+          priorityCommandsMap.set(priority, accCommands);
+        },
+        registerDynamicCommands: (commands, priority) => {
+          const accCommands = priorityDynamicCommandsMap.get(priority) ?? [];
+          accCommands.push(...commands);
+          priorityDynamicCommandsMap.set(priority, accCommands);
+        },
       };
       render(context);
-
-      commands.push(...context.slashCommands);
-      dynamicCommands.push(...context.dynamicSlashCommands);
     });
+
+    const commands = [...priorityCommandsMap.entries()]
+      .sort(([a], [b]) => a - b)
+      .reduce((acc: SlashCommand[], [__priority, commands]) => {
+        acc.push(...commands);
+        return acc;
+      }, []);
 
     if (!queryString) {
       return commands.map(command => new SlashCommandMenu(command));
@@ -75,7 +91,12 @@ export class ExtensionManager {
     const regex = new RegExp(queryString, 'i');
 
     return [
-      ...dynamicCommands,
+      ...[...priorityDynamicCommandsMap.entries()]
+        .sort(([a], [b]) => a - b)
+        .reduce((acc: SlashCommand[], [__priority, commands]) => {
+          acc.push(...commands);
+          return acc;
+        }, []),
       ...commands.filter(
         command =>
           regex.test(command.title) ||

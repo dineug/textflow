@@ -13,8 +13,18 @@ export const container = style({
   height: '100%',
 });
 
+export const center = style({
+  display: 'flex',
+  width: '100%',
+  height: '100%',
+  flexDirection: 'column',
+  alignItems: 'center',
+});
+
 export const editor = style({
   position: 'relative',
+  width: '100%',
+  maxWidth: 1100,
 });
 
 export const minHeightVar = createVar();
@@ -25,7 +35,7 @@ export const contentEditable = style({
   display: 'block',
   position: 'relative',
   outline: 0,
-  padding: '8px 28px 40px',
+  padding: '40px 28px 40px',
   minHeight: fallbackVar(minHeightVar, '150px'),
 });
 
@@ -34,7 +44,7 @@ export const placeholder = style({
   overflow: 'hidden',
   position: 'absolute',
   textOverflow: 'ellipsis',
-  top: 8,
+  top: 40,
   left: 28,
   right: 28,
   userSelect: 'none',

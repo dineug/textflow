@@ -1,7 +1,7 @@
 import { style } from '@vanilla-extract/css';
 
 export const code = style({
-  backgroundColor: 'rgb(240, 242, 245)',
+  backgroundColor: 'hsl(var(--muted))',
   fontFamily: 'Menlo, Consolas, Monaco, monospace',
   display: 'block',
   padding: '8px 8px 8px 52px',
@@ -16,12 +16,12 @@ export const code = style({
   ':before': {
     content: 'attr(data-gutter)',
     position: 'absolute',
-    backgroundColor: '#eee',
+    backgroundColor: 'hsl(var(--muted))',
     left: 0,
     top: 0,
-    borderRight: '1px solid #ccc',
+    borderRight: '1px solid hsl(var(--border))',
     padding: 8,
-    color: '#777',
+    color: 'hsl(var(--muted-foreground))',
     whiteSpace: 'pre-wrap',
     textAlign: 'right',
     minWidth: 25,

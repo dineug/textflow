@@ -1,17 +1,17 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-import typescript from '@rollup/plugin-typescript';
+// import typescript from '@rollup/plugin-typescript';
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 import react from '@vitejs/plugin-react';
-import { defineConfig, loadEnv, type Plugin } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import dts from 'vite-plugin-dts';
 
 const pkg = JSON.parse(readFileSync('package.json', { encoding: 'utf8' }));
 
 const banner = `/*!
  * ${pkg.name}
- * @version ${pkg.version} | ${new Date().toDateString()}
+ * @version ${pkg.version}
  * @author ${pkg.author}
  * @license ${pkg.license}
  */`;
@@ -20,17 +20,13 @@ const external = new RegExp(
   `^(${Object.keys({
     ...pkg.peerDependencies,
     ...pkg.dependencies,
-  }).join('|')})$`
+  }).join('|')})(?:/.+)*$`
 );
 
-export default defineConfig(({ command, mode }) => {
-  const envDir = './environment';
-  const env = loadEnv(mode, envDir);
-  const isServe = command === 'serve';
+export default defineConfig(({ command }) => {
   const isBuild = command === 'build';
 
   return {
-    envDir,
     define: {},
     build: {
       lib: {

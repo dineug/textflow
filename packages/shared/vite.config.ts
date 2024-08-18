@@ -12,7 +12,7 @@ const external = new RegExp(
   `^(${Object.keys({
     ...pkg.peerDependencies,
     ...pkg.dependencies,
-  }).join('|')})$`
+  }).join('|')})(?:/.+)*$`
 );
 
 export default defineConfig(({ command }) => {

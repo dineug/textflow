@@ -9,9 +9,15 @@ import { createPortal } from 'react-dom';
 
 import { useAppContext } from '@/components/app-context';
 import { MenuContent, MenuItem } from '@/components/menu';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useExtensionManagerContext } from '@/extensions/context';
 
 import { SlashCommandMenu } from './index';
+
+const PADDING = 8;
+const ITEM = 32;
+const MAX_DISPLAY_ITEM = 8;
+const MAX_HEIGHT = PADDING + ITEM * MAX_DISPLAY_ITEM + ITEM / 2;
 
 const SlashCommandPlugin: React.FC = () => {
   const { getSlashCommands } = useExtensionManagerContext();
@@ -43,36 +49,51 @@ const SlashCommandPlugin: React.FC = () => {
     [editor]
   );
 
+  if (!root) {
+    return null;
+  }
+
   return (
     <LexicalTypeaheadMenuPlugin<SlashCommandMenu>
       onQueryChange={setQueryString}
       onSelectOption={onSelectOption}
       triggerFn={checkForTriggerMatch}
       options={options}
-      parent={root.current ?? undefined}
+      parent={root}
       menuRenderFn={(
         anchorElementRef,
         { selectedIndex, selectOptionAndCleanUp, setHighlightedIndex }
       ) =>
         anchorElementRef.current && options.length
           ? createPortal(
-              <MenuContent>
-                {options.map((option, i) => (
-                  <MenuItem
-                    key={option.key}
-                    data-selected={selectedIndex === i}
-                    onClick={() => {
-                      setHighlightedIndex(i);
-                      selectOptionAndCleanUp(option);
-                    }}
-                    onMouseEnter={() => {
-                      setHighlightedIndex(i);
-                    }}
-                  >
-                    {option.title}
-                  </MenuItem>
-                ))}
-              </MenuContent>,
+              <ScrollArea
+                className="w-max"
+                style={{
+                  height: options.length > 8 ? MAX_HEIGHT : 'auto',
+                }}
+              >
+                <MenuContent className="w-[200px]">
+                  {options.map((option, i) => (
+                    <MenuItem
+                      key={option.key}
+                      tabIndex={-1}
+                      ref={option.setRefElement}
+                      role="option"
+                      aria-selected={selectedIndex === i}
+                      onClick={() => {
+                        setHighlightedIndex(i);
+                        selectOptionAndCleanUp(option);
+                      }}
+                      onMouseEnter={() => {
+                        setHighlightedIndex(i);
+                      }}
+                    >
+                      {option.icon && <option.icon className="mr-2 h-4 w-4" />}
+                      <span>{option.title}</span>
+                    </MenuItem>
+                  ))}
+                </MenuContent>
+              </ScrollArea>,
               anchorElementRef.current
             )
           : null

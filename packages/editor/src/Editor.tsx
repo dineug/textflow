@@ -5,10 +5,10 @@ import {
 } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
+import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
-import clsx from 'clsx';
-import { useMemo, useRef } from 'react';
+import { useMemo, useState } from 'react';
 
 import { AppContext } from '@/components/app-context';
 import { ThemeProvider } from '@/components/theme-provider';
@@ -16,6 +16,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { extensions } from '@/extensions';
 import { ExtensionManagerContext } from '@/extensions/context';
 import { configureExtensions } from '@/extensions/extensionManager';
+import { cn } from '@/lib/utils';
 
 import * as styles from './Editor.css';
 
@@ -37,36 +38,46 @@ const Editor: React.FC<EditorProps> = ({ minHeight }) => {
       throw error;
     },
   };
-  const root = useRef<HTMLDivElement>(null);
-  const appContext = useMemo(() => ({ root }), []);
+
+  const [root, setRoot] = useState<HTMLDivElement | null>(null);
+  const [editor, setEditor] = useState<HTMLDivElement | null>(null);
+  const appContext = useMemo(() => ({ root, editor }), [editor, root]);
 
   return (
     <ExtensionManagerContext value={extensionManager}>
       <LexicalComposer initialConfig={initialConfig}>
         <AppContext value={appContext}>
           <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-            <div ref={root} className={clsx(['wysidoc-editor', styles.shell])}>
+            <div ref={setRoot} className={cn('wysidoc-editor', styles.shell)}>
               <ScrollArea className={styles.container}>
-                <div className={styles.editor}>
-                  <RichTextPlugin
-                    contentEditable={
-                      <ContentEditable
-                        className={styles.contentEditable}
-                        style={assignInlineVars({
-                          [styles.minHeightVar]: minHeight,
-                        })}
-                        aria-placeholder={'placeholder...'}
-                        placeholder={
-                          <div className={styles.placeholder}>
-                            placeholder...
-                          </div>
-                        }
-                      />
-                    }
-                    ErrorBoundary={LexicalErrorBoundary}
-                  />
-                  <Plugins />
-                  <AutoFocusPlugin />
+                <div className={styles.center}>
+                  <div ref={setEditor} className={styles.editor}>
+                    <RichTextPlugin
+                      contentEditable={
+                        <ContentEditable
+                          className={styles.contentEditable}
+                          style={assignInlineVars({
+                            [styles.minHeightVar]: minHeight,
+                          })}
+                          aria-placeholder={'placeholder...'}
+                          placeholder={
+                            <div
+                              className={cn(
+                                styles.placeholder,
+                                'text-muted-foreground'
+                              )}
+                            >
+                              placeholder...
+                            </div>
+                          }
+                        />
+                      }
+                      ErrorBoundary={LexicalErrorBoundary}
+                    />
+                    <Plugins />
+                    <AutoFocusPlugin />
+                    <HistoryPlugin />
+                  </div>
                 </div>
               </ScrollArea>
             </div>
