@@ -1,3 +1,4 @@
+import { Transformer } from '@lexical/markdown';
 import type {
   EditorThemeClasses,
   Klass,
@@ -17,8 +18,9 @@ export type Dispose = () => void;
 
 export type ExtensionContext = {
   registerNode: (...nodes: Array<Klass<LexicalNode>>) => Dispose;
+  registerPlugin: (...plugins: Array<React.FC>) => Dispose;
+  registerTransformer: (...transformers: Transformer[]) => Dispose;
   registerTheme: (theme: EditorThemeClasses) => Dispose;
-  registerPlugin: (plugin: React.FC) => Dispose;
   registerSlashCommand: (
     render: (context: SlashCommandContext) => void
   ) => Dispose;
@@ -34,12 +36,17 @@ export type ConfigureExtensionOptions = {
 export class ExtensionManager {
   #disposeSet = new Set<Dispose>();
   #nodes = new Set<Klass<LexicalNode>>();
-  #themes = new Set<EditorThemeClasses>();
   #plugins = new Set<React.FC>();
+  #transformers = new Set<Transformer>();
+  #themes = new Set<EditorThemeClasses>();
   #slashCommands = new Set<(context: SlashCommandContext) => void>();
 
   getNodes = (): IterableIterator<Klass<LexicalNode>> => {
     return this.#nodes.values();
+  };
+
+  getTransformers = (): IterableIterator<Transformer> => {
+    return this.#transformers.values();
   };
 
   getTheme = (): EditorThemeClasses => {
@@ -122,17 +129,26 @@ export class ExtensionManager {
     };
   };
 
+  registerPlugin = (...plugins: Array<React.FC>): Dispose => {
+    plugins.forEach(plugin => this.#plugins.add(plugin));
+    return () => {
+      plugins.forEach(plugin => this.#plugins.delete(plugin));
+    };
+  };
+
+  registerTransformer = (...transformers: Transformer[]): Dispose => {
+    transformers.forEach(transformer => this.#transformers.add(transformer));
+    return () => {
+      transformers.forEach(transformer =>
+        this.#transformers.delete(transformer)
+      );
+    };
+  };
+
   registerTheme = (theme: EditorThemeClasses): Dispose => {
     this.#themes.add(theme);
     return () => {
       this.#themes.delete(theme);
-    };
-  };
-
-  registerPlugin = (plugin: React.FC): Dispose => {
-    this.#plugins.add(plugin);
-    return () => {
-      this.#plugins.delete(plugin);
     };
   };
 
@@ -163,16 +179,18 @@ export class ExtensionManager {
 
 export function createExtensionContext({
   registerNode,
-  registerTheme,
   registerPlugin,
+  registerTransformer,
+  registerTheme,
   registerSlashCommand,
 }: ExtensionManager): ExtensionContext {
   const subscriptions = new Set<Dispose>();
 
   return {
     registerNode,
-    registerTheme,
     registerPlugin,
+    registerTransformer,
+    registerTheme,
     registerSlashCommand,
     subscriptions,
   };

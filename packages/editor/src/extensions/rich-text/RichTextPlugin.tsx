@@ -1,6 +1,13 @@
 import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
 
-const RichTextPlugin: React.FC = () => <TabIndentationPlugin />;
+import DraggableBlockPlugin from './DraggableBlockPlugin';
+
+const RichTextPlugin: React.FC = () => (
+  <>
+    <TabIndentationPlugin />
+    <DraggableBlockPlugin />
+  </>
+);
 
 RichTextPlugin.displayName = 'RichTextPlugin';
 

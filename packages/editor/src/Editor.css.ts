@@ -13,7 +13,7 @@ export const container = style({
   height: '100%',
 });
 
-export const center = style({
+export const layout = style({
   display: 'flex',
   width: '100%',
   height: '100%',

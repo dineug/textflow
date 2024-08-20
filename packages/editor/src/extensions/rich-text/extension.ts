@@ -26,8 +26,8 @@ import {
 import type { RegisterExtension } from '@/extensions/extensionManager';
 import type { SlashCommand } from '@/extensions/slash-command';
 
-import * as styles from './rich-text.css';
 import RichTextPlugin from './RichTextPlugin';
+import * as styles from './theme.css';
 
 type HeadingLevel = 1 | 2 | 3;
 type TextAlign = 'left' | 'center' | 'right' | 'justify';
@@ -54,12 +54,18 @@ const TEXT_ALIGN_ICON_MAP = {
   justify: AlignJustify,
 };
 
-export const registerExtensionRichText: RegisterExtension = context => {
-  context.subscriptions
-    .add(context.registerNode(HeadingNode, QuoteNode))
-    .add(context.registerPlugin(RichTextPlugin))
+export const registerExtensionRichText: RegisterExtension = ({
+  subscriptions,
+  registerNode,
+  registerPlugin,
+  registerTheme,
+  registerSlashCommand,
+}) => {
+  subscriptions
+    .add(registerNode(HeadingNode, QuoteNode))
+    .add(registerPlugin(RichTextPlugin))
     .add(
-      context.registerTheme({
+      registerTheme({
         paragraph: styles.paragraph,
         heading: {
           h1: styles.h1,
@@ -86,7 +92,7 @@ export const registerExtensionRichText: RegisterExtension = context => {
       })
     )
     .add(
-      context.registerSlashCommand(({ editor, registerCommands }) => {
+      registerSlashCommand(({ editor, registerCommands }) => {
         registerCommands(
           [
             {

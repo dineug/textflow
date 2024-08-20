@@ -9,15 +9,21 @@ import { List, ListChecks, ListOrdered } from 'lucide-react';
 
 import type { RegisterExtension } from '@/extensions/extensionManager';
 
-import * as styles from './list.css';
 import ListPlugin from './ListPlugin';
+import * as styles from './theme.css';
 
-export const registerExtensionList: RegisterExtension = context => {
-  context.subscriptions
-    .add(context.registerNode(ListNode, ListItemNode))
-    .add(context.registerPlugin(ListPlugin))
+export const registerExtensionList: RegisterExtension = ({
+  subscriptions,
+  registerNode,
+  registerPlugin,
+  registerTheme,
+  registerSlashCommand,
+}) => {
+  subscriptions
+    .add(registerNode(ListNode, ListItemNode))
+    .add(registerPlugin(ListPlugin))
     .add(
-      context.registerTheme({
+      registerTheme({
         list: {
           checklist: styles.checklist,
           listitem: styles.listitem,
@@ -38,7 +44,7 @@ export const registerExtensionList: RegisterExtension = context => {
       })
     )
     .add(
-      context.registerSlashCommand(({ editor, registerCommands }) => {
+      registerSlashCommand(({ editor, registerCommands }) => {
         registerCommands(
           [
             {

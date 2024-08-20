@@ -9,17 +9,23 @@ import type { RegisterExtension } from '@/extensions/extensionManager';
 import * as styles from './horizontalRule.css';
 import HorizontalRulePlugin from './HorizontalRulePlugin';
 
-export const registerExtensionHorizontalRule: RegisterExtension = context => {
-  context.subscriptions
-    .add(context.registerNode(HorizontalRuleNode))
-    .add(context.registerPlugin(HorizontalRulePlugin))
+export const registerExtensionHorizontalRule: RegisterExtension = ({
+  subscriptions,
+  registerNode,
+  registerPlugin,
+  registerTheme,
+  registerSlashCommand,
+}) => {
+  subscriptions
+    .add(registerNode(HorizontalRuleNode))
+    .add(registerPlugin(HorizontalRulePlugin))
     .add(
-      context.registerTheme({
+      registerTheme({
         hr: styles.hr,
       })
     )
     .add(
-      context.registerSlashCommand(({ editor, registerCommands }) => {
+      registerSlashCommand(({ editor, registerCommands }) => {
         registerCommands(
           [
             {

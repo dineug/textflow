@@ -50,7 +50,7 @@ const Editor: React.FC<EditorProps> = ({ minHeight }) => {
           <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
             <div ref={setRoot} className={cn('wysidoc-editor', styles.shell)}>
               <ScrollArea className={styles.container}>
-                <div className={styles.center}>
+                <div className={styles.layout}>
                   <div ref={setEditor} className={styles.editor}>
                     <RichTextPlugin
                       contentEditable={

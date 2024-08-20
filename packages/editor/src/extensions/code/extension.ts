@@ -5,15 +5,21 @@ import { Code } from 'lucide-react';
 
 import type { RegisterExtension } from '@/extensions/extensionManager';
 
-import * as styles from './code.css';
 import CodePlugin from './CodePlugin';
+import * as styles from './theme.css';
 
-export const registerExtensionCode: RegisterExtension = context => {
-  context.subscriptions
-    .add(context.registerNode(CodeNode, CodeHighlightNode))
-    .add(context.registerPlugin(CodePlugin))
+export const registerExtensionCode: RegisterExtension = ({
+  subscriptions,
+  registerNode,
+  registerPlugin,
+  registerTheme,
+  registerSlashCommand,
+}) => {
+  subscriptions
+    .add(registerNode(CodeNode, CodeHighlightNode))
+    .add(registerPlugin(CodePlugin))
     .add(
-      context.registerTheme({
+      registerTheme({
         code: styles.code,
         codeHighlight: {
           atrule: styles.tokenAttr,
@@ -50,7 +56,7 @@ export const registerExtensionCode: RegisterExtension = context => {
       })
     )
     .add(
-      context.registerSlashCommand(({ editor, registerCommands }) => {
+      registerSlashCommand(({ editor, registerCommands }) => {
         registerCommands(
           [
             {

@@ -2,11 +2,15 @@ import { AutoLinkNode, LinkNode } from '@lexical/link';
 
 import type { RegisterExtension } from '@/extensions/extensionManager';
 
-import * as styles from './link.css';
+import * as styles from './theme.css';
 
-export const registerExtensionLink: RegisterExtension = context => {
-  context.subscriptions.add(context.registerNode(AutoLinkNode, LinkNode)).add(
-    context.registerTheme({
+export const registerExtensionLink: RegisterExtension = ({
+  subscriptions,
+  registerNode,
+  registerTheme,
+}) => {
+  subscriptions.add(registerNode(AutoLinkNode, LinkNode)).add(
+    registerTheme({
       link: styles.link,
     })
   );
