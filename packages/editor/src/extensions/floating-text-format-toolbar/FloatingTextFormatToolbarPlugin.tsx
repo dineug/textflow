@@ -125,6 +125,7 @@ const FloatingTextFormatToolbar: React.FC<FloatingTextFormatToolbarProps> = ({
     placement: 'top-start',
     middleware: [offset(() => 10)],
   });
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     const $updateTextFormatFloatingToolbar = () => {
@@ -141,6 +142,7 @@ const FloatingTextFormatToolbar: React.FC<FloatingTextFormatToolbarProps> = ({
       ) {
         const domRange = nativeSelection.getRangeAt(0);
         refs.setReference(domRange);
+        setShow(true);
       }
     };
 
@@ -169,7 +171,7 @@ const FloatingTextFormatToolbar: React.FC<FloatingTextFormatToolbarProps> = ({
   return (
     <div
       ref={refs.setFloating}
-      style={floatingStyles}
+      style={{ ...floatingStyles, visibility: show ? 'visible' : 'hidden' }}
       className={cn(
         'z-50 overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md',
         'flex items-center justify-center gap-1'
