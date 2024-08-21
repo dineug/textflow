@@ -1,4 +1,4 @@
-import { offset, useFloating } from '@floating-ui/react';
+import { flip, offset, useFloating } from '@floating-ui/react';
 import { $isCodeHighlightNode } from '@lexical/code';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { mergeRegister } from '@lexical/utils';
@@ -123,7 +123,7 @@ const FloatingTextFormatToolbar: React.FC<FloatingTextFormatToolbarProps> = ({
   const [editor] = useLexicalComposerContext();
   const { refs, floatingStyles } = useFloating({
     placement: 'top-start',
-    middleware: [offset(() => 10)],
+    middleware: [offset(() => 10), flip()],
   });
   const [show, setShow] = useState(false);
 
