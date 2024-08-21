@@ -7,6 +7,7 @@ import type {
 } from 'lexical';
 import { createElement, Fragment } from 'react';
 
+import type { FloatingTextFormatButton } from './floating-text-format-toolbar';
 import {
   type DynamicSlashCommand,
   type SlashCommand,
@@ -24,6 +25,9 @@ export type ExtensionContext = {
   registerSlashCommand: (
     render: (context: SlashCommandContext) => void
   ) => Dispose;
+  registerFloatingTextFormatButton: (
+    ...buttons: FloatingTextFormatButton[]
+  ) => Dispose;
   subscriptions: Set<Dispose>;
 };
 
@@ -40,6 +44,7 @@ export class ExtensionManager {
   #transformers = new Set<Transformer>();
   #themes = new Set<EditorThemeClasses>();
   #slashCommands = new Set<(context: SlashCommandContext) => void>();
+  #floatingTextFormatButtons = new Set<FloatingTextFormatButton>();
 
   getNodes = (): IterableIterator<Klass<LexicalNode>> => {
     return this.#nodes.values();
@@ -55,6 +60,11 @@ export class ExtensionManager {
       {}
     );
   };
+
+  getFloatingTextFormatButtons =
+    (): IterableIterator<FloatingTextFormatButton> => {
+      return this.#floatingTextFormatButtons.values();
+    };
 
   getSlashCommands = (
     editor: LexicalEditor,
@@ -161,6 +171,15 @@ export class ExtensionManager {
     };
   };
 
+  registerFloatingTextFormatButton = (
+    ...buttons: FloatingTextFormatButton[]
+  ): Dispose => {
+    buttons.forEach(button => this.#floatingTextFormatButtons.add(button));
+    return () => {
+      buttons.forEach(button => this.#floatingTextFormatButtons.delete(button));
+    };
+  };
+
   registerDispose = (dispose: Dispose): Dispose => {
     this.#disposeSet.add(dispose);
     return () => {
@@ -172,8 +191,11 @@ export class ExtensionManager {
     this.#disposeSet.forEach(dispose => dispose());
     this.#disposeSet.clear();
     this.#nodes.clear();
-    this.#themes.clear();
     this.#plugins.clear();
+    this.#transformers.clear();
+    this.#themes.clear();
+    this.#slashCommands.clear();
+    this.#floatingTextFormatButtons.clear();
   };
 }
 
@@ -183,6 +205,7 @@ export function createExtensionContext({
   registerTransformer,
   registerTheme,
   registerSlashCommand,
+  registerFloatingTextFormatButton,
 }: ExtensionManager): ExtensionContext {
   const subscriptions = new Set<Dispose>();
 
@@ -192,6 +215,7 @@ export function createExtensionContext({
     registerTransformer,
     registerTheme,
     registerSlashCommand,
+    registerFloatingTextFormatButton,
     subscriptions,
   };
 }

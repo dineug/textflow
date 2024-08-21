@@ -7,7 +7,7 @@ import { useAppContext } from '@/components/app-context';
 import * as styles from './DraggableBlockPlugin.css';
 
 const DraggableBlockPlugin: React.FC = () => {
-  const { editor } = useAppContext();
+  const { $editor } = useAppContext();
   const menuRef = useRef<HTMLDivElement>(null);
   const targetLineRef = useRef<HTMLDivElement>(null);
 
@@ -15,13 +15,13 @@ const DraggableBlockPlugin: React.FC = () => {
     return Boolean(element.closest(`.${styles.menu}`));
   };
 
-  if (!editor) {
+  if (!$editor) {
     return null;
   }
 
   return (
     <DraggableBlockPlugin_EXPERIMENTAL
-      anchorElem={editor}
+      anchorElem={$editor}
       menuRef={menuRef}
       targetLineRef={targetLineRef}
       menuComponent={

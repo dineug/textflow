@@ -37,7 +37,7 @@ export const quote = style({
   marginBottom: 10,
   fontSize: 15,
   color: 'hsl(var(--muted-foreground))',
-  borderLeftColor: 'rgb(206, 208, 212)',
+  borderLeftColor: 'hsl(var(--border))',
   borderLeftWidth: 4,
   borderLeftStyle: 'solid',
   paddingLeft: 16,
@@ -48,7 +48,7 @@ export const bold = style({
 });
 
 export const code = style({
-  backgroundColor: 'rgb(240, 242, 245)',
+  backgroundColor: 'hsl(var(--muted))',
   padding: '1px 0.25rem',
   fontFamily: 'Menlo, Consolas, Monaco, monospace',
   fontSize: '94%',

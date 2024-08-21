@@ -30,7 +30,7 @@ export const registerExtensionHorizontalRule: RegisterExtension = ({
           [
             {
               title: 'Divider',
-              icon: SquareSplitVertical,
+              Icon: SquareSplitVertical,
               keywords: ['horizontal rule', 'divider', 'hr'],
               onSelect: () => {
                 editor.dispatchCommand(

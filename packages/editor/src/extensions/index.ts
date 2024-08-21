@@ -1,5 +1,6 @@
 import { registerExtensionCode } from './code/extension';
 import type { RegisterExtension } from './extensionManager';
+import { registerExtensionFloatingTextFormatToolbar } from './floating-text-format-toolbar/extension';
 import { registerExtensionHorizontalRule } from './horizontal-rule/extension';
 import { registerExtensionLink } from './link/extension';
 import { registerExtensionList } from './list/extension';
@@ -15,4 +16,5 @@ export const extensions: RegisterExtension[] = [
   registerExtensionHorizontalRule,
   registerExtensionSlashCommand,
   registerExtensionMarkdownShortcut,
+  registerExtensionFloatingTextFormatToolbar,
 ];

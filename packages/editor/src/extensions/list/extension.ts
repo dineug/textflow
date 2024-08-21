@@ -49,7 +49,7 @@ export const registerExtensionList: RegisterExtension = ({
           [
             {
               title: 'Numbered List',
-              icon: ListOrdered,
+              Icon: ListOrdered,
               keywords: ['numbered list', 'ordered list', 'ol'],
               onSelect: () => {
                 editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
@@ -57,7 +57,7 @@ export const registerExtensionList: RegisterExtension = ({
             },
             {
               title: 'Bulleted List',
-              icon: List,
+              Icon: List,
               keywords: ['bulleted list', 'unordered list', 'ul'],
               onSelect: () => {
                 editor.dispatchCommand(
@@ -68,7 +68,7 @@ export const registerExtensionList: RegisterExtension = ({
             },
             {
               title: 'Check List',
-              icon: ListChecks,
+              Icon: ListChecks,
               keywords: ['check list', 'todo list'],
               onSelect: () => {
                 editor.dispatchCommand(INSERT_CHECK_LIST_COMMAND, undefined);

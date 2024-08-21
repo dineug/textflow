@@ -8,9 +8,9 @@ import { useCallback, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { useAppContext } from '@/components/app-context';
-import { MenuContent, MenuItem } from '@/components/menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useExtensionManagerContext } from '@/extensions/context';
+import { cn } from '@/lib/utils';
 
 import { SlashCommandMenu } from './index';
 
@@ -22,7 +22,7 @@ const MAX_HEIGHT = PADDING + ITEM * MAX_DISPLAY_ITEM + ITEM / 2;
 const SlashCommandPlugin: React.FC = () => {
   const { getSlashCommands } = useExtensionManagerContext();
   const [editor] = useLexicalComposerContext();
-  const { root } = useAppContext();
+  const { $root } = useAppContext();
   const [queryString, setQueryString] = useState<string | null>(null);
   const checkForTriggerMatch = useBasicTypeaheadTriggerMatch('/', {
     minLength: 0,
@@ -49,7 +49,7 @@ const SlashCommandPlugin: React.FC = () => {
     [editor]
   );
 
-  if (!root) {
+  if (!$root) {
     return null;
   }
 
@@ -59,7 +59,7 @@ const SlashCommandPlugin: React.FC = () => {
       onSelectOption={onSelectOption}
       triggerFn={checkForTriggerMatch}
       options={options}
-      parent={root}
+      parent={$root}
       menuRenderFn={(
         anchorElementRef,
         { selectedIndex, selectOptionAndCleanUp, setHighlightedIndex }
@@ -72,9 +72,17 @@ const SlashCommandPlugin: React.FC = () => {
                   height: options.length > 8 ? MAX_HEIGHT : 'auto',
                 }}
               >
-                <MenuContent className="w-[200px]">
+                <div
+                  className={cn(
+                    'z-50 min-w-[8rem] w-max overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md',
+                    'w-[200px]'
+                  )}
+                >
                   {options.map((option, i) => (
-                    <MenuItem
+                    <div
+                      className={cn(
+                        'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-[selected=true]:bg-accent aria-[selected=true]:text-accent-foreground'
+                      )}
                       key={option.key}
                       tabIndex={-1}
                       ref={option.setRefElement}
@@ -88,11 +96,11 @@ const SlashCommandPlugin: React.FC = () => {
                         setHighlightedIndex(i);
                       }}
                     >
-                      {option.icon && <option.icon className="mr-2 h-4 w-4" />}
+                      {option.Icon && <option.Icon className="mr-2 h-4 w-4" />}
                       <span>{option.title}</span>
-                    </MenuItem>
+                    </div>
                   ))}
-                </MenuContent>
+                </div>
               </ScrollArea>,
               anchorElementRef.current
             )

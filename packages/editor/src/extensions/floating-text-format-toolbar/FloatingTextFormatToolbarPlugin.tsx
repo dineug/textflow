@@ -1,0 +1,194 @@
+import { offset, useFloating } from '@floating-ui/react';
+import { $isCodeHighlightNode } from '@lexical/code';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { mergeRegister } from '@lexical/utils';
+import {
+  $getSelection,
+  $isParagraphNode,
+  $isRangeSelection,
+  $isTextNode,
+  COMMAND_PRIORITY_LOW,
+  SELECTION_CHANGE_COMMAND,
+} from 'lexical';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
+
+import { useAppContext } from '@/components/app-context';
+import { Toggle } from '@/components/ui/toggle';
+import { useExtensionManagerContext } from '@/extensions/context';
+import { cn } from '@/lib/utils';
+import { getSelectedNode } from '@/utils/getSelectedNode';
+
+import type { FloatingTextFormatButton } from './index';
+
+const FloatingTextFormatToolbarPlugin: React.FC = () => {
+  const { getFloatingTextFormatButtons } = useExtensionManagerContext();
+  const [editor] = useLexicalComposerContext();
+  const { $editor } = useAppContext();
+  const buttons = useMemo(
+    () => [...getFloatingTextFormatButtons()],
+    [getFloatingTextFormatButtons]
+  );
+  const [isText, setIsText] = useState(false);
+  const [isFormatMap, setIsFormatMap] = useState<Record<number, boolean>>({});
+
+  const updatePopup = useCallback(() => {
+    editor.getEditorState().read(() => {
+      if (editor.isComposing()) {
+        return;
+      }
+      const selection = $getSelection();
+      const nativeSelection = window.getSelection();
+      const rootElement = editor.getRootElement();
+
+      if (
+        nativeSelection !== null &&
+        (!$isRangeSelection(selection) ||
+          rootElement === null ||
+          !rootElement.contains(nativeSelection.anchorNode))
+      ) {
+        setIsText(false);
+        return;
+      }
+
+      if (!$isRangeSelection(selection)) {
+        return;
+      }
+
+      const node = getSelectedNode(selection);
+
+      setIsFormatMap(
+        buttons.reduce((acc: Record<number, boolean>, button, index) => {
+          acc[index] = button.$hasFormat(selection);
+          return acc;
+        }, {})
+      );
+
+      if (
+        !$isCodeHighlightNode(selection.anchor.getNode()) &&
+        selection.getTextContent() !== ''
+      ) {
+        setIsText($isTextNode(node) || $isParagraphNode(node));
+      } else {
+        setIsText(false);
+      }
+
+      const rawTextContent = selection.getTextContent().replace(/\n/g, '');
+      if (!selection.isCollapsed() && rawTextContent === '') {
+        setIsText(false);
+        return;
+      }
+    });
+  }, [buttons, editor]);
+
+  useEffect(() => {
+    document.addEventListener('selectionchange', updatePopup);
+    return () => {
+      document.removeEventListener('selectionchange', updatePopup);
+    };
+  }, [updatePopup]);
+
+  useEffect(() => {
+    return mergeRegister(
+      editor.registerUpdateListener(() => {
+        updatePopup();
+      }),
+      editor.registerRootListener(() => {
+        if (editor.getRootElement() === null) {
+          setIsText(false);
+        }
+      })
+    );
+  }, [editor, updatePopup]);
+
+  if (!isText || !$editor) {
+    return null;
+  }
+
+  return createPortal(
+    <FloatingTextFormatToolbar buttons={buttons} isFormatMap={isFormatMap} />,
+    $editor
+  );
+};
+
+type FloatingTextFormatToolbarProps = {
+  buttons: FloatingTextFormatButton[];
+  isFormatMap: Record<number, boolean>;
+};
+
+const FloatingTextFormatToolbar: React.FC<FloatingTextFormatToolbarProps> = ({
+  buttons,
+  isFormatMap,
+}) => {
+  const [editor] = useLexicalComposerContext();
+  const { refs, floatingStyles } = useFloating({
+    placement: 'top-start',
+    middleware: [offset(() => 10)],
+  });
+
+  useEffect(() => {
+    const $updateTextFormatFloatingToolbar = () => {
+      const selection = $getSelection();
+      const nativeSelection = window.getSelection();
+      const rootElement = editor.getRootElement();
+
+      if (
+        selection !== null &&
+        nativeSelection !== null &&
+        !nativeSelection.isCollapsed &&
+        rootElement !== null &&
+        rootElement.contains(nativeSelection.anchorNode)
+      ) {
+        const domRange = nativeSelection.getRangeAt(0);
+        refs.setReference(domRange);
+      }
+    };
+
+    editor.getEditorState().read(() => {
+      $updateTextFormatFloatingToolbar();
+    });
+
+    return mergeRegister(
+      editor.registerUpdateListener(({ editorState }) => {
+        editorState.read(() => {
+          $updateTextFormatFloatingToolbar();
+        });
+      }),
+
+      editor.registerCommand(
+        SELECTION_CHANGE_COMMAND,
+        () => {
+          $updateTextFormatFloatingToolbar();
+          return false;
+        },
+        COMMAND_PRIORITY_LOW
+      )
+    );
+  }, [editor, refs]);
+
+  return (
+    <div
+      ref={refs.setFloating}
+      style={floatingStyles}
+      className={cn(
+        'z-50 overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md',
+        'flex items-center justify-center gap-1'
+      )}
+    >
+      {buttons.map((button, index) => (
+        <Toggle
+          key={index}
+          size="sm"
+          pressed={isFormatMap[index]}
+          onPressedChange={() => button.onClick(editor)}
+        >
+          <button.Icon className="h-4 w-4" />
+        </Toggle>
+      ))}
+    </div>
+  );
+};
+
+FloatingTextFormatToolbarPlugin.displayName = 'FloatingTextFormatToolbarPlugin';
+
+export default FloatingTextFormatToolbarPlugin;

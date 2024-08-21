@@ -61,7 +61,7 @@ export const registerExtensionCode: RegisterExtension = ({
           [
             {
               title: 'Code',
-              icon: Code,
+              Icon: Code,
               keywords: ['javascript', 'python', 'js', 'codeblock'],
               onSelect: () => {
                 editor.update(() => {

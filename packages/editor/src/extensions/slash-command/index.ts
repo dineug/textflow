@@ -13,7 +13,7 @@ export type SlashCommandContext = {
 
 export type SlashCommand = {
   title: string;
-  icon?: React.FC<React.SVGAttributes<SVGElement>>;
+  Icon?: React.FC<React.SVGAttributes<SVGElement>>;
   keywords?: string[];
   onSelect: (queryString: string) => void;
 };
@@ -22,7 +22,7 @@ export type DynamicSlashCommand = Omit<SlashCommand, 'keywords'>;
 
 export class SlashCommandMenu extends MenuOption implements SlashCommand {
   title: string;
-  icon?: React.FC<React.SVGAttributes<SVGElement>>;
+  Icon?: React.FC<React.SVGAttributes<SVGElement>>;
   keywords?: Array<string>;
   onSelect: (queryString: string) => void;
 
@@ -30,7 +30,7 @@ export class SlashCommandMenu extends MenuOption implements SlashCommand {
     super(command.title);
     this.title = command.title;
     this.keywords = command.keywords;
-    this.icon = command.icon;
+    this.Icon = command.Icon;
     this.onSelect = command.onSelect.bind(this);
   }
 }

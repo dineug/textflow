@@ -10,17 +10,25 @@ import {
   $getSelection,
   $isRangeSelection,
   FORMAT_ELEMENT_COMMAND,
+  FORMAT_TEXT_COMMAND,
 } from 'lexical';
 import {
   AlignCenter,
   AlignJustify,
   AlignLeft,
   AlignRight,
+  Bold,
+  Code,
   Heading1,
   Heading2,
   Heading3,
+  Italic,
   Pilcrow,
+  Strikethrough,
+  Subscript,
+  Superscript,
   TextQuote,
+  Underline,
 } from 'lucide-react';
 
 import type { RegisterExtension } from '@/extensions/extensionManager';
@@ -60,6 +68,7 @@ export const registerExtensionRichText: RegisterExtension = ({
   registerPlugin,
   registerTheme,
   registerSlashCommand,
+  registerFloatingTextFormatButton,
 }) => {
   subscriptions
     .add(registerNode(HeadingNode, QuoteNode))
@@ -97,7 +106,7 @@ export const registerExtensionRichText: RegisterExtension = ({
           [
             {
               title: 'Paragraph',
-              icon: Pilcrow,
+              Icon: Pilcrow,
               keywords: ['normal', 'paragraph', 'p', 'text'],
               onSelect: () => {
                 editor.update(() => {
@@ -110,7 +119,7 @@ export const registerExtensionRichText: RegisterExtension = ({
             },
             ...HEADING_LEVEL_SLASH_COMMANDS.map<SlashCommand>(n => ({
               title: `Heading ${n}`,
-              icon: HEADING_ICON_MAP[n],
+              Icon: HEADING_ICON_MAP[n],
               keywords: ['heading', 'header', `h${n}`],
               onSelect: () => {
                 editor.update(() => {
@@ -130,7 +139,7 @@ export const registerExtensionRichText: RegisterExtension = ({
           [
             {
               title: 'Quote',
-              icon: TextQuote,
+              Icon: TextQuote,
               keywords: ['block quote'],
               onSelect: () => {
                 editor.update(() => {
@@ -147,7 +156,7 @@ export const registerExtensionRichText: RegisterExtension = ({
         registerCommands(
           TEXT_ALIGN_SLASH_COMMANDS.map(alignment => ({
             title: `Align ${alignment}`,
-            icon: TEXT_ALIGN_ICON_MAP[alignment],
+            Icon: TEXT_ALIGN_ICON_MAP[alignment],
             keywords: ['align', 'justify', alignment],
             onSelect: () => {
               editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, alignment);
@@ -156,5 +165,58 @@ export const registerExtensionRichText: RegisterExtension = ({
           999
         );
       })
+    )
+    .add(
+      registerFloatingTextFormatButton(
+        {
+          Icon: Bold,
+          $hasFormat: selection => selection.hasFormat('bold'),
+          onClick: editor => {
+            editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
+          },
+        },
+        {
+          Icon: Italic,
+          $hasFormat: selection => selection.hasFormat('italic'),
+          onClick: editor => {
+            editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
+          },
+        },
+        {
+          Icon: Underline,
+          $hasFormat: selection => selection.hasFormat('underline'),
+          onClick: editor => {
+            editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
+          },
+        },
+        {
+          Icon: Strikethrough,
+          $hasFormat: selection => selection.hasFormat('strikethrough'),
+          onClick: editor => {
+            editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
+          },
+        },
+        {
+          Icon: Subscript,
+          $hasFormat: selection => selection.hasFormat('subscript'),
+          onClick: editor => {
+            editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'subscript');
+          },
+        },
+        {
+          Icon: Superscript,
+          $hasFormat: selection => selection.hasFormat('superscript'),
+          onClick: editor => {
+            editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'superscript');
+          },
+        },
+        {
+          Icon: Code,
+          $hasFormat: selection => selection.hasFormat('code'),
+          onClick: editor => {
+            editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code');
+          },
+        }
+      )
     );
 };

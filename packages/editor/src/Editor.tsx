@@ -39,9 +39,9 @@ const Editor: React.FC<EditorProps> = ({ minHeight }) => {
     },
   };
 
-  const [root, setRoot] = useState<HTMLDivElement | null>(null);
-  const [editor, setEditor] = useState<HTMLDivElement | null>(null);
-  const appContext = useMemo(() => ({ root, editor }), [editor, root]);
+  const [$root, setRoot] = useState<HTMLDivElement | null>(null);
+  const [$editor, setEditor] = useState<HTMLDivElement | null>(null);
+  const appContext = useMemo(() => ({ $root, $editor }), [$editor, $root]);
 
   return (
     <ExtensionManagerContext value={extensionManager}>
