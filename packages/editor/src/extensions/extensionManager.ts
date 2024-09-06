@@ -14,7 +14,42 @@ import {
   SlashCommandMenu,
 } from './slash-command';
 
-export type Dispose = () => void;
+export type ExtensionManager = {
+  registerNode: (...nodes: Array<Klass<LexicalNode>>) => Dispose;
+  getNodes: () => IterableIterator<Klass<LexicalNode>>;
+  registerTheme: (theme: EditorThemeClasses) => Dispose;
+  getTheme: () => EditorThemeClasses;
+  registerSlashCommand: (
+    render: (context: SlashCommandContext) => void
+  ) => Dispose;
+  getSlashCommands: (
+    editor: LexicalEditor,
+    queryString: string
+  ) => SlashCommandMenu[];
+  registerFloatingTextFormatButton: (
+    ...buttons: FloatingTextFormatButton[]
+  ) => Dispose;
+  getFloatingTextFormatButtons: () => IterableIterator<FloatingTextFormatButton>;
+  registerCommand: <P>(
+    command: Command<P>,
+    listener: CommandListener<P>
+  ) => Dispose;
+  executeCommand: <P>(command: Command<P>, payload: P) => void;
+  registerDispose: (dispose: Dispose) => Dispose;
+  dispose: () => void;
+};
+
+export type ExtensionContext = Pick<
+  ExtensionManager,
+  | 'registerNode'
+  | 'registerTheme'
+  | 'registerSlashCommand'
+  | 'registerFloatingTextFormatButton'
+  | 'registerCommand'
+  | 'executeCommand'
+> & {
+  subscriptions: Set<Dispose>;
+};
 
 export type Command<P> = {
   type: string;
@@ -22,32 +57,21 @@ export type Command<P> = {
 
 export type CommandListener<P> = (payload: P) => void;
 
-export function createCommand<T>(type: string): Command<T> {
-  return { type };
-}
-
-export type ExtensionContext = {
-  registerNode: (...nodes: Array<Klass<LexicalNode>>) => Dispose;
-  registerTheme: (theme: EditorThemeClasses) => Dispose;
-  registerSlashCommand: (
-    render: (context: SlashCommandContext) => void
-  ) => Dispose;
-  registerFloatingTextFormatButton: (
-    ...buttons: FloatingTextFormatButton[]
-  ) => Dispose;
-  registerCommand: <P>(
-    command: Command<P>,
-    listener: CommandListener<P>
-  ) => Dispose;
-  executeCommand: <P>(command: Command<P>, payload: P) => void;
-  subscriptions: Set<Dispose>;
-};
+export type Dispose = () => void;
 
 export type RegisterExtension = (context: ExtensionContext) => Dispose | void;
 
 export type Extension<P = unknown> = RegisterExtension & {
   Plugin: FC<P>;
 };
+
+export type ConfigureExtensionOptions = {
+  extensions: Array<Extension<any>>;
+};
+
+export function createCommand<T>(type: string): Command<T> {
+  return { type };
+}
 
 const NoopPlugin: FC<unknown> = () => null;
 NoopPlugin.displayName = 'NoopPlugin';
@@ -56,42 +80,45 @@ export function createExtension<P = unknown>(
   registerExtension: RegisterExtension,
   Plugin?: FC<P>
 ): Extension<P> {
-  function extension(context: ExtensionContext): Dispose | void {
-    registerExtension(context);
-  }
+  const extension: Extension<P> = context => registerExtension(context);
   extension.Plugin = Plugin ?? NoopPlugin;
   return extension;
 }
 
-export type ConfigureExtensionOptions = {
-  extensions: Array<Extension<any>>;
-};
+function createExtensionManager(): ExtensionManager {
+  const disposeSet = new Set<Dispose>();
+  const nodeSet = new Set<Klass<LexicalNode>>();
+  const themeSet = new Set<EditorThemeClasses>();
+  const slashCommandSet = new Set<(context: SlashCommandContext) => void>();
+  const floatingTextFormatButtonSet = new Set<FloatingTextFormatButton>();
+  const commandMap = new Map<Command<any>, Set<CommandListener<any>>>();
 
-export class ExtensionManager {
-  #disposeSet = new Set<Dispose>();
-  #nodes = new Set<Klass<LexicalNode>>();
-  #themes = new Set<EditorThemeClasses>();
-  #slashCommands = new Set<(context: SlashCommandContext) => void>();
-  #floatingTextFormatButtons = new Set<FloatingTextFormatButton>();
-  #commands = new Map<Command<any>, Set<CommandListener<any>>>();
-
-  getNodes = (): IterableIterator<Klass<LexicalNode>> => {
-    return this.#nodes.values();
+  const registerNode = (...nodes: Array<Klass<LexicalNode>>): Dispose => {
+    nodes.forEach(node => nodeSet.add(node));
+    return () => nodes.forEach(node => nodeSet.delete(node));
+  };
+  const getNodes = (): IterableIterator<Klass<LexicalNode>> => {
+    return nodeSet.values();
   };
 
-  getTheme = (): EditorThemeClasses => {
-    return [...this.#themes].reduce(
+  const registerTheme = (theme: EditorThemeClasses): Dispose => {
+    themeSet.add(theme);
+    return () => themeSet.delete(theme);
+  };
+  const getTheme = (): EditorThemeClasses => {
+    return [...themeSet].reduce(
       (prev: EditorThemeClasses, cur) => ({ ...prev, ...cur }),
       {}
     );
   };
 
-  getFloatingTextFormatButtons =
-    (): IterableIterator<FloatingTextFormatButton> => {
-      return this.#floatingTextFormatButtons.values();
-    };
-
-  getSlashCommands = (
+  const registerSlashCommand = (
+    render: (context: SlashCommandContext) => void
+  ): Dispose => {
+    slashCommandSet.add(render);
+    return () => slashCommandSet.delete(render);
+  };
+  const getSlashCommands = (
     editor: LexicalEditor,
     queryString: string
   ): SlashCommandMenu[] => {
@@ -101,7 +128,7 @@ export class ExtensionManager {
       Array<DynamicSlashCommand>
     >();
 
-    [...this.#slashCommands].forEach(render => {
+    [...slashCommandSet].forEach(render => {
       const context: SlashCommandContext = {
         editor,
         queryString,
@@ -147,75 +174,66 @@ export class ExtensionManager {
     ].map(command => new SlashCommandMenu(command));
   };
 
-  registerNode = (...nodes: Array<Klass<LexicalNode>>): Dispose => {
-    nodes.forEach(node => this.#nodes.add(node));
-    return () => {
-      nodes.forEach(node => this.#nodes.delete(node));
-    };
-  };
-
-  registerTheme = (theme: EditorThemeClasses): Dispose => {
-    this.#themes.add(theme);
-    return () => {
-      this.#themes.delete(theme);
-    };
-  };
-
-  registerSlashCommand = (
-    render: (context: SlashCommandContext) => void
-  ): Dispose => {
-    this.#slashCommands.add(render);
-    return () => {
-      this.#slashCommands.delete(render);
-    };
-  };
-
-  registerFloatingTextFormatButton = (
+  const registerFloatingTextFormatButton = (
     ...buttons: FloatingTextFormatButton[]
   ): Dispose => {
-    buttons.forEach(button => this.#floatingTextFormatButtons.add(button));
+    buttons.forEach(button => floatingTextFormatButtonSet.add(button));
     return () => {
-      buttons.forEach(button => this.#floatingTextFormatButtons.delete(button));
+      buttons.forEach(button => floatingTextFormatButtonSet.delete(button));
     };
   };
-
-  registerDispose = (dispose: Dispose): Dispose => {
-    this.#disposeSet.add(dispose);
-    return () => {
-      this.#disposeSet.delete(dispose);
+  const getFloatingTextFormatButtons =
+    (): IterableIterator<FloatingTextFormatButton> => {
+      return floatingTextFormatButtonSet.values();
     };
-  };
 
-  registerCommand = <P>(
+  const registerCommand = <P>(
     command: Command<P>,
     listener: CommandListener<P>
   ): Dispose => {
-    const listeners = this.#commands.get(command) ?? new Set();
+    const listeners = commandMap.get(command) ?? new Set();
     listeners.add(listener);
 
-    if (!this.#commands.has(command)) {
-      this.#commands.set(command, listeners);
+    if (!commandMap.has(command)) {
+      commandMap.set(command, listeners);
     }
 
-    return () => {
-      listeners.delete(listener);
-    };
+    return () => listeners.delete(listener);
   };
-
-  executeCommand = <P>(command: Command<P>, payload: P): void => {
-    const listeners = this.#commands.get(command);
+  const executeCommand = <P>(command: Command<P>, payload: P): void => {
+    const listeners = commandMap.get(command);
     listeners?.forEach(listener => listener(payload));
   };
 
-  dispose = () => {
-    this.#disposeSet.forEach(dispose => dispose());
-    this.#disposeSet.clear();
-    this.#nodes.clear();
-    this.#themes.clear();
-    this.#slashCommands.clear();
-    this.#floatingTextFormatButtons.clear();
-    this.#commands.clear();
+  const registerDispose = (dispose: Dispose): Dispose => {
+    disposeSet.add(dispose);
+    return () => disposeSet.delete(dispose);
   };
+  const dispose = () => {
+    disposeSet.forEach(dispose => dispose());
+    disposeSet.clear();
+    nodeSet.clear();
+    themeSet.clear();
+    slashCommandSet.clear();
+    floatingTextFormatButtonSet.clear();
+    commandMap.forEach(listeners => listeners.clear());
+    commandMap.clear();
+  };
+
+  return Object.freeze({
+    registerNode,
+    getNodes,
+    registerTheme,
+    getTheme,
+    registerSlashCommand,
+    getSlashCommands,
+    registerFloatingTextFormatButton,
+    getFloatingTextFormatButtons,
+    registerCommand,
+    executeCommand,
+    registerDispose,
+    dispose,
+  });
 }
 
 export function createExtensionContext({
@@ -228,7 +246,7 @@ export function createExtensionContext({
 }: ExtensionManager): ExtensionContext {
   const subscriptions = new Set<Dispose>();
 
-  return {
+  return Object.freeze({
     registerNode,
     registerTheme,
     registerSlashCommand,
@@ -236,17 +254,17 @@ export function createExtensionContext({
     registerCommand,
     executeCommand,
     subscriptions,
-  };
+  });
 }
 
-export function configureExtensions(
-  config: ConfigureExtensionOptions
-): ExtensionManager {
-  const manager = new ExtensionManager();
+export function configureExtensions({
+  extensions,
+}: ConfigureExtensionOptions): ExtensionManager {
+  const manager = createExtensionManager();
   const contextSet = new Set<ExtensionContext>();
   const subscriptions = new Set<Dispose | void>();
 
-  config.extensions.forEach(registerExtension => {
+  extensions.forEach(registerExtension => {
     const context = createExtensionContext(manager);
     subscriptions.add(registerExtension(context));
     contextSet.add(context);
@@ -254,11 +272,11 @@ export function configureExtensions(
 
   manager.registerDispose(() => {
     contextSet.forEach(context => {
-      context.subscriptions.forEach(subscription => subscription());
+      context.subscriptions.forEach(dispose => dispose());
       context.subscriptions.clear();
     });
     contextSet.clear();
-    subscriptions.forEach(subscription => subscription?.());
+    subscriptions.forEach(dispose => dispose?.());
     subscriptions.clear();
   });
 
