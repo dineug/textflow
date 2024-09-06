@@ -9,7 +9,7 @@ import { createPortal } from 'react-dom';
 
 import { useAppContext } from '@/components/app-context';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useExtensionManagerContext } from '@/extensions/context';
+import { useExtensionManager } from '@/extensions/context';
 import { cn } from '@/lib/utils';
 
 import { SlashCommandMenu } from './index';
@@ -20,7 +20,7 @@ const MAX_DISPLAY_ITEM = 8;
 const MAX_HEIGHT = PADDING + ITEM * MAX_DISPLAY_ITEM + ITEM / 2;
 
 const SlashCommandPlugin: React.FC = () => {
-  const { getSlashCommands } = useExtensionManagerContext();
+  const { getSlashCommands } = useExtensionManager();
   const [editor] = useLexicalComposerContext();
   const { $root } = useAppContext();
   const [queryString, setQueryString] = useState<string | null>(null);

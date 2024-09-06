@@ -1,10 +1,8 @@
-import type { RegisterExtension } from '@/extensions/extensionManager';
+import { createExtension } from '@/extensions/extensionManager';
 
 import FloatingTextFormatToolbarPlugin from './FloatingTextFormatToolbarPlugin';
 
-export const registerExtensionFloatingTextFormatToolbar: RegisterExtension = ({
-  subscriptions,
-  registerPlugin,
-}) => {
-  subscriptions.add(registerPlugin(FloatingTextFormatToolbarPlugin));
-};
+export const extensionFloatingTextFormatToolbar = createExtension(
+  () => {},
+  FloatingTextFormatToolbarPlugin
+);

@@ -10,12 +10,19 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
 import { useMemo, useState } from 'react';
 
-import { AppContext } from '@/components/app-context';
-import { ThemeProvider } from '@/components/theme-provider';
+import { AppProvider } from '@/components/app-context';
+import { ThemeProvider } from '@/components/theme';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { extensions } from '@/extensions';
-import { ExtensionManagerContext } from '@/extensions/context';
+import { extensionCode } from '@/extensions/code/extension';
+import { ExtensionManagerProvider } from '@/extensions/context';
 import { configureExtensions } from '@/extensions/extensionManager';
+import { extensionFloatingTextFormatToolbar } from '@/extensions/floating-text-format-toolbar/extension';
+import { extensionHorizontalRule } from '@/extensions/horizontal-rule/extension';
+import { extensionLink } from '@/extensions/link/extension';
+import { extensionList } from '@/extensions/list/extension';
+import { extensionMarkdownShortcut } from '@/extensions/markdown-shortcut/extension';
+import { extensionRichText } from '@/extensions/rich-text/extension';
+import { extensionSlashCommand } from '@/extensions/slash-command/extension';
 import { cn } from '@/lib/utils';
 
 import * as styles from './Editor.css';
@@ -26,34 +33,49 @@ type EditorProps = {
 
 const Editor: React.FC<EditorProps> = ({ minHeight }) => {
   const extensionManager = useMemo(
-    () => configureExtensions({ extensions }),
+    () =>
+      configureExtensions({
+        extensions: [
+          extensionRichText,
+          extensionLink,
+          extensionList,
+          extensionCode,
+          extensionHorizontalRule,
+          extensionSlashCommand,
+          extensionMarkdownShortcut,
+          extensionFloatingTextFormatToolbar,
+        ],
+      }),
     []
   );
-  const { getNodes, getTheme, Plugins } = extensionManager;
-  const initialConfig: InitialConfigType = {
-    namespace: 'wysidoc',
-    nodes: [...getNodes()],
-    theme: getTheme(),
-    onError: (error: Error) => {
-      throw error;
-    },
-  };
+  const { getNodes, getTheme } = extensionManager;
+  const initialConfig: InitialConfigType = useMemo(
+    () => ({
+      namespace: 'wysidoc',
+      nodes: [...getNodes()],
+      theme: getTheme(),
+      onError: (error: Error) => {
+        throw error;
+      },
+    }),
+    [getNodes, getTheme]
+  );
 
   const [$root, setRoot] = useState<HTMLDivElement | null>(null);
   const [$editor, setEditor] = useState<HTMLDivElement | null>(null);
   const appContext = useMemo(() => ({ $root, $editor }), [$editor, $root]);
 
   return (
-    <ExtensionManagerContext value={extensionManager}>
+    <ExtensionManagerProvider value={extensionManager}>
       <LexicalComposer initialConfig={initialConfig}>
-        <AppContext value={appContext}>
-          <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <AppProvider value={appContext}>
+          <ThemeProvider defaultTheme="dark">
             <div ref={setRoot} className={cn('wysidoc-editor', styles.shell)}>
               <ScrollArea className={styles.container}>
                 <div className={styles.layout}>
-                  <div ref={setEditor} className={styles.editor}>
-                    <RichTextPlugin
-                      contentEditable={
+                  <RichTextPlugin
+                    contentEditable={
+                      <div ref={setEditor} className={styles.editor}>
                         <ContentEditable
                           className={styles.contentEditable}
                           style={assignInlineVars({
@@ -71,20 +93,29 @@ const Editor: React.FC<EditorProps> = ({ minHeight }) => {
                             </div>
                           }
                         />
-                      }
-                      ErrorBoundary={LexicalErrorBoundary}
-                    />
-                    <Plugins />
-                    <AutoFocusPlugin />
-                    <HistoryPlugin />
-                  </div>
+                      </div>
+                    }
+                    ErrorBoundary={LexicalErrorBoundary}
+                  />
+
+                  <extensionRichText.Plugin />
+                  <extensionLink.Plugin />
+                  <extensionList.Plugin />
+                  <extensionCode.Plugin />
+                  <extensionHorizontalRule.Plugin />
+                  <extensionSlashCommand.Plugin />
+                  <extensionMarkdownShortcut.Plugin />
+                  <extensionFloatingTextFormatToolbar.Plugin />
+
+                  <AutoFocusPlugin />
+                  <HistoryPlugin />
                 </div>
               </ScrollArea>
             </div>
           </ThemeProvider>
-        </AppContext>
+        </AppProvider>
       </LexicalComposer>
-    </ExtensionManagerContext>
+    </ExtensionManagerProvider>
   );
 };
 

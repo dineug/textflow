@@ -1,11 +1,10 @@
-import { Transformer } from '@lexical/markdown';
 import type {
   EditorThemeClasses,
   Klass,
   LexicalEditor,
   LexicalNode,
 } from 'lexical';
-import { createElement, Fragment } from 'react';
+import type { FC } from 'react';
 
 import type { FloatingTextFormatButton } from './floating-text-format-toolbar';
 import {
@@ -17,10 +16,18 @@ import {
 
 export type Dispose = () => void;
 
+export type Command<P> = {
+  type: string;
+};
+
+export type CommandListener<P> = (payload: P) => void;
+
+export function createCommand<T>(type: string): Command<T> {
+  return { type };
+}
+
 export type ExtensionContext = {
   registerNode: (...nodes: Array<Klass<LexicalNode>>) => Dispose;
-  registerPlugin: (...plugins: Array<React.FC>) => Dispose;
-  registerTransformer: (...transformers: Transformer[]) => Dispose;
   registerTheme: (theme: EditorThemeClasses) => Dispose;
   registerSlashCommand: (
     render: (context: SlashCommandContext) => void
@@ -28,30 +35,48 @@ export type ExtensionContext = {
   registerFloatingTextFormatButton: (
     ...buttons: FloatingTextFormatButton[]
   ) => Dispose;
+  registerCommand: <P>(
+    command: Command<P>,
+    listener: CommandListener<P>
+  ) => Dispose;
+  executeCommand: <P>(command: Command<P>, payload: P) => void;
   subscriptions: Set<Dispose>;
 };
 
 export type RegisterExtension = (context: ExtensionContext) => Dispose | void;
 
+export type Extension<P = unknown> = RegisterExtension & {
+  Plugin: FC<P>;
+};
+
+const NoopPlugin: FC<unknown> = () => null;
+NoopPlugin.displayName = 'NoopPlugin';
+
+export function createExtension<P = unknown>(
+  registerExtension: RegisterExtension,
+  Plugin?: FC<P>
+): Extension<P> {
+  function extension(context: ExtensionContext): Dispose | void {
+    registerExtension(context);
+  }
+  extension.Plugin = Plugin ?? NoopPlugin;
+  return extension;
+}
+
 export type ConfigureExtensionOptions = {
-  extensions: RegisterExtension[];
+  extensions: Array<Extension<any>>;
 };
 
 export class ExtensionManager {
   #disposeSet = new Set<Dispose>();
   #nodes = new Set<Klass<LexicalNode>>();
-  #plugins = new Set<React.FC>();
-  #transformers = new Set<Transformer>();
   #themes = new Set<EditorThemeClasses>();
   #slashCommands = new Set<(context: SlashCommandContext) => void>();
   #floatingTextFormatButtons = new Set<FloatingTextFormatButton>();
+  #commands = new Map<Command<any>, Set<CommandListener<any>>>();
 
   getNodes = (): IterableIterator<Klass<LexicalNode>> => {
     return this.#nodes.values();
-  };
-
-  getTransformers = (): IterableIterator<Transformer> => {
-    return this.#transformers.values();
   };
 
   getTheme = (): EditorThemeClasses => {
@@ -122,36 +147,10 @@ export class ExtensionManager {
     ].map(command => new SlashCommandMenu(command));
   };
 
-  Plugins = (): React.ReactNode => {
-    return createElement(
-      Fragment,
-      null,
-      [...this.#plugins].map(Plugin =>
-        createElement(Plugin, { key: `${Plugin.displayName}` })
-      )
-    );
-  };
-
   registerNode = (...nodes: Array<Klass<LexicalNode>>): Dispose => {
     nodes.forEach(node => this.#nodes.add(node));
     return () => {
       nodes.forEach(node => this.#nodes.delete(node));
-    };
-  };
-
-  registerPlugin = (...plugins: Array<React.FC>): Dispose => {
-    plugins.forEach(plugin => this.#plugins.add(plugin));
-    return () => {
-      plugins.forEach(plugin => this.#plugins.delete(plugin));
-    };
-  };
-
-  registerTransformer = (...transformers: Transformer[]): Dispose => {
-    transformers.forEach(transformer => this.#transformers.add(transformer));
-    return () => {
-      transformers.forEach(transformer =>
-        this.#transformers.delete(transformer)
-      );
     };
   };
 
@@ -187,35 +186,55 @@ export class ExtensionManager {
     };
   };
 
+  registerCommand = <P>(
+    command: Command<P>,
+    listener: CommandListener<P>
+  ): Dispose => {
+    const listeners = this.#commands.get(command) ?? new Set();
+    listeners.add(listener);
+
+    if (!this.#commands.has(command)) {
+      this.#commands.set(command, listeners);
+    }
+
+    return () => {
+      listeners.delete(listener);
+    };
+  };
+
+  executeCommand = <P>(command: Command<P>, payload: P): void => {
+    const listeners = this.#commands.get(command);
+    listeners?.forEach(listener => listener(payload));
+  };
+
   dispose = () => {
     this.#disposeSet.forEach(dispose => dispose());
     this.#disposeSet.clear();
     this.#nodes.clear();
-    this.#plugins.clear();
-    this.#transformers.clear();
     this.#themes.clear();
     this.#slashCommands.clear();
     this.#floatingTextFormatButtons.clear();
+    this.#commands.clear();
   };
 }
 
 export function createExtensionContext({
   registerNode,
-  registerPlugin,
-  registerTransformer,
   registerTheme,
   registerSlashCommand,
   registerFloatingTextFormatButton,
+  registerCommand,
+  executeCommand,
 }: ExtensionManager): ExtensionContext {
   const subscriptions = new Set<Dispose>();
 
   return {
     registerNode,
-    registerPlugin,
-    registerTransformer,
     registerTheme,
     registerSlashCommand,
     registerFloatingTextFormatButton,
+    registerCommand,
+    executeCommand,
     subscriptions,
   };
 }

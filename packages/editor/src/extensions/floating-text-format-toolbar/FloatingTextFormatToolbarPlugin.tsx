@@ -15,14 +15,14 @@ import { createPortal } from 'react-dom';
 
 import { useAppContext } from '@/components/app-context';
 import { Toggle } from '@/components/ui/toggle';
-import { useExtensionManagerContext } from '@/extensions/context';
+import { useExtensionManager } from '@/extensions/context';
 import { cn } from '@/lib/utils';
 import { getSelectedNode } from '@/utils/getSelectedNode';
 
 import type { FloatingTextFormatButton } from './index';
 
 const FloatingTextFormatToolbarPlugin: React.FC = () => {
-  const { getFloatingTextFormatButtons } = useExtensionManagerContext();
+  const { getFloatingTextFormatButtons } = useExtensionManager();
   const [editor] = useLexicalComposerContext();
   const { $editor } = useAppContext();
   const buttons = useMemo(
@@ -182,7 +182,7 @@ const FloatingTextFormatToolbar: React.FC<FloatingTextFormatToolbarProps> = ({
           key={index}
           size="sm"
           pressed={isFormatMap[index]}
-          onPressedChange={() => button.onClick(editor)}
+          onPressedChange={() => button.onClick(editor, isFormatMap[index])}
         >
           <button.Icon className="h-4 w-4" />
         </Toggle>

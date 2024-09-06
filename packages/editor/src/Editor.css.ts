@@ -5,6 +5,7 @@ export const shell = style({
   width: '100%',
   height: '100%',
   flexDirection: 'column',
+  lineHeight: 1.7,
 });
 
 export const container = style({

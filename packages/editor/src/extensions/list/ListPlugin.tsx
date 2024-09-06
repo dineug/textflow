@@ -1,13 +1,14 @@
 import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
 import { ListPlugin as LexicalListPlugin } from '@lexical/react/LexicalListPlugin';
 
-const ListPlugin: React.FC = () => {
-  // ListMaxIndentLevelPlugin
+import ListMaxIndentLevelPlugin from './ListMaxIndentLevelPlugin';
 
+const ListPlugin: React.FC = () => {
   return (
     <>
       <LexicalListPlugin />
       <CheckListPlugin />
+      <ListMaxIndentLevelPlugin maxDepth={7} />
     </>
   );
 };
