@@ -113,6 +113,9 @@ importers:
       '@radix-ui/react-scroll-area':
         specifier: ^1.1.0
         version: 1.1.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-slot':
+        specifier: ^1.1.0
+        version: 1.1.0(@types/react@18.3.3)(react@18.3.1)
       '@radix-ui/react-toggle':
         specifier: ^1.1.0
         version: 1.1.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -134,6 +137,15 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      immer:
+        specifier: ^10.1.1
+        version: 10.1.1
+      jotai:
+        specifier: ^2.9.3
+        version: 2.9.3(@types/react@18.3.3)(react@18.3.1)
+      jotai-immer:
+        specifier: ^0.4.1
+        version: 0.4.1(immer@10.1.1)(jotai@2.9.3(@types/react@18.3.3)(react@18.3.1))
       katex:
         specifier: ^0.16.11
         version: 0.16.11
@@ -2110,6 +2122,9 @@ packages:
     resolution: {integrity: sha512-5Fytz/IraMjqpwfd34ke28PTVMjZjJG2MPn5t7OE4eUCUNf8BAa7b5WUS9/Qvr6mwOQS7Mk6vdsMno5he+T8Xw==}
     engines: {node: '>= 4'}
 
+  immer@10.1.1:
+    resolution: {integrity: sha512-s2MPrmjovJcoMaHtx6K11Ra7oD05NT97w1IC5zpMkT6Atjr7H8LjaDd81iIxUYpMKSRRNMJE703M1Fhr/TctHw==}
+
   import-fresh@3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
     engines: {node: '>=6'}
@@ -2289,6 +2304,24 @@ packages:
 
   jju@1.4.0:
     resolution: {integrity: sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==}
+
+  jotai-immer@0.4.1:
+    resolution: {integrity: sha512-nQTt1HBKie/5OJDck1qLpV1PeBA6bjJLAczEYAx70PD8R4Mbu7gtexfBUCzJh6W6ecsOfwHksAYAesVth6SN9A==}
+    peerDependencies:
+      immer: '>=9.0.0'
+      jotai: '>=2.0.0'
+
+  jotai@2.9.3:
+    resolution: {integrity: sha512-IqMWKoXuEzWSShjd9UhalNsRGbdju5G2FrqNLQJT+Ih6p41VNYe2sav5hnwQx4HJr25jq9wRqvGSWGviGG6Gjw==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=17.0.0'
+      react: '>=17.0.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      react:
+        optional: true
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -5528,6 +5561,8 @@ snapshots:
 
   ignore@5.3.1: {}
 
+  immer@10.1.1: {}
+
   import-fresh@3.3.0:
     dependencies:
       parent-module: 1.0.1
@@ -5690,6 +5725,16 @@ snapshots:
   jiti@1.21.6: {}
 
   jju@1.4.0: {}
+
+  jotai-immer@0.4.1(immer@10.1.1)(jotai@2.9.3(@types/react@18.3.3)(react@18.3.1)):
+    dependencies:
+      immer: 10.1.1
+      jotai: 2.9.3(@types/react@18.3.3)(react@18.3.1)
+
+  jotai@2.9.3(@types/react@18.3.3)(react@18.3.1):
+    optionalDependencies:
+      '@types/react': 18.3.3
+      react: 18.3.1
 
   js-tokens@4.0.0: {}
 

@@ -1,3 +1,4 @@
+import { createStore } from 'jotai';
 import type {
   EditorThemeClasses,
   Klass,
@@ -15,6 +16,7 @@ import {
 } from './slash-command';
 
 export type ExtensionManager = {
+  store: ReturnType<typeof createStore>;
   registerNode: (...nodes: Array<Klass<LexicalNode>>) => Dispose;
   getNodes: () => IterableIterator<Klass<LexicalNode>>;
   registerTheme: (theme: EditorThemeClasses) => Dispose;
@@ -41,6 +43,7 @@ export type ExtensionManager = {
 
 export type ExtensionContext = Pick<
   ExtensionManager,
+  | 'store'
   | 'registerNode'
   | 'registerTheme'
   | 'registerSlashCommand'
@@ -86,6 +89,7 @@ export function createExtension<P = unknown>(
 }
 
 function createExtensionManager(): ExtensionManager {
+  const store = createStore();
   const disposeSet = new Set<Dispose>();
   const nodeSet = new Set<Klass<LexicalNode>>();
   const themeSet = new Set<EditorThemeClasses>();
@@ -221,6 +225,7 @@ function createExtensionManager(): ExtensionManager {
   };
 
   return Object.freeze({
+    store,
     registerNode,
     getNodes,
     registerTheme,
@@ -237,6 +242,7 @@ function createExtensionManager(): ExtensionManager {
 }
 
 export function createExtensionContext({
+  store,
   registerNode,
   registerTheme,
   registerSlashCommand,
@@ -247,6 +253,7 @@ export function createExtensionContext({
   const subscriptions = new Set<Dispose>();
 
   return Object.freeze({
+    store,
     registerNode,
     registerTheme,
     registerSlashCommand,

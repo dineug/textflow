@@ -9,6 +9,7 @@ import { Link } from 'lucide-react';
 import { createExtension } from '@/extensions/extensionManager';
 import { getSelectedNode } from '@/utils/getSelectedNode';
 
+import { linkEditModeCommand } from './FloatingLinkEditorPlugin';
 import LinkPlugin from './LinkPlugin';
 import * as styles from './theme.css';
 
@@ -36,7 +37,7 @@ export const extensionLink = createExtension(
             return $isLinkNode(parent) || $isLinkNode(node);
           },
           onClick: (editor, isFormat) => {
-            // executeCommand(setIsLinkEditMode, isFormat ? false : true)
+            executeCommand(linkEditModeCommand, isFormat ? false : true);
             editor.dispatchCommand(
               TOGGLE_LINK_COMMAND,
               isFormat ? null : 'https://'

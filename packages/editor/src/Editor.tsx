@@ -8,6 +8,7 @@ import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
+import { Provider } from 'jotai';
 import { useMemo, useState } from 'react';
 
 import { AppProvider } from '@/components/app-context';
@@ -48,7 +49,7 @@ const Editor: React.FC<EditorProps> = ({ minHeight }) => {
       }),
     []
   );
-  const { getNodes, getTheme } = extensionManager;
+  const { getNodes, getTheme, store } = extensionManager;
   const initialConfig: InitialConfigType = useMemo(
     () => ({
       namespace: 'wysidoc',
@@ -67,54 +68,56 @@ const Editor: React.FC<EditorProps> = ({ minHeight }) => {
 
   return (
     <ExtensionManagerProvider value={extensionManager}>
-      <LexicalComposer initialConfig={initialConfig}>
-        <AppProvider value={appContext}>
-          <ThemeProvider defaultTheme="dark">
-            <div ref={setRoot} className={cn('wysidoc-editor', styles.shell)}>
-              <ScrollArea className={styles.container}>
-                <div className={styles.layout}>
-                  <RichTextPlugin
-                    contentEditable={
-                      <div ref={setEditor} className={styles.editor}>
-                        <ContentEditable
-                          className={styles.contentEditable}
-                          style={assignInlineVars({
-                            [styles.minHeightVar]: minHeight,
-                          })}
-                          aria-placeholder={'placeholder...'}
-                          placeholder={
-                            <div
-                              className={cn(
-                                styles.placeholder,
-                                'text-muted-foreground'
-                              )}
-                            >
-                              placeholder...
-                            </div>
-                          }
-                        />
-                      </div>
-                    }
-                    ErrorBoundary={LexicalErrorBoundary}
-                  />
+      <Provider store={store}>
+        <LexicalComposer initialConfig={initialConfig}>
+          <AppProvider value={appContext}>
+            <ThemeProvider defaultTheme="dark">
+              <div ref={setRoot} className={cn('wysidoc-editor', styles.shell)}>
+                <ScrollArea className={styles.container}>
+                  <div className={styles.layout}>
+                    <RichTextPlugin
+                      contentEditable={
+                        <div ref={setEditor} className={styles.editor}>
+                          <ContentEditable
+                            className={styles.contentEditable}
+                            style={assignInlineVars({
+                              [styles.minHeightVar]: minHeight,
+                            })}
+                            aria-placeholder={'placeholder...'}
+                            placeholder={
+                              <div
+                                className={cn(
+                                  styles.placeholder,
+                                  'text-muted-foreground'
+                                )}
+                              >
+                                placeholder...
+                              </div>
+                            }
+                          />
+                        </div>
+                      }
+                      ErrorBoundary={LexicalErrorBoundary}
+                    />
 
-                  <extensionRichText.Plugin />
-                  <extensionLink.Plugin />
-                  <extensionList.Plugin />
-                  <extensionCode.Plugin />
-                  <extensionHorizontalRule.Plugin />
-                  <extensionSlashCommand.Plugin />
-                  <extensionMarkdownShortcut.Plugin />
-                  <extensionFloatingTextFormatToolbar.Plugin />
+                    <extensionRichText.Plugin />
+                    <extensionLink.Plugin />
+                    <extensionList.Plugin />
+                    <extensionCode.Plugin />
+                    <extensionHorizontalRule.Plugin />
+                    <extensionSlashCommand.Plugin />
+                    <extensionMarkdownShortcut.Plugin />
+                    <extensionFloatingTextFormatToolbar.Plugin />
 
-                  <AutoFocusPlugin />
-                  <HistoryPlugin />
-                </div>
-              </ScrollArea>
-            </div>
-          </ThemeProvider>
-        </AppProvider>
-      </LexicalComposer>
+                    <AutoFocusPlugin />
+                    <HistoryPlugin />
+                  </div>
+                </ScrollArea>
+              </div>
+            </ThemeProvider>
+          </AppProvider>
+        </LexicalComposer>
+      </Provider>
     </ExtensionManagerProvider>
   );
 };

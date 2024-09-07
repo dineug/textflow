@@ -37,6 +37,7 @@ const FloatingTextFormatToolbarPlugin: React.FC = () => {
       if (editor.isComposing()) {
         return;
       }
+
       const selection = $getSelection();
       const nativeSelection = window.getSelection();
       const rootElement = editor.getRootElement();
@@ -111,6 +112,8 @@ const FloatingTextFormatToolbarPlugin: React.FC = () => {
   );
 };
 
+FloatingTextFormatToolbarPlugin.displayName = 'FloatingTextFormatToolbarPlugin';
+
 type FloatingTextFormatToolbarProps = {
   buttons: FloatingTextFormatButton[];
   isFormatMap: Record<number, boolean>;
@@ -140,8 +143,8 @@ const FloatingTextFormatToolbar: React.FC<FloatingTextFormatToolbarProps> = ({
         rootElement !== null &&
         rootElement.contains(nativeSelection.anchorNode)
       ) {
-        const domRange = nativeSelection.getRangeAt(0);
-        refs.setReference(domRange);
+        const reference = nativeSelection.getRangeAt(0);
+        refs.setReference(reference);
         setShow(true);
       }
     };
@@ -191,6 +194,6 @@ const FloatingTextFormatToolbar: React.FC<FloatingTextFormatToolbarProps> = ({
   );
 };
 
-FloatingTextFormatToolbarPlugin.displayName = 'FloatingTextFormatToolbarPlugin';
+FloatingTextFormatToolbar.displayName = 'FloatingTextFormatToolbar';
 
 export default FloatingTextFormatToolbarPlugin;
