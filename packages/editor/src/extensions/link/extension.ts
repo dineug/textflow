@@ -37,7 +37,7 @@ export const extensionLink = createExtension(
             return $isLinkNode(parent) || $isLinkNode(node);
           },
           onClick: (editor, isFormat) => {
-            executeCommand(linkEditModeCommand, isFormat ? false : true);
+            executeCommand(linkEditModeCommand, !isFormat);
             editor.dispatchCommand(
               TOGGLE_LINK_COMMAND,
               isFormat ? null : 'https://'

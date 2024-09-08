@@ -3,46 +3,90 @@ import {
   LexicalTypeaheadMenuPlugin,
   useBasicTypeaheadTriggerMatch,
 } from '@lexical/react/LexicalTypeaheadMenuPlugin';
-import { TextNode } from 'lexical';
+import Fuse from 'fuse.js';
+import {
+  $createTextNode,
+  $getSelection,
+  $isRangeSelection,
+  TextNode,
+} from 'lexical';
 import { useCallback, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { useAppContext } from '@/components/app-context';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useExtensionManager } from '@/extensions/context';
 import { cn } from '@/lib/utils';
+import { EMOJI_LIST } from '@/utils/emoji-list';
 
-import { SlashCommandMenu } from './index';
+import { EmojiMenuOption } from './index';
 
 const PADDING = 8;
 const ITEM = 32;
 const MAX_DISPLAY_ITEM = 8;
 const MAX_HEIGHT = PADDING + ITEM * MAX_DISPLAY_ITEM + ITEM / 2;
+const MAX_EMOJI_SUGGESTION_COUNT = 30;
 
-const SlashCommandPlugin: React.FC = () => {
-  const { getSlashCommands } = useExtensionManager();
+class EmojiListRepository {
+  private static instance: EmojiListRepository;
+  static getInstance(): EmojiListRepository {
+    if (!EmojiListRepository.instance) {
+      EmojiListRepository.instance = new EmojiListRepository();
+    }
+
+    return EmojiListRepository.instance;
+  }
+
+  options: EmojiMenuOption[];
+  fuse: Fuse<EmojiMenuOption>;
+
+  private constructor() {
+    this.options = EMOJI_LIST.map(
+      emoji =>
+        new EmojiMenuOption({
+          title: emoji.description,
+          emoji: emoji.emoji,
+          keywords: emoji.aliases,
+          tags: emoji.tags,
+        })
+    );
+    this.fuse = new Fuse(this.options, {
+      keys: ['keywords', 'tags'],
+    });
+  }
+}
+
+const EmojiPlugin: React.FC = () => {
   const [editor] = useLexicalComposerContext();
   const { $root } = useAppContext();
   const [queryString, setQueryString] = useState<string | null>(null);
-  const checkForTriggerMatch = useBasicTypeaheadTriggerMatch('/', {
+  const checkForTriggerMatch = useBasicTypeaheadTriggerMatch(':', {
     minLength: 0,
   });
 
-  const options = useMemo(
-    () => getSlashCommands(editor, queryString || ''),
-    [editor, getSlashCommands, queryString]
-  );
+  const options = useMemo(() => {
+    return queryString
+      ? EmojiListRepository.getInstance()
+          .fuse.search(queryString, {
+            limit: MAX_EMOJI_SUGGESTION_COUNT,
+          })
+          .map(result => result.item)
+      : [];
+  }, [queryString]);
 
   const onSelectOption = useCallback(
     (
-      selectedOption: SlashCommandMenu,
+      selectedOption: EmojiMenuOption,
       nodeToRemove: TextNode | null,
-      closeMenu: () => void,
-      matchingString: string
+      closeMenu: () => void
     ) => {
       editor.update(() => {
+        const selection = $getSelection();
+        if (!$isRangeSelection(selection) || selectedOption == null) {
+          return;
+        }
+
         nodeToRemove?.remove();
-        selectedOption.onSelect(matchingString);
+        selection.insertNodes([$createTextNode(selectedOption.emoji)]);
         closeMenu();
       });
     },
@@ -54,7 +98,7 @@ const SlashCommandPlugin: React.FC = () => {
   }
 
   return (
-    <LexicalTypeaheadMenuPlugin<SlashCommandMenu>
+    <LexicalTypeaheadMenuPlugin<EmojiMenuOption>
       onQueryChange={setQueryString}
       onSelectOption={onSelectOption}
       triggerFn={checkForTriggerMatch}
@@ -74,7 +118,7 @@ const SlashCommandPlugin: React.FC = () => {
               >
                 <div
                   className={cn(
-                    'z-50 w-52 min-w-32 overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md'
+                    'z-50 w-72 min-w-32 overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md'
                   )}
                 >
                   {options.map((option, i) => (
@@ -95,7 +139,7 @@ const SlashCommandPlugin: React.FC = () => {
                         setHighlightedIndex(i);
                       }}
                     >
-                      {option.Icon && <option.Icon className="mr-2 h-4 w-4" />}
+                      <span className="mr-2 h-4 w-4">{option.emoji}</span>
                       <span>{option.title}</span>
                     </div>
                   ))}
@@ -109,6 +153,6 @@ const SlashCommandPlugin: React.FC = () => {
   );
 };
 
-SlashCommandPlugin.displayName = 'SlashCommandPlugin';
+EmojiPlugin.displayName = 'EmojiPlugin';
 
-export default SlashCommandPlugin;
+export default EmojiPlugin;

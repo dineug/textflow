@@ -16,6 +16,7 @@ import { ThemeProvider } from '@/components/theme';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { extensionCode } from '@/extensions/code/extension';
 import { ExtensionManagerProvider } from '@/extensions/context';
+import { extensionEmoji } from '@/extensions/emoji/extension';
 import { configureExtensions } from '@/extensions/extensionManager';
 import { extensionFloatingTextFormatToolbar } from '@/extensions/floating-text-format-toolbar/extension';
 import { extensionHorizontalRule } from '@/extensions/horizontal-rule/extension';
@@ -45,6 +46,7 @@ const Editor: React.FC<EditorProps> = ({ minHeight }) => {
           extensionSlashCommand,
           extensionMarkdownShortcut,
           extensionFloatingTextFormatToolbar,
+          extensionEmoji,
         ],
       }),
     []
@@ -108,6 +110,7 @@ const Editor: React.FC<EditorProps> = ({ minHeight }) => {
                     <extensionSlashCommand.Plugin />
                     <extensionMarkdownShortcut.Plugin />
                     <extensionFloatingTextFormatToolbar.Plugin />
+                    <extensionEmoji.Plugin />
 
                     <AutoFocusPlugin />
                     <HistoryPlugin />
