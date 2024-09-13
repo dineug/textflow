@@ -1,0 +1,10 @@
+{
+  "targets": {
+    "dev": {
+      "cache": false
+    },
+    "build": {
+      "cache": false
+    }
+  }
+}

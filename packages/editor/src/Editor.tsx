@@ -6,10 +6,12 @@ import {
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
+import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
 import { Provider } from 'jotai';
-import { useMemo, useState } from 'react';
+import type { EditorState, LexicalEditor } from 'lexical';
+import { useCallback, useMemo, useState } from 'react';
 
 import { AppProvider } from '@/components/app-context';
 import { ThemeProvider } from '@/components/theme';
@@ -31,9 +33,15 @@ import * as styles from './Editor.css';
 
 type EditorProps = {
   minHeight?: string;
+  initialValue?: string;
+  onChange?: (value: string) => void;
 };
 
-const Editor: React.FC<EditorProps> = ({ minHeight }) => {
+const Editor: React.FC<EditorProps> = ({
+  minHeight,
+  initialValue,
+  onChange,
+}) => {
   const extensionManager = useMemo(
     () =>
       configureExtensions({
@@ -57,16 +65,24 @@ const Editor: React.FC<EditorProps> = ({ minHeight }) => {
       namespace: 'wysidoc',
       nodes: [...getNodes()],
       theme: getTheme(),
+      editorState: initialValue,
       onError: (error: Error) => {
         throw error;
       },
     }),
-    [getNodes, getTheme]
+    [getNodes, getTheme, initialValue]
   );
 
   const [$root, setRoot] = useState<HTMLDivElement | null>(null);
   const [$editor, setEditor] = useState<HTMLDivElement | null>(null);
   const appContext = useMemo(() => ({ $root, $editor }), [$editor, $root]);
+
+  const handleChange = useCallback(
+    (editorState: EditorState, editor: LexicalEditor, tags: Set<string>) => {
+      onChange?.(JSON.stringify(editorState.toJSON(), null, 2));
+    },
+    [onChange]
+  );
 
   return (
     <ExtensionManagerProvider value={extensionManager}>
@@ -114,6 +130,10 @@ const Editor: React.FC<EditorProps> = ({ minHeight }) => {
 
                     <AutoFocusPlugin />
                     <HistoryPlugin />
+                    <OnChangePlugin
+                      ignoreSelectionChange
+                      onChange={handleChange}
+                    />
                   </div>
                 </ScrollArea>
               </div>

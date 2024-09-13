@@ -36,7 +36,10 @@ export type ExtensionManager = {
     command: Command<P>,
     listener: CommandListener<P>
   ) => Dispose;
-  executeCommand: <P>(command: Command<P>, payload: P) => void;
+  executeCommand: <T extends Command<unknown>>(
+    command: T,
+    payload: CommandPayload<T>
+  ) => void;
   registerDispose: (dispose: Dispose) => Dispose;
   dispose: () => void;
 };
@@ -59,6 +62,9 @@ export type Command<P> = {
 };
 
 export type CommandListener<P> = (payload: P) => void;
+
+export type CommandPayload<T extends Command<unknown>> =
+  T extends Command<infer P> ? P : never;
 
 export type Dispose = () => void;
 

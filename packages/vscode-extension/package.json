@@ -1,0 +1,137 @@
+{
+  "name": "@dineug/wysidoc-editor-vscode",
+  "version": "0.1.0",
+  "private": true,
+  "description": "wysidoc Editor VSCode Extension",
+  "displayName": "wysidoc",
+  "publisher": "dineug",
+  "categories": [
+    "Other",
+    "Visualization"
+  ],
+  "keywords": [
+    "wysidoc",
+    "editor"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dineug/wysidoc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dineug/wysidoc/issues"
+  },
+  "homepage": "https://github.com/dineug/wysidoc#readme",
+  "author": "SeungHwan-Lee <dineug2@gmail.com>",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "main": "./dist/extension",
+  "scripts": {
+    "vscode:prepublish": "pnpm build",
+    "dev": "webpack --mode development",
+    "build": "webpack --mode production",
+    "build:vsce": "pnpm vsce package --no-dependencies",
+    "publish:vsce": "pnpm vsce publish --no-dependencies",
+    "nx:dev": "nx dev",
+    "nx:build": "nx build"
+  },
+  "devDependencies": {
+    "@dineug/wysidoc-editor-vscode-bridge": "workspace:*",
+    "@dineug/wysidoc-editor-vscode-webview": "workspace:*",
+    "@types/node": "^18.19.31",
+    "@types/vscode": "^1.85.0",
+    "base64-arraybuffer": "^1.0.2",
+    "crypto-js": "^4.2.0",
+    "ts-loader": "^9.5.1",
+    "tsconfig-paths-webpack-plugin": "^4.1.0",
+    "typescript": "5.4.5",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    }
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "wysidoc.showSource",
+        "category": "wysidoc",
+        "title": "Open Source",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "wysidoc.showEditor",
+        "category": "wysidoc",
+        "title": "Open wysidoc Editor",
+        "icon": {
+          "dark": "./assets/temp-white-icon.svg",
+          "light": "./assets/temp-black-icon.svg"
+        }
+      },
+      {
+        "command": "wysidoc.showSourceToSide",
+        "category": "wysidoc",
+        "title": "Open Source to the Side",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "wysidoc.showEditorToSide",
+        "category": "wysidoc",
+        "title": "Open wysidoc Editor to the Side",
+        "icon": {
+          "dark": "./assets/temp-white-icon.svg",
+          "light": "./assets/temp-black-icon.svg"
+        }
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "wysidoc.showSource",
+          "when": "false"
+        },
+        {
+          "command": "wysidoc.showEditor",
+          "when": "false"
+        },
+        {
+          "command": "wysidoc.showSourceToSide",
+          "when": "false"
+        },
+        {
+          "command": "wysidoc.showEditorToSide",
+          "when": "false"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "wysidoc.showEditor",
+          "alt": "wysidoc.showEditorToSide",
+          "when": "activeCustomEditorId != 'editor.wysidoc' && resourceFilename =~ /^.+\\.(wwdoc)(.json)$/",
+          "group": "navigation"
+        },
+        {
+          "command": "wysidoc.showSource",
+          "alt": "wysidoc.showSourceToSide",
+          "group": "navigation",
+          "when": "activeCustomEditorId == 'editor.wysidoc' && resourceFilename =~ /^.+\\.(wwdoc)(.json)$/"
+        }
+      ]
+    },
+    "customEditors": [
+      {
+        "viewType": "editor.wysidoc",
+        "displayName": "wysidoc-editor",
+        "priority": "default",
+        "selector": [
+          {
+            "filenamePattern": "*.wwdoc.json"
+          }
+        ]
+      }
+    ]
+  }
+}

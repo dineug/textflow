@@ -74,13 +74,13 @@ const SlashCommandPlugin: React.FC = () => {
               >
                 <div
                   className={cn(
-                    'z-50 w-52 min-w-32 overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md'
+                    'bg-popover text-popover-foreground z-50 w-52 min-w-32 overflow-hidden rounded-md border p-1 shadow-md'
                   )}
                 >
                   {options.map((option, i) => (
                     <div
                       className={cn(
-                        'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-[selected=true]:bg-accent aria-[selected=true]:text-accent-foreground'
+                        'aria-[selected=true]:bg-accent aria-[selected=true]:text-accent-foreground relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none'
                       )}
                       key={option.key}
                       tabIndex={-1}

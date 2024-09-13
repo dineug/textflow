@@ -45,10 +45,7 @@ export default defineConfig(({ command }) => {
       },
     },
     plugins: [
-      isBuild &&
-        dts({
-          exclude: ['node_modules/**', 'src/**/*.css.ts', 'src/index.dev.tsx'],
-        }),
+      isBuild && dts(),
       // https://github.com/vanilla-extract-css/vanilla-extract/issues/1408
       // isBuild && typescript({ noEmitOnError: true, noForceEmit: true }),
       vanillaExtractPlugin() as Plugin,

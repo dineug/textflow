@@ -5,8 +5,16 @@
       "path": "packages/editor",
     },
     {
-      "name": "shared",
-      "path": "packages/shared",
+      "name": "vscode-bridge",
+      "path": "packages/vscode-bridge",
+    },
+    {
+      "name": "vscode-webview",
+      "path": "packages/vscode-webview",
+    },
+    {
+      "name": "vscode-extension",
+      "path": "packages/vscode-extension",
     },
     {
       "name": "monorepo",

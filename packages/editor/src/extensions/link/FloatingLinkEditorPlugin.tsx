@@ -13,7 +13,6 @@ import {
   $isLineBreakNode,
   $isRangeSelection,
   type BaseSelection,
-  CLICK_COMMAND,
   COMMAND_PRIORITY_CRITICAL,
   COMMAND_PRIORITY_HIGH,
   COMMAND_PRIORITY_LOW,
@@ -96,24 +95,6 @@ const FloatingLinkEditorPlugin: React.FC = () => {
           return false;
         },
         COMMAND_PRIORITY_CRITICAL
-      ),
-      editor.registerCommand(
-        CLICK_COMMAND,
-        payload => {
-          const selection = $getSelection();
-
-          if ($isRangeSelection(selection)) {
-            const node = getSelectedNode(selection);
-            const linkNode = $findMatchingParent(node, $isLinkNode);
-
-            if ($isLinkNode(linkNode) && (payload.metaKey || payload.ctrlKey)) {
-              window.open(linkNode.getURL(), '_blank');
-              return true;
-            }
-          }
-          return false;
-        },
-        COMMAND_PRIORITY_LOW
       )
     );
   }, [editor, setIsLink]);
@@ -289,11 +270,11 @@ const FloatingLinkEditor: React.FC = () => {
 
   return (
     <Card
-      className={cn('flex items-center gap-1 w-full max-w-96 py-2 px-3')}
+      className={cn('flex w-full max-w-96 items-center gap-1 px-3 py-2')}
       ref={refs.setFloating}
       style={{
         ...floatingStyles,
-        visibility: show && isLink ? 'visible' : 'hidden',
+        display: show && isLink ? 'flex' : 'none',
       }}
     >
       {!isLink ? null : isLinkEditMode ? (
@@ -309,7 +290,7 @@ const FloatingLinkEditor: React.FC = () => {
               monitorInputInteraction(event);
             }}
           />
-          <div className={cn('flex items-center gap-1 ml-auto')}>
+          <div className={cn('ml-auto flex items-center gap-1')}>
             <Button
               variant="ghost"
               onMouseDown={event => event.preventDefault()}
@@ -332,8 +313,8 @@ const FloatingLinkEditor: React.FC = () => {
         <>
           <a
             className={cn(
-              'py-1 pt-[5px] px-3 min-h-9 w-full border border-transparent inline-flex items-center overflow-hidden',
-              'text-sm hover:underline underline-offset-4'
+              'inline-flex min-h-9 w-full items-center overflow-hidden border border-transparent px-3 py-1 pt-[5px]',
+              'text-sm underline-offset-4 hover:underline'
             )}
             style={{
               wordBreak: 'break-word',
@@ -344,7 +325,7 @@ const FloatingLinkEditor: React.FC = () => {
           >
             {linkUrl}
           </a>
-          <div className={cn('flex items-center gap-1 ml-auto')}>
+          <div className={cn('ml-auto flex items-center gap-1')}>
             <Button
               variant="ghost"
               onMouseDown={event => event.preventDefault()}

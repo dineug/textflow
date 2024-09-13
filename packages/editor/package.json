@@ -2,7 +2,6 @@
   "name": "@dineug/wysidoc-editor",
   "version": "0.1.0",
   "private": true,
-  "description": "",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -34,9 +33,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite serve",
-    "build": "vite build",
-    "nx:dev": "nx dev",
-    "nx:build": "nx build"
+    "build": "vite build"
   },
   "peerDependencies": {
     "react": "^18.3.1",

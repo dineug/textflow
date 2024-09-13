@@ -176,7 +176,7 @@ const FloatingTextFormatToolbar: React.FC<FloatingTextFormatToolbarProps> = ({
       ref={refs.setFloating}
       style={{ ...floatingStyles, visibility: show ? 'visible' : 'hidden' }}
       className={cn(
-        'z-50 overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md',
+        'bg-popover text-popover-foreground z-50 overflow-hidden rounded-md border p-1 shadow-md',
         'flex items-center justify-center gap-1'
       )}
     >

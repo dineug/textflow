@@ -1,8 +1,7 @@
-/// <reference types="vitest" />
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import typescript from '@rollup/plugin-typescript';
+// import typescript from '@rollup/plugin-typescript';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
@@ -39,7 +38,7 @@ export default defineConfig(({ command }) => {
     },
     plugins: [
       isBuild && dts({ compilerOptions: { declarationMap: true } }),
-      isBuild && typescript({ noEmitOnError: true, noForceEmit: true }),
+      // isBuild && typescript({ noEmitOnError: true, noForceEmit: true }),
     ].filter(Boolean),
   };
 });
