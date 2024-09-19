@@ -3,8 +3,9 @@ import {
   LexicalTypeaheadMenuPlugin,
   useBasicTypeaheadTriggerMatch,
 } from '@lexical/react/LexicalTypeaheadMenuPlugin';
+import Fuse from 'fuse.js';
 import { TextNode } from 'lexical';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { useAppContext } from '@/components/app-context';
@@ -12,7 +13,11 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useExtensionManager } from '@/extensions/context';
 import { cn } from '@/lib/utils';
 
-import { SlashCommandMenu } from './index';
+import {
+  type SlashCommand,
+  type SlashCommandContext,
+  SlashCommandMenu,
+} from './index';
 
 const PADDING = 8;
 const ITEM = 32;
@@ -27,11 +32,57 @@ const SlashCommandPlugin: React.FC = () => {
   const checkForTriggerMatch = useBasicTypeaheadTriggerMatch('/', {
     minLength: 0,
   });
+  const registers = useMemo(() => [...getSlashCommands()], [getSlashCommands]);
+  const [options, setOptions] = useState<Array<SlashCommandMenu>>([]);
 
-  const options = useMemo(
-    () => getSlashCommands(editor, queryString || ''),
-    [editor, getSlashCommands, queryString]
-  );
+  useEffect(() => {
+    const priorityCommandsMap = new Map<number, Set<SlashCommand>>();
+    let cancel = false;
+
+    const calcCommands = () => {
+      if (cancel) return;
+
+      const commands = [...priorityCommandsMap.entries()]
+        .sort(([a], [b]) => a - b)
+        .reduce((acc: SlashCommand[], [__priority, commands]) => {
+          acc.push(...[...commands.values()]);
+          return acc;
+        }, []);
+
+      if (!queryString) {
+        setOptions(commands.map(command => new SlashCommandMenu(command)));
+        return;
+      }
+
+      const fuse = new Fuse(commands, {
+        keys: ['title', 'keywords'],
+        threshold: 0.4,
+      });
+      setOptions(
+        fuse
+          .search(queryString)
+          .map(result => new SlashCommandMenu(result.item))
+      );
+    };
+
+    const context: SlashCommandContext = {
+      editor,
+      queryString: queryString ?? '',
+      registerCommands: (commands, priority) => {
+        const accCommands = priorityCommandsMap.get(priority) ?? new Set();
+        commands.forEach(command => accCommands.add(command));
+        priorityCommandsMap.set(priority, accCommands);
+        calcCommands();
+      },
+    };
+    registers.forEach(register => register(context));
+
+    return () => {
+      cancel = true;
+      setOptions([]);
+      priorityCommandsMap.clear();
+    };
+  }, [editor, queryString, registers]);
 
   const onSelectOption = useCallback(
     (
@@ -109,6 +160,6 @@ const SlashCommandPlugin: React.FC = () => {
   );
 };
 
-SlashCommandPlugin.displayName = 'SlashCommandPlugin';
+SlashCommandPlugin.displayName = 'extensionSlashCommand.Plugin';
 
 export default SlashCommandPlugin;

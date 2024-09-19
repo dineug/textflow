@@ -13,7 +13,7 @@ import { Provider } from 'jotai';
 import type { EditorState, LexicalEditor } from 'lexical';
 import { useCallback, useMemo, useState } from 'react';
 
-import { AppProvider } from '@/components/app-context';
+import { type AppContextState, AppProvider } from '@/components/app-context';
 import { ThemeProvider } from '@/components/theme';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { extensionCode } from '@/extensions/code/extension';
@@ -22,6 +22,7 @@ import { extensionEmoji } from '@/extensions/emoji/extension';
 import { configureExtensions } from '@/extensions/extensionManager';
 import { extensionFloatingTextFormatToolbar } from '@/extensions/floating-text-format-toolbar/extension';
 import { extensionHorizontalRule } from '@/extensions/horizontal-rule/extension';
+import { extensionImage } from '@/extensions/image/extension';
 import { extensionLink } from '@/extensions/link/extension';
 import { extensionList } from '@/extensions/list/extension';
 import { extensionMarkdownShortcut } from '@/extensions/markdown-shortcut/extension';
@@ -34,12 +35,14 @@ import * as styles from './Editor.css';
 type EditorProps = {
   minHeight?: string;
   initialValue?: string;
+  absolutePath?: string;
   onChange?: (value: string) => void;
 };
 
 const Editor: React.FC<EditorProps> = ({
   minHeight,
   initialValue,
+  absolutePath = '',
   onChange,
 }) => {
   const extensionManager = useMemo(
@@ -55,6 +58,7 @@ const Editor: React.FC<EditorProps> = ({
           extensionMarkdownShortcut,
           extensionFloatingTextFormatToolbar,
           extensionEmoji,
+          extensionImage,
         ],
       }),
     []
@@ -75,7 +79,10 @@ const Editor: React.FC<EditorProps> = ({
 
   const [$root, setRoot] = useState<HTMLDivElement | null>(null);
   const [$editor, setEditor] = useState<HTMLDivElement | null>(null);
-  const appContext = useMemo(() => ({ $root, $editor }), [$editor, $root]);
+  const appContext: AppContextState = useMemo(
+    () => ({ $root, $editor, absolutePath }),
+    [$editor, $root, absolutePath]
+  );
 
   const handleChange = useCallback(
     (editorState: EditorState, editor: LexicalEditor, tags: Set<string>) => {
@@ -109,7 +116,7 @@ const Editor: React.FC<EditorProps> = ({
                                   'text-muted-foreground'
                                 )}
                               >
-                                placeholder...
+                                To use a command, press the '/' key.
                               </div>
                             }
                           />
@@ -127,6 +134,7 @@ const Editor: React.FC<EditorProps> = ({
                     <extensionMarkdownShortcut.Plugin />
                     <extensionFloatingTextFormatToolbar.Plugin />
                     <extensionEmoji.Plugin />
+                    <extensionImage.Plugin />
 
                     <AutoFocusPlugin />
                     <HistoryPlugin />

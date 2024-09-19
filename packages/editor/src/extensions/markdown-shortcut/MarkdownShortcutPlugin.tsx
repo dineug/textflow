@@ -10,6 +10,6 @@ const MarkdownShortcutPlugin: React.FC = () => {
   return <LexicalMarkdownShortcutPlugin transformers={transformers} />;
 };
 
-MarkdownShortcutPlugin.displayName = 'MarkdownShortcutPlugin';
+MarkdownShortcutPlugin.displayName = 'extensionMarkdownShortcut.Plugin';
 
 export default MarkdownShortcutPlugin;

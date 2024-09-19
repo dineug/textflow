@@ -4,6 +4,7 @@ import {
   hostInitialCommand,
   hostSaveValueCommand,
   webviewInitialValueCommand,
+  webviewUpdateBaseUrl,
 } from '@dineug/wysidoc-editor-vscode-bridge';
 import * as vscode from 'vscode';
 
@@ -34,6 +35,13 @@ export class WysidocEditor extends Editor {
 
     const dispose = Bridge.mergeRegister(
       this.bridge.registerCommand(hostInitialCommand, () => {
+        const fileUrl = this.webview.asWebviewUri(this.document.uri).toString();
+
+        dispatch(
+          Bridge.executeCommand(webviewUpdateBaseUrl, {
+            baseUrl: fileUrl.substring(0, fileUrl.lastIndexOf('/') + 1),
+          })
+        );
         dispatch(
           Bridge.executeCommand(webviewInitialValueCommand, {
             value: textDecoder.decode(this.document.content),

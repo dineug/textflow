@@ -9,6 +9,6 @@ const RichTextPlugin: React.FC = () => (
   </>
 );
 
-RichTextPlugin.displayName = 'RichTextPlugin';
+RichTextPlugin.displayName = 'extensionRichText.Plugin';
 
 export default RichTextPlugin;

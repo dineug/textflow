@@ -30,3 +30,9 @@ export function validateUrl(url: string): boolean {
   // Maybe show a dialog where they user can type the URL before inserting it.
   return url === 'https://' || urlRegExp.test(url);
 }
+
+const schemeRegExp = /^(\w+):/;
+
+export function isUrlScheme(url: string) {
+  return schemeRegExp.test(url);
+}

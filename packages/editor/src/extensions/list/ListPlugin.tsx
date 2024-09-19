@@ -13,6 +13,6 @@ const ListPlugin: React.FC = () => {
   );
 };
 
-ListPlugin.displayName = 'ListPlugin';
+ListPlugin.displayName = 'extensionList.Plugin';
 
 export default ListPlugin;

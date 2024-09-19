@@ -112,7 +112,8 @@ const FloatingTextFormatToolbarPlugin: React.FC = () => {
   );
 };
 
-FloatingTextFormatToolbarPlugin.displayName = 'FloatingTextFormatToolbarPlugin';
+FloatingTextFormatToolbarPlugin.displayName =
+  'extensionFloatingTextFormatToolbar.Plugin';
 
 type FloatingTextFormatToolbarProps = {
   buttons: FloatingTextFormatButton[];

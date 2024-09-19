@@ -2,11 +2,11 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "lib": ["ES2020", "DOM", "DOM.Iterable", "WebWorker"],
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "jsx": "react-jsx"
   },
-  "include": ["src"],
-  "references": [{ "path": "../../tsconfig.node.json" }]
+  "include": ["src"]
 }

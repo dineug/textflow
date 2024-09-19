@@ -21,13 +21,13 @@ module.exports = env => {
       clean: true,
     },
     resolve: {
-      extensions: ['.ts', '.ts', '.js'],
+      extensions: ['.tsx', '.ts', '.js'],
       plugins: [new TsconfigPathsPlugin()],
     },
     module: {
       rules: [
         {
-          test: /\.[jt]s$/,
+          test: /\.[jt]sx?$/,
           exclude: /node_modules/,
           use: {
             loader: 'swc-loader',
@@ -36,6 +36,18 @@ module.exports = env => {
                 targets: 'defaults',
                 mode: 'entry',
                 coreJs: '3',
+              },
+              jsc: {
+                parser: {
+                  syntax: 'typescript',
+                  tsx: true,
+                },
+                transform: {
+                  react: {
+                    runtime: 'automatic',
+                    importSource: 'react',
+                  },
+                },
               },
             },
           },

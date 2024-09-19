@@ -1,6 +1,6 @@
 // https://github.com/github/gemoji
 
-type Emoji = {
+export type Emoji = {
   emoji: string;
   description: string;
   category: string;

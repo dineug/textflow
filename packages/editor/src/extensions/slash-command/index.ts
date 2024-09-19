@@ -5,11 +5,11 @@ export type SlashCommandContext = {
   editor: LexicalEditor;
   queryString: string;
   registerCommands: (commands: SlashCommand[], priority: number) => void;
-  registerDynamicCommands: (
-    commands: DynamicSlashCommand[],
-    priority: number
-  ) => void;
 };
+
+export type RegisterSlashCommands = (
+  context: SlashCommandContext
+) => void | Promise<void>;
 
 export type SlashCommand = {
   title: string;
@@ -17,8 +17,6 @@ export type SlashCommand = {
   keywords?: string[];
   onSelect: (queryString: string) => void;
 };
-
-export type DynamicSlashCommand = Omit<SlashCommand, 'keywords'>;
 
 export class SlashCommandMenu extends MenuOption implements SlashCommand {
   title: string;

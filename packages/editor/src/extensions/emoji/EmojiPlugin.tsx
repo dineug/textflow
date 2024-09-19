@@ -10,13 +10,14 @@ import {
   $isRangeSelection,
   TextNode,
 } from 'lexical';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { useAppContext } from '@/components/app-context';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
-import { EMOJI_LIST } from '@/utils/emoji-list';
+import type { Emoji } from '@/utils/emoji-list';
+import { withSuspense } from '@/utils/withSuspense';
 
 import { EmojiMenuOption } from './index';
 
@@ -28,9 +29,9 @@ const MAX_EMOJI_SUGGESTION_COUNT = 30;
 
 class EmojiListRepository {
   private static instance: EmojiListRepository;
-  static getInstance(): EmojiListRepository {
+  static getInstance(emojiList: ReadonlyArray<Emoji>): EmojiListRepository {
     if (!EmojiListRepository.instance) {
-      EmojiListRepository.instance = new EmojiListRepository();
+      EmojiListRepository.instance = new EmojiListRepository(emojiList);
     }
 
     return EmojiListRepository.instance;
@@ -39,8 +40,8 @@ class EmojiListRepository {
   options: EmojiMenuOption[];
   fuse: Fuse<EmojiMenuOption>;
 
-  private constructor() {
-    this.options = EMOJI_LIST.map(
+  private constructor(emojiList: ReadonlyArray<Emoji>) {
+    this.options = emojiList.map(
       emoji =>
         new EmojiMenuOption({
           title: emoji.description,
@@ -55,7 +56,41 @@ class EmojiListRepository {
   }
 }
 
+function useEmojiList() {
+  const [promise, setPromise] = useState<Promise<void>>();
+  const [status, setStatus] = useState<'pending' | 'fulfilled' | 'rejected'>(
+    'pending'
+  );
+  const [error, setError] = useState<Error>();
+  const [emojiList, setEmojiList] = useState<ReadonlyArray<Emoji>>([]);
+
+  useEffect(() => {
+    setStatus('pending');
+    setPromise(
+      import('@/utils/emoji-list').then(
+        mod => {
+          setEmojiList(mod.EMOJI_LIST);
+          setStatus('fulfilled');
+        },
+        (error: Error) => {
+          setError(error);
+          setStatus('rejected');
+        }
+      )
+    );
+  }, []);
+
+  if (status === 'pending' && promise) {
+    throw promise;
+  }
+  if (status === 'rejected') {
+    throw error;
+  }
+  return emojiList;
+}
+
 const EmojiPlugin: React.FC = () => {
+  const emojiList = useEmojiList();
   const [editor] = useLexicalComposerContext();
   const { $root } = useAppContext();
   const [queryString, setQueryString] = useState<string | null>(null);
@@ -65,13 +100,13 @@ const EmojiPlugin: React.FC = () => {
 
   const options = useMemo(() => {
     return queryString
-      ? EmojiListRepository.getInstance()
+      ? EmojiListRepository.getInstance(emojiList)
           .fuse.search(queryString, {
             limit: MAX_EMOJI_SUGGESTION_COUNT,
           })
           .map(result => result.item)
       : [];
-  }, [queryString]);
+  }, [queryString, emojiList]);
 
   const onSelectOption = useCallback(
     (
@@ -153,6 +188,6 @@ const EmojiPlugin: React.FC = () => {
   );
 };
 
-EmojiPlugin.displayName = 'EmojiPlugin';
+EmojiPlugin.displayName = 'extensionEmoji.Plugin';
 
-export default EmojiPlugin;
+export default withSuspense(EmojiPlugin);

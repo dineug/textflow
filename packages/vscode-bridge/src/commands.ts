@@ -8,3 +8,6 @@ export const hostSaveValueCommand = createCommand<{
 export const webviewInitialValueCommand = createCommand<{
   value: string;
 }>('webviewInitialValueCommand');
+export const webviewUpdateBaseUrl = createCommand<{
+  baseUrl: string;
+}>('webviewUpdateBaseUrl');

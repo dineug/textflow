@@ -1,19 +1,9 @@
 import { createStore } from 'jotai';
-import type {
-  EditorThemeClasses,
-  Klass,
-  LexicalEditor,
-  LexicalNode,
-} from 'lexical';
+import type { EditorThemeClasses, Klass, LexicalNode } from 'lexical';
 import type { FC } from 'react';
 
 import type { FloatingTextFormatButton } from './floating-text-format-toolbar';
-import {
-  type DynamicSlashCommand,
-  type SlashCommand,
-  type SlashCommandContext,
-  SlashCommandMenu,
-} from './slash-command';
+import { type RegisterSlashCommands } from './slash-command';
 
 export type ExtensionManager = {
   store: ReturnType<typeof createStore>;
@@ -21,13 +11,8 @@ export type ExtensionManager = {
   getNodes: () => IterableIterator<Klass<LexicalNode>>;
   registerTheme: (theme: EditorThemeClasses) => Dispose;
   getTheme: () => EditorThemeClasses;
-  registerSlashCommand: (
-    render: (context: SlashCommandContext) => void
-  ) => Dispose;
-  getSlashCommands: (
-    editor: LexicalEditor,
-    queryString: string
-  ) => SlashCommandMenu[];
+  registerSlashCommand: (register: RegisterSlashCommands) => Dispose;
+  getSlashCommands: () => IterableIterator<RegisterSlashCommands>;
   registerFloatingTextFormatButton: (
     ...buttons: FloatingTextFormatButton[]
   ) => Dispose;
@@ -78,7 +63,7 @@ export type ConfigureExtensionOptions = {
   extensions: Array<Extension<any>>;
 };
 
-export function createCommand<T>(type: string): Command<T> {
+export function createCommand<T = void>(type: string): Command<T> {
   return { type };
 }
 
@@ -99,7 +84,7 @@ function createExtensionManager(): ExtensionManager {
   const disposeSet = new Set<Dispose>();
   const nodeSet = new Set<Klass<LexicalNode>>();
   const themeSet = new Set<EditorThemeClasses>();
-  const slashCommandSet = new Set<(context: SlashCommandContext) => void>();
+  const slashCommandSet = new Set<RegisterSlashCommands>();
   const floatingTextFormatButtonSet = new Set<FloatingTextFormatButton>();
   const commandMap = new Map<Command<any>, Set<CommandListener<any>>>();
 
@@ -122,66 +107,12 @@ function createExtensionManager(): ExtensionManager {
     );
   };
 
-  const registerSlashCommand = (
-    render: (context: SlashCommandContext) => void
-  ): Dispose => {
-    slashCommandSet.add(render);
-    return () => slashCommandSet.delete(render);
+  const registerSlashCommand = (register: RegisterSlashCommands): Dispose => {
+    slashCommandSet.add(register);
+    return () => slashCommandSet.delete(register);
   };
-  const getSlashCommands = (
-    editor: LexicalEditor,
-    queryString: string
-  ): SlashCommandMenu[] => {
-    const priorityCommandsMap = new Map<number, Array<SlashCommand>>();
-    const priorityDynamicCommandsMap = new Map<
-      number,
-      Array<DynamicSlashCommand>
-    >();
-
-    [...slashCommandSet].forEach(render => {
-      const context: SlashCommandContext = {
-        editor,
-        queryString,
-        registerCommands: (commands, priority) => {
-          const accCommands = priorityCommandsMap.get(priority) ?? [];
-          accCommands.push(...commands);
-          priorityCommandsMap.set(priority, accCommands);
-        },
-        registerDynamicCommands: (commands, priority) => {
-          const accCommands = priorityDynamicCommandsMap.get(priority) ?? [];
-          accCommands.push(...commands);
-          priorityDynamicCommandsMap.set(priority, accCommands);
-        },
-      };
-      render(context);
-    });
-
-    const commands = [...priorityCommandsMap.entries()]
-      .sort(([a], [b]) => a - b)
-      .reduce((acc: SlashCommand[], [__priority, commands]) => {
-        acc.push(...commands);
-        return acc;
-      }, []);
-
-    if (!queryString) {
-      return commands.map(command => new SlashCommandMenu(command));
-    }
-
-    const regex = new RegExp(queryString, 'i');
-
-    return [
-      ...[...priorityDynamicCommandsMap.entries()]
-        .sort(([a], [b]) => a - b)
-        .reduce((acc: SlashCommand[], [__priority, commands]) => {
-          acc.push(...commands);
-          return acc;
-        }, []),
-      ...commands.filter(
-        command =>
-          regex.test(command.title) ||
-          command.keywords?.some(keyword => regex.test(keyword))
-      ),
-    ].map(command => new SlashCommandMenu(command));
+  const getSlashCommands = (): IterableIterator<RegisterSlashCommands> => {
+    return slashCommandSet.values();
   };
 
   const registerFloatingTextFormatButton = (
@@ -203,11 +134,7 @@ function createExtensionManager(): ExtensionManager {
   ): Dispose => {
     const listeners = commandMap.get(command) ?? new Set();
     listeners.add(listener);
-
-    if (!commandMap.has(command)) {
-      commandMap.set(command, listeners);
-    }
-
+    commandMap.set(command, listeners);
     return () => listeners.delete(listener);
   };
   const executeCommand = <P>(command: Command<P>, payload: P): void => {

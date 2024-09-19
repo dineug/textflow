@@ -17,6 +17,6 @@ const LinkPlugin: React.FC = () => {
   );
 };
 
-LinkPlugin.displayName = 'LinkPlugin';
+LinkPlugin.displayName = 'extensionLink.Plugin';
 
 export default LinkPlugin;

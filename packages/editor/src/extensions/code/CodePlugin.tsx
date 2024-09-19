@@ -10,6 +10,6 @@ const CodePlugin: React.FC = () => {
   return null;
 };
 
-CodePlugin.displayName = 'CodePlugin';
+CodePlugin.displayName = 'extensionCode.Plugin';
 
 export default CodePlugin;

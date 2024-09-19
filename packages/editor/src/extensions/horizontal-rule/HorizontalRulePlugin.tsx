@@ -4,6 +4,6 @@ const HorizontalRulePlugin: React.FC = () => {
   return <LexicalHorizontalRulePlugin />;
 };
 
-HorizontalRulePlugin.displayName = 'HorizontalRulePlugin';
+HorizontalRulePlugin.displayName = 'extensionHorizontalRule.Plugin';
 
 export default HorizontalRulePlugin;

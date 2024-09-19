@@ -1,8 +1,9 @@
 import { createContext, useContext } from 'react';
 
-type AppContextState = {
+export type AppContextState = {
   $root: HTMLDivElement | null;
   $editor: HTMLDivElement | null;
+  absolutePath: string;
 };
 
 const AppContext = createContext<AppContextState | null>(null);
