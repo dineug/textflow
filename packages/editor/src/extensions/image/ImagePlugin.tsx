@@ -46,7 +46,7 @@ const ImagePlugin: React.FC = () => {
 
   useEffect(() => {
     if (!editor.hasNodes([ImageNode])) {
-      throw new Error('ImagesPlugin: ImageNode not registered on editor');
+      throw new Error('ImagePlugin: ImageNode not registered on editor');
     }
 
     return mergeRegister(

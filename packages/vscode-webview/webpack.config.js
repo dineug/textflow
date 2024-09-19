@@ -16,8 +16,8 @@ module.exports = env => {
     output: {
       path: resolvePath('../vscode-extension/public'),
       publicPath: './',
-      filename: 'static/js/bundle.[contenthash:8].js',
-      chunkFilename: 'static/js/[id].[contenthash:8].js',
+      filename: 'bundle.[contenthash:8].js',
+      chunkFilename: '[id].[contenthash:8].js',
       clean: true,
     },
     resolve: {
@@ -68,8 +68,8 @@ module.exports = env => {
     },
     plugins: [
       new MiniCssExtractPlugin({
-        filename: 'static/css/bundle.[contenthash:8].css',
-        chunkFilename: 'static/css/[id].[contenthash:8].css',
+        filename: 'bundle.[contenthash:8].css',
+        chunkFilename: '[id].[contenthash:8].css',
       }),
       new HtmlWebpackPlugin({
         inject: true,

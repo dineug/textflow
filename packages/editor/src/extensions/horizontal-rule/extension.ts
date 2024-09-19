@@ -6,8 +6,8 @@ import { SquareSplitVertical } from 'lucide-react';
 
 import { createExtension } from '@/extensions/extensionManager';
 
-import * as styles from './horizontalRule.css';
 import HorizontalRulePlugin from './HorizontalRulePlugin';
+import * as styles from './theme.css';
 
 export const extensionHorizontalRule = createExtension(
   ({ subscriptions, registerNode, registerTheme, registerSlashCommand }) => {

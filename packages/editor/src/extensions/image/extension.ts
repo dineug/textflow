@@ -5,7 +5,7 @@ import { createExtension } from '@/extensions/extensionManager';
 import { ImageNode } from './ImageNode';
 import ImagePlugin from './ImagePlugin';
 import { insertImageFileCommand } from './InsertImageFile';
-import { showInsertImageURLModalCommand } from './InsertImageURL';
+import { showInsertImageURLDialogCommand } from './InsertImageURL';
 import * as styles from './theme.css';
 
 export const extensionImage = createExtension(
@@ -40,7 +40,7 @@ export const extensionImage = createExtension(
                 Icon: Image,
                 keywords: ['image', 'photo', 'picture', 'file', 'img'],
                 onSelect: () => {
-                  executeCommand(showInsertImageURLModalCommand, undefined);
+                  executeCommand(showInsertImageURLDialogCommand, undefined);
                 },
               },
             ],

@@ -15,7 +15,7 @@ export const brokenImage = style([
 ]);
 
 export const focused = style({
-  outline: '2px solid rgb(60, 132, 244)',
+  outline: '2px solid hsl(var(--ring))',
   userSelect: 'none',
 });
 

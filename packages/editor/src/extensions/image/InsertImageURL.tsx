@@ -18,8 +18,8 @@ import { createCommand } from '@/extensions/extensionManager';
 
 import { INSERT_IMAGE_COMMAND } from './ImagePlugin';
 
-export const showInsertImageURLModalCommand = createCommand(
-  'showInsertImageURLModalCommand'
+export const showInsertImageURLDialogCommand = createCommand(
+  'showInsertImageURLDialogCommand'
 );
 
 // TODO: Autocomplete absolutePath
@@ -29,7 +29,7 @@ const InsertImageURL: React.FC = () => {
   const [show, setShow] = useState(false);
   const [src, setSrc] = useState('');
   const [altText, setAltText] = useState('');
-  const isDisabled = src.trim() === '';
+  const isDisabled = !src.trim();
   const [htmlForSrc] = useState(nanoid);
   const [htmlForAlt] = useState(nanoid);
 
@@ -40,7 +40,7 @@ const InsertImageURL: React.FC = () => {
 
   useEffect(
     () =>
-      registerCommand(showInsertImageURLModalCommand, () => {
+      registerCommand(showInsertImageURLDialogCommand, () => {
         setSrc('');
         setAltText('');
         setShow(true);
@@ -50,13 +50,13 @@ const InsertImageURL: React.FC = () => {
 
   return (
     <Dialog open={show} onOpenChange={setShow}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-xl">
         <DialogHeader>
           <DialogTitle>Insert Image</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
+          <div className="grid grid-cols-6 items-center gap-4">
             <Label htmlFor={htmlForSrc} className="text-right">
               Image URL
             </Label>
@@ -64,13 +64,13 @@ const InsertImageURL: React.FC = () => {
               id={htmlForSrc}
               value={src}
               placeholder="i.e. https://..."
-              className="col-span-3"
+              className="col-span-5"
               onChange={event => {
                 setSrc(event.target.value);
               }}
             />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
+          <div className="grid grid-cols-6 items-center gap-4">
             <Label htmlFor={htmlForAlt} className="text-right">
               Alt Text
             </Label>
@@ -78,7 +78,7 @@ const InsertImageURL: React.FC = () => {
               id={htmlForAlt}
               value={altText}
               placeholder="alternative text"
-              className="col-span-3"
+              className="col-span-5"
               onChange={event => {
                 setAltText(event.target.value);
               }}
