@@ -39,75 +39,6 @@ export const linkEditModeCommand = createCommand<boolean>(
   'linkEditModeCommand'
 );
 
-const FloatingLinkEditorPlugin: React.FC = () => {
-  const [editor] = useLexicalComposerContext();
-  const { $editor } = useAppContext();
-  const setIsLink = useSetAtom(isLinkAtom);
-
-  useEffect(() => {
-    const $updateToolbar = () => {
-      const selection = $getSelection();
-      if (!$isRangeSelection(selection)) {
-        return;
-      }
-
-      const focusNode = getSelectedNode(selection);
-      const focusLinkNode = $findMatchingParent(focusNode, $isLinkNode);
-      const focusAutoLinkNode = $findMatchingParent(focusNode, $isAutoLinkNode);
-      if (!(focusLinkNode || focusAutoLinkNode)) {
-        setIsLink(false);
-        return;
-      }
-
-      const badNode = selection
-        .getNodes()
-        .filter(node => !$isLineBreakNode(node))
-        .find(node => {
-          const linkNode = $findMatchingParent(node, $isLinkNode);
-          const autoLinkNode = $findMatchingParent(node, $isAutoLinkNode);
-          return (
-            (focusLinkNode && !focusLinkNode.is(linkNode)) ||
-            (linkNode && !linkNode.is(focusLinkNode)) ||
-            (focusAutoLinkNode && !focusAutoLinkNode.is(autoLinkNode)) ||
-            (autoLinkNode &&
-              (!autoLinkNode.is(focusAutoLinkNode) ||
-                autoLinkNode.getIsUnlinked()))
-          );
-        });
-
-      if (!badNode) {
-        setIsLink(true);
-      } else {
-        setIsLink(false);
-      }
-    };
-
-    return mergeRegister(
-      editor.registerUpdateListener(({ editorState }) => {
-        editorState.read(() => {
-          $updateToolbar();
-        });
-      }),
-      editor.registerCommand(
-        SELECTION_CHANGE_COMMAND,
-        () => {
-          $updateToolbar();
-          return false;
-        },
-        COMMAND_PRIORITY_CRITICAL
-      )
-    );
-  }, [editor, setIsLink]);
-
-  if (!$editor) {
-    return null;
-  }
-
-  return createPortal(<FloatingLinkEditor />, $editor);
-};
-
-FloatingLinkEditorPlugin.displayName = 'FloatingLinkEditorPlugin';
-
 const FloatingLinkEditor: React.FC = () => {
   const { registerCommand } = useExtensionManager();
   const [editor] = useLexicalComposerContext();
@@ -116,7 +47,6 @@ const FloatingLinkEditor: React.FC = () => {
     middleware: [offset(() => 10), flip()],
   });
 
-  const [show, setShow] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [isLink, setIsLink] = useAtom(isLinkAtom);
@@ -170,7 +100,6 @@ const FloatingLinkEditor: React.FC = () => {
 
       if (reference) {
         refs.setReference(reference);
-        setShow(true);
       }
 
       setLastSelection(selection);
@@ -180,7 +109,6 @@ const FloatingLinkEditor: React.FC = () => {
     ) {
       if (rootElement !== null) {
         refs.setReference(null);
-        setShow(false);
       }
 
       setLastSelection(null);
@@ -274,7 +202,7 @@ const FloatingLinkEditor: React.FC = () => {
       ref={refs.setFloating}
       style={{
         ...floatingStyles,
-        display: show && isLink ? 'flex' : 'none',
+        display: refs.reference.current && isLink ? 'flex' : 'none',
       }}
     >
       {!isLink ? null : isLinkEditMode ? (
@@ -353,5 +281,74 @@ const FloatingLinkEditor: React.FC = () => {
 };
 
 FloatingLinkEditor.displayName = 'FloatingLinkEditor';
+
+const FloatingLinkEditorPlugin: React.FC = () => {
+  const [editor] = useLexicalComposerContext();
+  const { $editor } = useAppContext();
+  const setIsLink = useSetAtom(isLinkAtom);
+
+  useEffect(() => {
+    const $updateToolbar = () => {
+      const selection = $getSelection();
+      if (!$isRangeSelection(selection)) {
+        return;
+      }
+
+      const focusNode = getSelectedNode(selection);
+      const focusLinkNode = $findMatchingParent(focusNode, $isLinkNode);
+      const focusAutoLinkNode = $findMatchingParent(focusNode, $isAutoLinkNode);
+      if (!(focusLinkNode || focusAutoLinkNode)) {
+        setIsLink(false);
+        return;
+      }
+
+      const badNode = selection
+        .getNodes()
+        .filter(node => !$isLineBreakNode(node))
+        .find(node => {
+          const linkNode = $findMatchingParent(node, $isLinkNode);
+          const autoLinkNode = $findMatchingParent(node, $isAutoLinkNode);
+          return (
+            (focusLinkNode && !focusLinkNode.is(linkNode)) ||
+            (linkNode && !linkNode.is(focusLinkNode)) ||
+            (focusAutoLinkNode && !focusAutoLinkNode.is(autoLinkNode)) ||
+            (autoLinkNode &&
+              (!autoLinkNode.is(focusAutoLinkNode) ||
+                autoLinkNode.getIsUnlinked()))
+          );
+        });
+
+      if (!badNode) {
+        setIsLink(true);
+      } else {
+        setIsLink(false);
+      }
+    };
+
+    return mergeRegister(
+      editor.registerUpdateListener(({ editorState }) => {
+        editorState.read(() => {
+          $updateToolbar();
+        });
+      }),
+      editor.registerCommand(
+        SELECTION_CHANGE_COMMAND,
+        () => {
+          $updateToolbar();
+          return false;
+        },
+        COMMAND_PRIORITY_CRITICAL
+      )
+    );
+  }, [editor, setIsLink]);
+
+  if (!$editor) {
+    return null;
+  }
+
+  return createPortal(<FloatingLinkEditor />, $editor);
+};
+
+FloatingLinkEditorPlugin.displayName = 'FloatingLinkEditorPlugin';
 
 export default FloatingLinkEditorPlugin;

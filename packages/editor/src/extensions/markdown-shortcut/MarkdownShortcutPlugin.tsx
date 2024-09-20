@@ -6,9 +6,9 @@ import {
 
 const transformers = [CHECK_LIST, ...DEFAULT_TRANSFORMERS];
 
-const MarkdownShortcutPlugin: React.FC = () => {
-  return <LexicalMarkdownShortcutPlugin transformers={transformers} />;
-};
+const MarkdownShortcutPlugin: React.FC = () => (
+  <LexicalMarkdownShortcutPlugin transformers={transformers} />
+);
 
 MarkdownShortcutPlugin.displayName = 'extensionMarkdownShortcut.Plugin';
 

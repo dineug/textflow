@@ -27,68 +27,6 @@ const MAX_DISPLAY_ITEM = 8;
 const MAX_HEIGHT = PADDING + ITEM * MAX_DISPLAY_ITEM + ITEM / 2;
 const MAX_EMOJI_SUGGESTION_COUNT = 30;
 
-class EmojiListRepository {
-  private static instance: EmojiListRepository;
-  static getInstance(emojiList: ReadonlyArray<Emoji>): EmojiListRepository {
-    if (!EmojiListRepository.instance) {
-      EmojiListRepository.instance = new EmojiListRepository(emojiList);
-    }
-
-    return EmojiListRepository.instance;
-  }
-
-  options: EmojiMenuOption[];
-  fuse: Fuse<EmojiMenuOption>;
-
-  private constructor(emojiList: ReadonlyArray<Emoji>) {
-    this.options = emojiList.map(
-      emoji =>
-        new EmojiMenuOption({
-          title: emoji.description,
-          emoji: emoji.emoji,
-          keywords: emoji.aliases,
-          tags: emoji.tags,
-        })
-    );
-    this.fuse = new Fuse(this.options, {
-      keys: ['keywords', 'tags'],
-    });
-  }
-}
-
-function useEmojiList() {
-  const [promise, setPromise] = useState<Promise<void>>();
-  const [status, setStatus] = useState<'pending' | 'fulfilled' | 'rejected'>(
-    'pending'
-  );
-  const [error, setError] = useState<Error>();
-  const [emojiList, setEmojiList] = useState<ReadonlyArray<Emoji>>([]);
-
-  useEffect(() => {
-    setStatus('pending');
-    setPromise(
-      import('@/utils/emoji-list').then(
-        mod => {
-          setEmojiList(mod.EMOJI_LIST);
-          setStatus('fulfilled');
-        },
-        (error: Error) => {
-          setError(error);
-          setStatus('rejected');
-        }
-      )
-    );
-  }, []);
-
-  if (status === 'pending' && promise) {
-    throw promise;
-  }
-  if (status === 'rejected') {
-    throw error;
-  }
-  return emojiList;
-}
-
 const EmojiPlugin: React.FC = () => {
   const emojiList = useEmojiList();
   const [editor] = useLexicalComposerContext();
@@ -189,5 +127,67 @@ const EmojiPlugin: React.FC = () => {
 };
 
 EmojiPlugin.displayName = 'extensionEmoji.Plugin';
+
+function useEmojiList() {
+  const [promise, setPromise] = useState<Promise<void>>();
+  const [status, setStatus] = useState<'pending' | 'fulfilled' | 'rejected'>(
+    'pending'
+  );
+  const [error, setError] = useState<Error>();
+  const [emojiList, setEmojiList] = useState<ReadonlyArray<Emoji>>([]);
+
+  useEffect(() => {
+    setStatus('pending');
+    setPromise(
+      import('@/utils/emoji-list').then(
+        mod => {
+          setEmojiList(mod.EMOJI_LIST);
+          setStatus('fulfilled');
+        },
+        (error: Error) => {
+          setError(error);
+          setStatus('rejected');
+        }
+      )
+    );
+  }, []);
+
+  if (status === 'pending' && promise) {
+    throw promise;
+  }
+  if (status === 'rejected') {
+    throw error;
+  }
+  return emojiList;
+}
+
+class EmojiListRepository {
+  private static instance: EmojiListRepository;
+  static getInstance(emojiList: ReadonlyArray<Emoji>): EmojiListRepository {
+    if (!EmojiListRepository.instance) {
+      EmojiListRepository.instance = new EmojiListRepository(emojiList);
+    }
+
+    return EmojiListRepository.instance;
+  }
+
+  options: EmojiMenuOption[];
+  fuse: Fuse<EmojiMenuOption>;
+
+  private constructor(emojiList: ReadonlyArray<Emoji>) {
+    this.options = emojiList.map(
+      emoji =>
+        new EmojiMenuOption({
+          title: emoji.description,
+          emoji: emoji.emoji,
+          keywords: emoji.aliases,
+          tags: emoji.tags,
+        })
+    );
+    this.fuse = new Fuse(this.options, {
+      keys: ['keywords', 'tags'],
+    });
+  }
+}
 
 export default withSuspense(EmojiPlugin);

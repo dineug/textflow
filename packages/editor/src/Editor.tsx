@@ -29,6 +29,7 @@ import { extensionList } from '@/extensions/list/extension';
 import { extensionMarkdownShortcut } from '@/extensions/markdown-shortcut/extension';
 import { extensionRichText } from '@/extensions/rich-text/extension';
 import { extensionSlashCommand } from '@/extensions/slash-command/extension';
+import { extensionTable } from '@/extensions/table/extension';
 import { cn } from '@/lib/utils';
 
 import * as styles from './Editor.css';
@@ -61,6 +62,7 @@ const Editor: React.FC<EditorProps> = ({
           extensionEmoji,
           extensionImage,
           extensionEquation,
+          extensionTable,
         ],
       }),
     []
@@ -138,6 +140,7 @@ const Editor: React.FC<EditorProps> = ({
                     <extensionEmoji.Plugin />
                     <extensionImage.Plugin />
                     <extensionEquation.Plugin />
+                    <extensionTable.Plugin />
 
                     <AutoFocusPlugin />
                     <HistoryPlugin />

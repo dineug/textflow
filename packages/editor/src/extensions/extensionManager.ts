@@ -1,6 +1,6 @@
 import { createStore } from 'jotai';
 import type { EditorThemeClasses, Klass, LexicalNode } from 'lexical';
-import type { FC } from 'react';
+import { type FC, memo } from 'react';
 
 import type { FloatingTextFormatButton } from './floating-text-format-toolbar';
 import { type RegisterSlashCommands } from './slash-command';
@@ -75,7 +75,7 @@ export function createExtension<P = unknown>(
   Plugin?: FC<P>
 ): Extension<P> {
   const extension: Extension<P> = context => registerExtension(context);
-  extension.Plugin = Plugin ?? NoopPlugin;
+  extension.Plugin = memo(Plugin ?? NoopPlugin);
   return extension;
 }
 

@@ -21,9 +21,7 @@ export const focused = style({
 
 export const draggable = style({
   cursor: 'grab',
-  selectors: {
-    '&:active': {
-      cursor: 'grabbing',
-    },
+  ':active': {
+    cursor: 'grabbing',
   },
 });

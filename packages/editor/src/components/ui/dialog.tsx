@@ -32,14 +32,14 @@ const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 >(({ className, children, ...props }, ref) => {
-  const { $editor } = useAppContext();
+  const { $root } = useAppContext();
 
-  if (!$editor) {
+  if (!$root) {
     return null;
   }
 
   return (
-    <DialogPortal container={$editor}>
+    <DialogPortal container={$root}>
       <DialogOverlay />
       <DialogPrimitive.Content
         ref={ref}

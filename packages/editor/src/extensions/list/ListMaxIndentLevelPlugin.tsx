@@ -12,6 +12,28 @@ import {
 } from 'lexical';
 import { useEffect } from 'react';
 
+type ListMaxIndentLevelPluginProps = {
+  maxDepth?: number;
+};
+
+const ListMaxIndentLevelPlugin: React.FC<ListMaxIndentLevelPluginProps> = ({
+  maxDepth = 7,
+}) => {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    return editor.registerCommand(
+      INDENT_CONTENT_COMMAND,
+      () => $shouldPreventIndent(maxDepth),
+      COMMAND_PRIORITY_CRITICAL
+    );
+  }, [editor, maxDepth]);
+
+  return null;
+};
+
+ListMaxIndentLevelPlugin.displayName = 'ListMaxIndentLevelPlugin';
+
 function getElementNodesInSelection(
   selection: RangeSelection
 ): Set<ElementNode> {
@@ -60,19 +82,4 @@ function $shouldPreventIndent(maxDepth: number): boolean {
   return totalDepth > maxDepth;
 }
 
-export default function ListMaxIndentLevelPlugin({
-  maxDepth = 7,
-}: {
-  maxDepth?: number;
-}): null {
-  const [editor] = useLexicalComposerContext();
-
-  useEffect(() => {
-    return editor.registerCommand(
-      INDENT_CONTENT_COMMAND,
-      () => $shouldPreventIndent(maxDepth),
-      COMMAND_PRIORITY_CRITICAL
-    );
-  }, [editor, maxDepth]);
-  return null;
-}
+export default ListMaxIndentLevelPlugin;
