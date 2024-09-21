@@ -1,63 +1,113 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
-import { useAppContext } from './app-context';
+import { useAppContext } from '@/components/app-context';
+import {
+  AccentColor,
+  Appearance,
+  createTheme,
+  GrayColor,
+} from '@/themes/radix-ui-theme';
+import { themeToTokensString } from '@/themes/tokens';
 
-type Theme = 'dark' | 'light' | 'system';
+type ThemeAppearance = 'dark' | 'light' | 'system';
 
-type ThemeState = {
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
+type ThemeAppearanceState = {
+  appearance: ThemeAppearance;
+  setAppearance: (appearance: ThemeAppearance) => void;
 };
 
-const ThemeContext = createContext<ThemeState | null>(null);
+const ThemeContext = createContext<ThemeAppearanceState | null>(null);
 
 type ThemeProviderProps = React.PropsWithChildren<{
-  defaultTheme?: Theme;
+  defaultAppearance?: ThemeAppearance;
 }>;
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   children,
-  defaultTheme = 'system',
+  defaultAppearance = 'system',
 }) => {
   const { $root } = useAppContext();
-  const [theme, setTheme] = useState<Theme>(() => defaultTheme);
+  const [systemAppearance, setSystemAppearance] = useState<Appearance>(() =>
+    globalThis.matchMedia('(prefers-color-scheme: dark)').matches
+      ? Appearance.dark
+      : Appearance.light
+  );
+  const [themeAppearance, setThemeAppearance] = useState<ThemeAppearance>(
+    () => defaultAppearance
+  );
+
+  const styleRef = useRef<HTMLStyleElement>(null);
+
+  useEffect(() => {
+    const mediaQuery = globalThis.matchMedia('(prefers-color-scheme: dark)');
+
+    const handleChange = (event: MediaQueryListEvent) => {
+      setSystemAppearance(event.matches ? Appearance.dark : Appearance.light);
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => {
+      mediaQuery.removeEventListener('change', handleChange);
+    };
+  }, []);
 
   useEffect(() => {
     if (!$root) return;
 
-    $root.classList.remove('light', 'dark');
+    $root.classList.remove(Appearance.light, Appearance.dark);
+    $root.classList.add(
+      themeAppearance === 'system' ? systemAppearance : themeAppearance
+    );
+  }, [$root, systemAppearance, themeAppearance]);
 
-    if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
-        .matches
-        ? 'dark'
-        : 'light';
+  useEffect(() => {
+    const $style = styleRef.current;
+    if (!$style) return;
 
-      $root.classList.add(systemTheme);
-      return;
-    }
+    const lightTheme = createTheme({
+      grayColor: GrayColor.slate,
+      accentColor: AccentColor.indigo,
+      appearance: Appearance.light,
+    });
 
-    $root.classList.add(theme);
-  }, [$root, theme]);
+    const darkTheme = createTheme({
+      grayColor: GrayColor.slate,
+      accentColor: AccentColor.indigo,
+      appearance: Appearance.dark,
+    });
 
-  const value = useMemo(
+    const light = `:root {\n${themeToTokensString(lightTheme)}\n}`;
+    const dark = `.dark {\n${themeToTokensString(darkTheme)}\n}`;
+
+    $style.textContent = `${light}\n${dark}`;
+  }, []);
+
+  const value: ThemeAppearanceState = useMemo(
     () => ({
-      theme,
-      setTheme: (theme: Theme) => {
-        setTheme(theme);
-      },
+      appearance: themeAppearance,
+      setAppearance: setThemeAppearance,
     }),
-    [theme]
+    [themeAppearance]
   );
 
   return (
-    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+    <ThemeContext.Provider value={value}>
+      <style ref={styleRef}></style>
+      {children}
+    </ThemeContext.Provider>
   );
 };
 
 ThemeProvider.displayName = 'ThemeProvider';
 
-export function useTheme(): ThemeState {
+export function useTheme(): ThemeAppearanceState {
   const context = useContext(ThemeContext);
 
   if (context === null) {

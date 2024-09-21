@@ -11,7 +11,7 @@ export const table = style({
 });
 
 export const tableCell = style({
-  border: '1px solid hsl(var(--muted-foreground))',
+  border: '1px solid hsl(var(--gray-color-8))',
   width: 75,
   minWidth: 75,
   verticalAlign: 'top',
@@ -22,86 +22,31 @@ export const tableCell = style({
   boxSizing: 'content-box',
 });
 
-export const tableCellActionButton = style({
-  backgroundColor: 'hsl(var(--muted-foreground))',
-  display: 'block',
-  border: 0,
-  borderRadius: 20,
-  width: 20,
-  height: 20,
-  color: '#222',
-  cursor: 'pointer',
-  ':hover': {
-    backgroundColor: 'hsl(var(--ring))',
-  },
-});
+export const tableCellActionButton = style({});
 
-export const tableCellActionButtonContainer = style({
-  display: 'block',
-  right: 5,
-  top: 6,
-  position: 'absolute',
-  zIndex: 4,
-  width: 20,
-  height: 20,
-});
+export const tableCellActionButtonContainer = style({});
 
-export const tableCellEditing = style({
-  boxShadow: '0 0 5px rgba(0, 0, 0, 0.4)',
-  borderRadius: 3,
-});
+export const tableCellEditing = style({});
 
 export const tableCellHeader = style({
-  backgroundColor: 'hsl(var(--muted))',
+  backgroundColor: 'hsl(var(--gray-color-3))',
   textAlign: 'start',
 });
 
-export const tableCellPrimarySelected = style({
-  border: '2px solid rgb(60, 132, 244)',
-  display: 'block',
-  height: 'calc(100% - 2px)',
-  position: 'absolute',
-  width: 'calc(100% - 2px)',
-  left: -1,
-  top: -1,
-  zIndex: 2,
-});
+export const tableCellPrimarySelected = style({});
 
-export const tableCellResizer = style({
-  position: 'absolute',
-  right: -4,
-  height: '100%',
-  width: 8,
-  cursor: 'ew-resize',
-  zIndex: 10,
-  top: 0,
-});
+export const tableCellResizer = style({});
 
-export const tableCellSelected = style({
-  backgroundColor: '#c9dbf0',
-});
+export const tableCellSelected = style({});
 
-export const tableCellSortedIndicator = style({
-  display: 'block',
-  opacity: 0.5,
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  width: '100%',
-  height: 4,
-  backgroundColor: '#999',
-});
+export const tableCellSortedIndicator = style({});
 
 export const tableResizeRuler = style({});
 
 export const tableRowStriping = style({});
-globalStyle(`${tableRowStriping} tr:nth-child(even)`, {
-  backgroundColor: '#f2f5fb',
-});
+globalStyle(`${tableRowStriping} tr:nth-child(even)`, {});
 
-export const tableSelected = style({
-  outline: '2px solid rgb(60, 132, 244)',
-});
+export const tableSelected = style({});
 
 export const tableSelection = style({});
 globalStyle(`${tableSelection} *::selection`, {

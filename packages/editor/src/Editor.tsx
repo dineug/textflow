@@ -9,7 +9,7 @@ import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
-import { Provider } from 'jotai';
+import { Provider as StoreProvider } from 'jotai';
 import type { EditorState, LexicalEditor } from 'lexical';
 import { useCallback, useMemo, useState } from 'react';
 
@@ -97,10 +97,10 @@ const Editor: React.FC<EditorProps> = ({
 
   return (
     <ExtensionManagerProvider value={extensionManager}>
-      <Provider store={store}>
+      <StoreProvider store={store}>
         <LexicalComposer initialConfig={initialConfig}>
           <AppProvider value={appContext}>
-            <ThemeProvider defaultTheme="dark">
+            <ThemeProvider>
               <div ref={setRoot} className={cn('wysidoc-editor', styles.shell)}>
                 <ScrollArea className={styles.container}>
                   <div className={styles.layout}>
@@ -154,7 +154,7 @@ const Editor: React.FC<EditorProps> = ({
             </ThemeProvider>
           </AppProvider>
         </LexicalComposer>
-      </Provider>
+      </StoreProvider>
     </ExtensionManagerProvider>
   );
 };

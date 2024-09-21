@@ -20,7 +20,6 @@ import * as React from 'react';
 import { createPortal } from 'react-dom';
 
 import { useAppContext } from '@/components/app-context';
-import { cn } from '@/lib/utils';
 import { useDebounce } from '@/utils/useDebounce';
 
 import * as resizerStyles from './TableCellResizer.css';
@@ -205,7 +204,7 @@ const TableHoverActionsContainer: React.FC<TableHoverActionsContainerProps> = ({
           onClick={() => insertAction(true)}
           type="button"
         >
-          <Plus className={cn(styles.icon, 'h-4 w-4')} />
+          <Plus className="h-4 w-4" />
         </button>
       )}
       {isShownColumn && (
@@ -215,7 +214,7 @@ const TableHoverActionsContainer: React.FC<TableHoverActionsContainerProps> = ({
           onClick={() => insertAction(false)}
           type="button"
         >
-          <Plus className={cn(styles.icon, 'h-4 w-4')} />
+          <Plus className="h-4 w-4" />
         </button>
       )}
     </>

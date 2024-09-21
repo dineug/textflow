@@ -118,39 +118,35 @@ const SlashCommandPlugin: React.FC = () => {
         anchorElementRef.current && options.length
           ? createPortal(
               <ScrollArea
-                className="w-max"
+                className={cn(
+                  'bg-popover text-popover-foreground z-50 w-52 min-w-32 overflow-hidden rounded-md border p-1 shadow-md'
+                )}
                 style={{
                   height: options.length > 8 ? MAX_HEIGHT : 'auto',
                 }}
               >
-                <div
-                  className={cn(
-                    'bg-popover text-popover-foreground z-50 w-52 min-w-32 overflow-hidden rounded-md border p-1 shadow-md'
-                  )}
-                >
-                  {options.map((option, i) => (
-                    <div
-                      className={cn(
-                        'aria-[selected=true]:bg-accent aria-[selected=true]:text-accent-foreground relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none'
-                      )}
-                      key={option.key}
-                      tabIndex={-1}
-                      ref={option.setRefElement}
-                      role="option"
-                      aria-selected={selectedIndex === i}
-                      onClick={() => {
-                        setHighlightedIndex(i);
-                        selectOptionAndCleanUp(option);
-                      }}
-                      onMouseEnter={() => {
-                        setHighlightedIndex(i);
-                      }}
-                    >
-                      {option.Icon && <option.Icon className="mr-2 h-4 w-4" />}
-                      <span>{option.title}</span>
-                    </div>
-                  ))}
-                </div>
+                {options.map((option, i) => (
+                  <div
+                    className={cn(
+                      'aria-[selected=true]:bg-accent aria-[selected=true]:text-accent-foreground relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none'
+                    )}
+                    key={option.key}
+                    tabIndex={-1}
+                    ref={option.setRefElement}
+                    role="option"
+                    aria-selected={selectedIndex === i}
+                    onClick={() => {
+                      setHighlightedIndex(i);
+                      selectOptionAndCleanUp(option);
+                    }}
+                    onMouseEnter={() => {
+                      setHighlightedIndex(i);
+                    }}
+                  >
+                    {option.Icon && <option.Icon className="mr-2 h-4 w-4" />}
+                    <span>{option.title}</span>
+                  </div>
+                ))}
               </ScrollArea>,
               anchorElementRef.current
             )

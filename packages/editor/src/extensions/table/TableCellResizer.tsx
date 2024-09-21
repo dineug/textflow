@@ -391,7 +391,7 @@ const TableCellResizer: React.FC<TableCellResizerProps> = ({ editor }) => {
           styles[draggingDirection].height = `${tableRect.height}px`;
         }
 
-        styles[draggingDirection].backgroundColor = '#adf';
+        styles[draggingDirection].backgroundColor = 'hsl(var(--ring))';
       }
 
       return styles;

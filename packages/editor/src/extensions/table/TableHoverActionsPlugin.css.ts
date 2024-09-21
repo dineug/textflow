@@ -15,12 +15,13 @@ export const tableAddRows = style({
   justifyContent: 'center',
   position: 'absolute',
   width: 'calc(100% - 25px)',
-  backgroundColor: 'hsl(var(--muted-foreground))',
   animation: `${tableControls} 0.2s ease`,
   border: 0,
   cursor: 'pointer',
+  backgroundColor: 'hsl(var(--secondary))',
+  color: 'hsl(var(--muted-foreground))',
   ':hover': {
-    backgroundColor: 'hsl(var(--ring))',
+    backgroundColor: 'hsl(var(--muted))',
   },
 });
 
@@ -29,16 +30,13 @@ export const tableAddColumns = style({
   alignItems: 'center',
   justifyContent: 'center',
   position: 'absolute',
-  backgroundColor: 'hsl(var(--muted-foreground))',
   height: '100%',
   animation: `${tableControls} 0.2s ease`,
   border: 0,
   cursor: 'pointer',
+  backgroundColor: 'hsl(var(--secondary))',
+  color: 'hsl(var(--muted-foreground))',
   ':hover': {
-    backgroundColor: 'hsl(var(--ring))',
+    backgroundColor: 'hsl(var(--muted))',
   },
-});
-
-export const icon = style({
-  color: 'hsl(var(--muted))',
 });

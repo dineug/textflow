@@ -5,8 +5,8 @@ const base = style({
   width: 7,
   height: 7,
   position: 'absolute',
-  backgroundColor: 'hsl(var(--primary))',
-  border: '1px solid hsl(var(--ring))',
+  backgroundColor: 'hsl(var(--ring))',
+  border: '1px solid white',
 });
 
 export const n = style([
