@@ -1,4 +1,4 @@
-import { flip, offset, useFloating } from '@floating-ui/react';
+import { autoUpdate, flip, offset, useFloating } from '@floating-ui/react';
 import { $isCodeHighlightNode } from '@lexical/code';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { mergeRegister } from '@lexical/utils';
@@ -128,6 +128,7 @@ const FloatingTextFormatToolbar: React.FC<FloatingTextFormatToolbarProps> = ({
   const { refs, floatingStyles } = useFloating({
     placement: 'top-start',
     middleware: [offset(() => 10), flip()],
+    whileElementsMounted: autoUpdate,
   });
 
   useEffect(() => {

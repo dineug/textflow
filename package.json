@@ -22,7 +22,7 @@
     "test": "nx run-many -t test",
     "nx:clear": "nx reset",
     "nx:graph": "nx graph",
-    "prepare": "husky install",
+    "prepare": "husky",
     "format": "npm run format:eslint && npm run format:prettier",
     "format:eslint": "eslint --ignore-path .gitignore \"**/*.{js,ts,tsx}\" --fix",
     "format:prettier": "prettier \"**/*.{js,ts,tsx}\" --write",
@@ -50,7 +50,7 @@
     "nx": "19.5.6"
   },
   "lint-staged": {
-    "**/*.{js,ts}": [
+    "**/*.{js,ts,tsx}": [
       "eslint --fix",
       "prettier --write"
     ]

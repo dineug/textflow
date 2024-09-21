@@ -1,4 +1,4 @@
-import { flip, offset, useFloating } from '@floating-ui/react';
+import { autoUpdate, flip, offset, useFloating } from '@floating-ui/react';
 import {
   $createLinkNode,
   $isAutoLinkNode,
@@ -45,6 +45,7 @@ const FloatingLinkEditor: React.FC = () => {
   const { refs, floatingStyles } = useFloating({
     placement: 'bottom-start',
     middleware: [offset(() => 10), flip()],
+    whileElementsMounted: autoUpdate,
   });
 
   const inputRef = useRef<HTMLInputElement>(null);

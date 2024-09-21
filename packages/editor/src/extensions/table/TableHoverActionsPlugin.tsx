@@ -1,5 +1,4 @@
-// https://github.com/facebook/lexical/tree/main/packages/lexical-playground
-
+import { autoUpdate, offset, useFloating } from '@floating-ui/react';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import {
   $getTableColumnIndexFromTableCellNode,
@@ -26,23 +25,28 @@ import * as resizerStyles from './TableCellResizer.css';
 import * as styles from './TableHoverActionsPlugin.css';
 import * as themeStyles from './theme.css';
 
-const BUTTON_WIDTH_PX = 20;
-
-type TableHoverActionsContainerProps = {
-  anchorElem: HTMLElement;
-};
-
-const TableHoverActionsContainer: React.FC<TableHoverActionsContainerProps> = ({
-  anchorElem,
-}) => {
+const TableHoverActionsContainer: React.FC = () => {
   const [editor] = useLexicalComposerContext();
   const [isShownRow, setShownRow] = useState<boolean>(false);
   const [isShownColumn, setShownColumn] = useState<boolean>(false);
   const [shouldListenMouseMove, setShouldListenMouseMove] =
     useState<boolean>(false);
   const [position, setPosition] = useState({});
-  const codeSetRef = useRef<Set<NodeKey>>(new Set());
+  const [codeSet] = useState<Set<NodeKey>>(() => new Set());
   const tableDOMNodeRef = useRef<HTMLElement | null>(null);
+
+  const { refs: rowRefs, floatingStyles: rowFloatingStyles } = useFloating({
+    placement: 'bottom-start',
+    middleware: [offset(() => 5)],
+    whileElementsMounted: autoUpdate,
+  });
+
+  const { refs: columnRefs, floatingStyles: columnFloatingStyles } =
+    useFloating({
+      placement: 'right-start',
+      middleware: [offset(() => 5)],
+      whileElementsMounted: autoUpdate,
+    });
 
   const debouncedOnMouseMove = useDebounce(
     (event: MouseEvent) => {
@@ -97,24 +101,17 @@ const TableHoverActionsContainer: React.FC<TableHoverActionsContainerProps> = ({
       });
 
       if (tableDOMElement) {
-        const {
-          width: tableElemWidth,
-          y: tableElemY,
-          x: tableElemX,
-          right: tableElemRight,
-          bottom: tableElemBottom,
-          height: tableElemHeight,
-        } = (tableDOMElement as HTMLTableElement).getBoundingClientRect();
+        const { width: tableElemWidth, height: tableElemHeight } = (
+          tableDOMElement as HTMLTableElement
+        ).getBoundingClientRect();
 
-        const { y: editorElemY } = anchorElem.getBoundingClientRect();
+        rowRefs.setReference(tableDOMElement);
+        columnRefs.setReference(tableDOMElement);
 
         if (hoveredRowNode) {
           setShownColumn(false);
           setShownRow(true);
           setPosition({
-            height: BUTTON_WIDTH_PX,
-            left: tableElemX,
-            top: tableElemBottom - editorElemY + 5,
             width: tableElemWidth,
           });
         } else if (hoveredColumnNode) {
@@ -122,9 +119,6 @@ const TableHoverActionsContainer: React.FC<TableHoverActionsContainerProps> = ({
           setShownRow(false);
           setPosition({
             height: tableElemHeight,
-            left: tableElemRight + 5,
-            top: tableElemY - editorElemY,
-            width: BUTTON_WIDTH_PX,
           });
         }
       }
@@ -157,13 +151,13 @@ const TableHoverActionsContainer: React.FC<TableHoverActionsContainerProps> = ({
             for (const [key, type] of mutations) {
               switch (type) {
                 case 'created':
-                  codeSetRef.current.add(key);
-                  setShouldListenMouseMove(codeSetRef.current.size > 0);
+                  codeSet.add(key);
+                  setShouldListenMouseMove(codeSet.size > 0);
                   break;
 
                 case 'destroyed':
-                  codeSetRef.current.delete(key);
-                  setShouldListenMouseMove(codeSetRef.current.size > 0);
+                  codeSet.delete(key);
+                  setShouldListenMouseMove(codeSet.size > 0);
                   break;
 
                 default:
@@ -175,7 +169,7 @@ const TableHoverActionsContainer: React.FC<TableHoverActionsContainerProps> = ({
         { skipInitialization: false }
       )
     );
-  }, [editor]);
+  }, [codeSet, editor]);
 
   const insertAction = (insertRow: boolean) => {
     editor.update(() => {
@@ -199,8 +193,13 @@ const TableHoverActionsContainer: React.FC<TableHoverActionsContainerProps> = ({
     <>
       {isShownRow && (
         <button
+          ref={rowRefs.setFloating}
           className={styles.tableAddRows}
-          style={{ ...position }}
+          style={{
+            ...rowFloatingStyles,
+            ...position,
+            display: rowRefs.reference.current ? 'flex' : 'none',
+          }}
           onClick={() => insertAction(true)}
           type="button"
         >
@@ -209,8 +208,13 @@ const TableHoverActionsContainer: React.FC<TableHoverActionsContainerProps> = ({
       )}
       {isShownColumn && (
         <button
+          ref={columnRefs.setFloating}
           className={styles.tableAddColumns}
-          style={{ ...position }}
+          style={{
+            ...columnFloatingStyles,
+            ...position,
+            display: columnRefs.reference.current ? 'flex' : 'none',
+          }}
           onClick={() => insertAction(false)}
           type="button"
         >
@@ -224,13 +228,13 @@ const TableHoverActionsContainer: React.FC<TableHoverActionsContainerProps> = ({
 TableHoverActionsContainer.displayName = 'TableHoverActionsContainer';
 
 const TableHoverActionsPlugin: React.FC = () => {
-  const { $root } = useAppContext();
+  const { $editor } = useAppContext();
 
-  if (!$root) {
+  if (!$editor) {
     return null;
   }
 
-  return createPortal(<TableHoverActionsContainer anchorElem={$root} />, $root);
+  return createPortal(<TableHoverActionsContainer />, $editor);
 };
 
 TableHoverActionsPlugin.displayName = 'TableHoverActionsPlugin';

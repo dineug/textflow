@@ -1,4 +1,4 @@
-import { offset, useFloating } from '@floating-ui/react';
+import { autoUpdate, offset, useFloating } from '@floating-ui/react';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { useLexicalEditable } from '@lexical/react/useLexicalEditable';
 import {
@@ -493,6 +493,7 @@ const TableCellActionMenuContainer: React.FC<
   const { refs, floatingStyles } = useFloating({
     placement: 'right-start',
     middleware: [offset(() => ({ mainAxis: -24, crossAxis: 9.25 }))],
+    whileElementsMounted: autoUpdate,
   });
   const [tableCellNode, setTableMenuCellNode] = useState<TableCellNode | null>(
     null
