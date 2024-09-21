@@ -6,7 +6,11 @@ import TableHoverActionsPlugin from './TableHoverActionsPlugin';
 
 const TablePlugin: React.FC = () => (
   <>
-    <LexicalTablePlugin hasCellMerge hasCellBackgroundColor={false} />
+    <LexicalTablePlugin
+      hasCellMerge
+      hasCellBackgroundColor={false}
+      hasTabHandler
+    />
     <TableCellResizerPlugin />
     <TableHoverActionsPlugin />
     <TableActionMenuPlugin hasCellMerge />

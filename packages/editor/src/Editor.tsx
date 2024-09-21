@@ -9,6 +9,7 @@ import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
+import clsx from 'clsx';
 import { Provider as StoreProvider } from 'jotai';
 import type { EditorState, LexicalEditor } from 'lexical';
 import { useCallback, useMemo, useState } from 'react';
@@ -101,7 +102,10 @@ const Editor: React.FC<EditorProps> = ({
         <LexicalComposer initialConfig={initialConfig}>
           <AppProvider value={appContext}>
             <ThemeProvider>
-              <div ref={setRoot} className={cn('wysidoc-editor', styles.shell)}>
+              <div
+                ref={setRoot}
+                className={clsx('wysidoc-editor', styles.shell)}
+              >
                 <ScrollArea className={styles.container}>
                   <div className={styles.layout}>
                     <RichTextPlugin

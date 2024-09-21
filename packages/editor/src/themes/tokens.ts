@@ -54,6 +54,7 @@ export type Theme = {
   border: string;
   input: string;
   ring: string;
+  selection: string;
 };
 
 export const ThemeTokens: ReadonlyArray<keyof Theme> = [
@@ -110,6 +111,7 @@ export const ThemeTokens: ReadonlyArray<keyof Theme> = [
   'border',
   'input',
   'ring',
+  'selection',
 ];
 
 export const themeToTokensString = (theme: Theme) =>

@@ -124,8 +124,8 @@ import {
   yellowDark,
   yellowDarkA,
 } from '@radix-ui/colors';
-import Color from 'colorjs.io';
 import { get, identity, round, set } from 'lodash-es';
+import tinycolor from 'tinycolor2';
 
 import { ValuesType } from '@/internal-types';
 import { ThemeConfig } from '@/themes/radix-ui-theme.config';
@@ -338,10 +338,15 @@ function createRadixUITheme({
 const ThemeKeys: ReadonlyArray<string> = Object.keys(ThemeConfig);
 
 function toHsl(value: string) {
-  const color = new Color(value).to('hsl');
-  const h = Number.isNaN(color.h) ? 0 : round(color.h, 1);
-  const s = Number.isNaN(color.s) ? 0 : round(color.s, 1);
-  const l = Number.isNaN(color.l) ? 0 : round(color.l, 1);
+  const color = tinycolor(value);
+  const alpha = color.getAlpha();
+  if (alpha !== 1) return color.toHslString();
+
+  const hsl = color.toHsl();
+  const h = round(hsl.h);
+  const s = round(hsl.s * 100);
+  const l = round(hsl.l * 100);
+
   return `${h} ${s}% ${l}%`;
 }
 

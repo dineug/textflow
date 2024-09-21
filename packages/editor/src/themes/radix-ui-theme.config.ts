@@ -53,5 +53,6 @@ export const ThemeConfig: Theme = {
 
   border: 'gray-6',
   input: 'gray-12',
-  ring: 'accent-10',
+  ring: 'accent-8',
+  selection: 'accentA-4',
 } as const;

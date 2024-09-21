@@ -1,4 +1,9 @@
-import { createVar, fallbackVar, style } from '@vanilla-extract/css';
+import {
+  createVar,
+  fallbackVar,
+  globalStyle,
+  style,
+} from '@vanilla-extract/css';
 
 export const shell = style({
   display: 'flex',
@@ -6,6 +11,9 @@ export const shell = style({
   height: '100%',
   flexDirection: 'column',
   lineHeight: 1.7,
+});
+globalStyle(`${shell} *::selection`, {
+  backgroundColor: 'var(--selection)',
 });
 
 export const container = style({
