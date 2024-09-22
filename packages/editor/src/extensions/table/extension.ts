@@ -49,7 +49,7 @@ export const extensionTable = createExtension(
                 },
               },
             ],
-            0
+            1
           );
 
           const tableMatch = queryString.match(/^([1-9]\d?)(?:x([1-9]\d?)?)?$/);

@@ -18,6 +18,7 @@ import { type AppContextState, AppProvider } from '@/components/app-context';
 import { ThemeProvider } from '@/components/theme';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { extensionCode } from '@/extensions/code/extension';
+import { extensionCollapsible } from '@/extensions/collapsible/extension';
 import { ExtensionManagerProvider } from '@/extensions/context';
 import { extensionEmoji } from '@/extensions/emoji/extension';
 import { extensionEquation } from '@/extensions/equation/extension';
@@ -64,6 +65,7 @@ const Editor: React.FC<EditorProps> = ({
           extensionImage,
           extensionEquation,
           extensionTable,
+          extensionCollapsible,
         ],
       }),
     []
@@ -145,6 +147,7 @@ const Editor: React.FC<EditorProps> = ({
                     <extensionImage.Plugin />
                     <extensionEquation.Plugin />
                     <extensionTable.Plugin />
+                    <extensionCollapsible.Plugin />
 
                     <AutoFocusPlugin />
                     <HistoryPlugin />

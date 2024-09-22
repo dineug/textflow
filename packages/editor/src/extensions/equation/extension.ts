@@ -38,7 +38,7 @@ export const extensionEquation = createExtension(
                 },
               },
             ],
-            0
+            1
           );
         })
       );
