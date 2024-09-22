@@ -67,9 +67,9 @@ export class WysidocEditorProvider
     document: WysidocDocument,
     webviewPanel: vscode.WebviewPanel
   ) {
-    const webviewSet = this.docToWebviewMap.get(document);
+    const webviewSet = this.docToWebviewMap.get(document)!;
     const webview = webviewPanel.webview;
-    webviewSet?.add(webview);
+    webviewSet.add(webview);
 
     const editor = this.createEditor(
       document,
@@ -81,7 +81,7 @@ export class WysidocEditorProvider
 
     webviewPanel.onDidDispose(() => {
       editorDisposable.dispose();
-      webviewSet?.delete(webview);
+      webviewSet.delete(webview);
     });
   }
 

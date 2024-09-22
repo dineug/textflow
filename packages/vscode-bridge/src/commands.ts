@@ -4,6 +4,9 @@ export const hostInitialCommand = createCommand('hostInitialCommand');
 export const hostSaveValueCommand = createCommand<{
   value: string;
 }>('hostSaveValueCommand');
+export const hostReplicationChannelCommand = createCommand<string>(
+  'hostReplicationChannelCommand'
+);
 
 export const webviewInitialValueCommand = createCommand<{
   value: string;
@@ -11,3 +14,6 @@ export const webviewInitialValueCommand = createCommand<{
 export const webviewUpdateBaseUrl = createCommand<{
   baseUrl: string;
 }>('webviewUpdateBaseUrl');
+export const webviewReplicationChannelCommand = createCommand<string>(
+  'webviewReplicationChannelCommand'
+);

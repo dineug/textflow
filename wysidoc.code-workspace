@@ -9,6 +9,10 @@
       "path": "packages/vscode-bridge",
     },
     {
+      "name": "y-bridge",
+      "path": "packages/y-bridge",
+    },
+    {
       "name": "vscode-webview",
       "path": "packages/vscode-webview",
     },

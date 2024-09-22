@@ -1,15 +1,18 @@
 import './webview.css';
 import '@dineug/wysidoc-editor/wysidoc-editor.css';
 
-import { Editor } from '@dineug/wysidoc-editor';
+import { Editor, replicationPort } from '@dineug/wysidoc-editor';
 import {
   AnyAction,
   Bridge,
   hostInitialCommand,
+  hostReplicationChannelCommand,
   hostSaveValueCommand,
   webviewInitialValueCommand,
+  webviewReplicationChannelCommand,
   webviewUpdateBaseUrl,
 } from '@dineug/wysidoc-editor-vscode-bridge';
+import * as base64 from 'base64-arraybuffer';
 import { createRoot } from 'react-dom/client';
 
 const bridge = new Bridge();
@@ -38,10 +41,21 @@ const render = () => {
       minHeight="100vh"
       initialValue={initialValue}
       absolutePath={absolutePath}
+      // isCollab
       onChange={handleChange}
     />
   );
 };
+
+replicationPort.onmessage = (event: MessageEvent<Uint8Array>) => {
+  dispatch(
+    Bridge.executeCommand(
+      hostReplicationChannelCommand,
+      base64.encode(event.data.buffer)
+    )
+  );
+};
+replicationPort.start();
 
 Bridge.mergeRegister(
   bridge.registerCommand(webviewUpdateBaseUrl, ({ baseUrl }) => {
@@ -52,6 +66,9 @@ Bridge.mergeRegister(
     initialValue = value.trim() ? value : undefined;
     loading?.remove();
     render();
+  }),
+  bridge.registerCommand(webviewReplicationChannelCommand, payload => {
+    replicationPort.postMessage(new Uint8Array(base64.decode(payload)));
   })
 );
 

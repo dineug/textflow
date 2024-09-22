@@ -1,4 +1,5 @@
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
+import { CollaborationPlugin } from '@lexical/react/LexicalCollaborationPlugin';
 import {
   type InitialConfigType,
   LexicalComposer,
@@ -35,11 +36,13 @@ import { extensionTable } from '@/extensions/table/extension';
 import { cn } from '@/lib/utils';
 
 import * as styles from './Editor.css';
+import { createBridgeProvider } from './replicationBridge';
 
 type EditorProps = {
   minHeight?: string;
   initialValue?: string;
   absolutePath?: string;
+  isCollab?: boolean;
   onChange?: (value: string) => void;
 };
 
@@ -47,6 +50,7 @@ const Editor: React.FC<EditorProps> = ({
   minHeight,
   initialValue,
   absolutePath = '',
+  isCollab,
   onChange,
 }) => {
   const extensionManager = useMemo(
@@ -76,12 +80,12 @@ const Editor: React.FC<EditorProps> = ({
       namespace: 'wysidoc',
       nodes: [...getNodes()],
       theme: getTheme(),
-      editorState: initialValue,
+      editorState: isCollab ? null : initialValue,
       onError: (error: Error) => {
         throw error;
       },
     }),
-    [getNodes, getTheme, initialValue]
+    [getNodes, getTheme, initialValue, isCollab]
   );
 
   const [$root, setRoot] = useState<HTMLDivElement | null>(null);
@@ -150,11 +154,21 @@ const Editor: React.FC<EditorProps> = ({
                     <extensionCollapsible.Plugin />
 
                     <AutoFocusPlugin />
-                    <HistoryPlugin />
+
                     <OnChangePlugin
                       ignoreSelectionChange
                       onChange={handleChange}
                     />
+                    {isCollab ? (
+                      <CollaborationPlugin
+                        id="main"
+                        providerFactory={createBridgeProvider}
+                        initialEditorState={initialValue}
+                        shouldBootstrap
+                      />
+                    ) : (
+                      <HistoryPlugin />
+                    )}
                   </div>
                 </ScrollArea>
               </div>

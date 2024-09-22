@@ -1,0 +1,36 @@
+{
+  "name": "@dineug/y-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "dev": "vitest",
+    "build": "vite build"
+  },
+  "peerDependencies": {
+    "yjs": "^13.5.6"
+  },
+  "dependencies": {
+    "lodash-es": "^4.17.21",
+    "lib0": "^0.2.52",
+    "y-protocols": "^1.0.5"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/lodash-es": "^4.17.12",
+    "@types/node": "^22.1.0",
+    "typescript": "5.5.4",
+    "vite": "^5.3.5",
+    "vite-plugin-dts": "^3.9.1",
+    "yjs": "^13.5.0"
+  }
+}

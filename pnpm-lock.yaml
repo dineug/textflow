@@ -62,6 +62,9 @@ importers:
 
   packages/editor:
     dependencies:
+      '@dineug/y-bridge':
+        specifier: workspace:*
+        version: link:../y-bridge
       '@floating-ui/react':
         specifier: ^0.26.22
         version: 0.26.22(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -110,6 +113,9 @@ importers:
       '@lexical/utils':
         specifier: 0.17.1
         version: 0.17.1
+      '@lexical/yjs':
+        specifier: 0.17.1
+        version: 0.17.1(yjs@13.6.18)
       '@radix-ui/colors':
         specifier: ^3.0.0
         version: 3.0.0
@@ -197,6 +203,9 @@ importers:
       tinycolor2:
         specifier: ^1.6.0
         version: 1.6.0
+      yjs:
+        specifier: '>=13.5.42'
+        version: 13.6.18
     devDependencies:
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
@@ -382,6 +391,40 @@ importers:
       webpack-dev-server:
         specifier: ^5.0.4
         version: 5.1.0(webpack-cli@5.1.4)(webpack@5.94.0)
+
+  packages/y-bridge:
+    dependencies:
+      lib0:
+        specifier: ^0.2.52
+        version: 0.2.97
+      lodash-es:
+        specifier: ^4.17.21
+        version: 4.17.21
+      y-protocols:
+        specifier: ^1.0.5
+        version: 1.0.6(yjs@13.6.18)
+    devDependencies:
+      '@rollup/plugin-typescript':
+        specifier: ^11.1.6
+        version: 11.1.6(rollup@4.20.0)(tslib@2.6.3)(typescript@5.5.4)
+      '@types/lodash-es':
+        specifier: ^4.17.12
+        version: 4.17.12
+      '@types/node':
+        specifier: ^22.1.0
+        version: 22.4.0
+      typescript:
+        specifier: 5.5.4
+        version: 5.5.4
+      vite:
+        specifier: ^5.3.5
+        version: 5.4.1(@types/node@22.4.0)(terser@5.32.0)
+      vite-plugin-dts:
+        specifier: ^3.9.1
+        version: 3.9.1(@types/node@22.4.0)(rollup@4.20.0)(typescript@5.5.4)(vite@5.4.1(@types/node@22.4.0)(terser@5.32.0))
+      yjs:
+        specifier: ^13.5.0
+        version: 13.6.18
 
 packages:
 
@@ -5058,6 +5101,12 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+
+  y-protocols@1.0.6:
+    resolution: {integrity: sha512-vHRF2L6iT3rwj1jub/K5tYcTT/mEYDUppgNPXwp8fmLpui9f7Yeq3OEtTLVF012j39QnV+KEQpNqoN7CWU7Y9Q==}
+    engines: {node: '>=16.0.0', npm: '>=8.0.0'}
+    peerDependencies:
+      yjs: ^13.0.0
 
   y18n@5.0.8:
     resolution: {integrity: sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==}
@@ -10070,6 +10119,11 @@ snapshots:
   ws@7.5.10: {}
 
   ws@8.18.0: {}
+
+  y-protocols@1.0.6(yjs@13.6.18):
+    dependencies:
+      lib0: 0.2.97
+      yjs: 13.6.18
 
   y18n@5.0.8: {}
 

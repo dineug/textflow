@@ -2,8 +2,10 @@ import {
   AnyAction,
   Bridge,
   hostInitialCommand,
+  hostReplicationChannelCommand,
   hostSaveValueCommand,
   webviewInitialValueCommand,
+  webviewReplicationChannelCommand,
   webviewUpdateBaseUrl,
 } from '@dineug/wysidoc-editor-vscode-bridge';
 import * as vscode from 'vscode';
@@ -19,15 +21,13 @@ export class WysidocEditor extends Editor {
       enableScripts: true,
     };
 
-    const webviewSet = this.docToWebviewMap.get(this.document);
+    const webviewSet = this.docToWebviewMap.get(this.document)!;
 
     const dispatch = (action: AnyAction) => {
       this.webview.postMessage(action);
     };
 
     const dispatchBroadcast = (action: AnyAction) => {
-      if (!webviewSet) return;
-
       Array.from(webviewSet)
         .filter(webview => webview !== this.webview)
         .forEach(webview => webview.postMessage(action));
@@ -50,6 +50,11 @@ export class WysidocEditor extends Editor {
       }),
       this.bridge.registerCommand(hostSaveValueCommand, async ({ value }) => {
         await this.document.update(textEncoder.encode(value));
+      }),
+      this.bridge.registerCommand(hostReplicationChannelCommand, payload => {
+        dispatchBroadcast(
+          Bridge.executeCommand(webviewReplicationChannelCommand, payload)
+        );
       })
     );
 
