@@ -20,7 +20,7 @@ import {
 } from 'lexical';
 import { useEffect } from 'react';
 
-import * as editorStyles from '@/Editor.css';
+import * as editorStyles from '@/components/EditorComposer.css';
 
 import DragDropPaste from './DragDropPaste';
 import {

@@ -41,7 +41,6 @@ const render = () => {
       minHeight="100vh"
       initialValue={initialValue}
       absolutePath={absolutePath}
-      // isCollab
       onChange={handleChange}
     />
   );

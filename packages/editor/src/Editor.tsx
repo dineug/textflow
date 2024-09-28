@@ -1,23 +1,7 @@
-import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
-import { CollaborationPlugin } from '@lexical/react/LexicalCollaborationPlugin';
-import {
-  type InitialConfigType,
-  LexicalComposer,
-} from '@lexical/react/LexicalComposer';
-import { ContentEditable } from '@lexical/react/LexicalContentEditable';
-import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
-import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
-import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
-import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { assignInlineVars } from '@vanilla-extract/dynamic';
-import clsx from 'clsx';
-import { Provider as StoreProvider } from 'jotai';
-import type { EditorState, LexicalEditor } from 'lexical';
-import { useCallback, useMemo, useState } from 'react';
+import type { EditorState } from 'lexical';
+import { useCallback, useEffect, useMemo } from 'react';
 
-import { type AppContextState, AppProvider } from '@/components/app-context';
-import { ThemeProvider } from '@/components/theme';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import EditorComposer from '@/components/EditorComposer';
 import { extensionCode } from '@/extensions/code/extension';
 import { extensionCollapsible } from '@/extensions/collapsible/extension';
 import { ExtensionManagerProvider } from '@/extensions/context';
@@ -33,25 +17,19 @@ import { extensionMarkdownShortcut } from '@/extensions/markdown-shortcut/extens
 import { extensionRichText } from '@/extensions/rich-text/extension';
 import { extensionSlashCommand } from '@/extensions/slash-command/extension';
 import { extensionTable } from '@/extensions/table/extension';
-import { cn } from '@/lib/utils';
 
-import * as styles from './Editor.css';
-import { createBridgeProvider } from './replicationBridge';
-
-type EditorProps = {
-  minHeight?: string;
+type EditorProps = Omit<
+  React.ComponentProps<typeof EditorComposer>,
+  'initialValue' | 'onChange' | 'children'
+> & {
   initialValue?: string;
-  absolutePath?: string;
-  isCollab?: boolean;
   onChange?: (value: string) => void;
 };
 
 const Editor: React.FC<EditorProps> = ({
-  minHeight,
   initialValue,
-  absolutePath = '',
-  isCollab,
   onChange,
+  ...props
 }) => {
   const extensionManager = useMemo(
     () =>
@@ -74,29 +52,10 @@ const Editor: React.FC<EditorProps> = ({
       }),
     []
   );
-  const { getNodes, getTheme, store } = extensionManager;
-  const initialConfig: InitialConfigType = useMemo(
-    () => ({
-      namespace: 'wysidoc',
-      nodes: [...getNodes()],
-      theme: getTheme(),
-      editorState: isCollab ? null : initialValue,
-      onError: (error: Error) => {
-        throw error;
-      },
-    }),
-    [getNodes, getTheme, initialValue, isCollab]
-  );
-
-  const [$root, setRoot] = useState<HTMLDivElement | null>(null);
-  const [$editor, setEditor] = useState<HTMLDivElement | null>(null);
-  const appContext: AppContextState = useMemo(
-    () => ({ $root, $editor, absolutePath }),
-    [$editor, $root, absolutePath]
-  );
+  useEffect(() => extensionManager.dispose, [extensionManager.dispose]);
 
   const handleChange = useCallback(
-    (editorState: EditorState, editor: LexicalEditor, tags: Set<string>) => {
+    (editorState: EditorState) => {
       onChange?.(JSON.stringify(editorState.toJSON(), null, 2));
     },
     [onChange]
@@ -104,80 +63,29 @@ const Editor: React.FC<EditorProps> = ({
 
   return (
     <ExtensionManagerProvider value={extensionManager}>
-      <StoreProvider store={store}>
-        <LexicalComposer initialConfig={initialConfig}>
-          <AppProvider value={appContext}>
-            <ThemeProvider>
-              <div
-                ref={setRoot}
-                className={clsx('wysidoc-editor', styles.shell)}
-              >
-                <ScrollArea className={styles.container}>
-                  <div className={styles.layout}>
-                    <RichTextPlugin
-                      contentEditable={
-                        <div ref={setEditor} className={styles.editor}>
-                          <ContentEditable
-                            className={styles.contentEditable}
-                            style={assignInlineVars({
-                              [styles.minHeightVar]: minHeight,
-                            })}
-                            aria-placeholder={'placeholder...'}
-                            placeholder={
-                              <div
-                                className={cn(
-                                  styles.placeholder,
-                                  'text-muted-foreground'
-                                )}
-                              >
-                                To use a command, press the '/' key.
-                              </div>
-                            }
-                          />
-                        </div>
-                      }
-                      ErrorBoundary={LexicalErrorBoundary}
-                    />
-
-                    <extensionRichText.Plugin />
-                    <extensionLink.Plugin />
-                    <extensionList.Plugin />
-                    <extensionCode.Plugin />
-                    <extensionHorizontalRule.Plugin />
-                    <extensionSlashCommand.Plugin />
-                    <extensionMarkdownShortcut.Plugin />
-                    <extensionFloatingTextFormatToolbar.Plugin />
-                    <extensionEmoji.Plugin />
-                    <extensionImage.Plugin />
-                    <extensionEquation.Plugin />
-                    <extensionTable.Plugin />
-                    <extensionCollapsible.Plugin />
-
-                    <AutoFocusPlugin />
-
-                    <OnChangePlugin
-                      ignoreSelectionChange
-                      onChange={handleChange}
-                    />
-                    {isCollab ? (
-                      <CollaborationPlugin
-                        id="main"
-                        providerFactory={createBridgeProvider}
-                        initialEditorState={initialValue}
-                        shouldBootstrap
-                      />
-                    ) : (
-                      <HistoryPlugin />
-                    )}
-                  </div>
-                </ScrollArea>
-              </div>
-            </ThemeProvider>
-          </AppProvider>
-        </LexicalComposer>
-      </StoreProvider>
+      <EditorComposer
+        {...props}
+        initialValue={initialValue}
+        onChange={handleChange}
+      >
+        <extensionRichText.Plugin />
+        <extensionLink.Plugin />
+        <extensionList.Plugin />
+        <extensionCode.Plugin />
+        <extensionHorizontalRule.Plugin />
+        <extensionSlashCommand.Plugin />
+        <extensionMarkdownShortcut.Plugin />
+        <extensionFloatingTextFormatToolbar.Plugin />
+        <extensionEmoji.Plugin />
+        <extensionImage.Plugin />
+        <extensionEquation.Plugin />
+        <extensionTable.Plugin />
+        <extensionCollapsible.Plugin />
+      </EditorComposer>
     </ExtensionManagerProvider>
   );
 };
+
+Editor.displayName = 'Editor';
 
 export default Editor;
