@@ -3,15 +3,25 @@ import {
   Bridge,
   hostInitialCommand,
   hostReplicationChannelCommand,
+  hostSaveThemeCommand,
   hostSaveValueCommand,
   webviewInitialValueCommand,
   webviewReplicationChannelCommand,
-  webviewUpdateBaseUrl,
+  webviewUpdateBaseUrlCommand,
+  webviewUpdateThemeCommand,
 } from '@dineug/wysidoc-editor-vscode-bridge';
 import * as vscode from 'vscode';
 
+import { getTheme, saveTheme } from '@/configuration';
 import { Editor } from '@/editor';
 import { textDecoder, textEncoder } from '@/utils';
+
+const THEME_KEYS = [
+  'dineug.wysidoc-editor.theme.appearance',
+  'dineug.wysidoc-editor.theme.grayColor',
+  'dineug.wysidoc-editor.theme.accentColor',
+  'workbench.colorTheme',
+];
 
 export class WysidocEditor extends Editor {
   assetsDir = 'public';
@@ -37,8 +47,9 @@ export class WysidocEditor extends Editor {
       this.bridge.registerCommand(hostInitialCommand, () => {
         const fileUrl = this.webview.asWebviewUri(this.document.uri).toString();
 
+        dispatch(Bridge.executeCommand(webviewUpdateThemeCommand, getTheme()));
         dispatch(
-          Bridge.executeCommand(webviewUpdateBaseUrl, {
+          Bridge.executeCommand(webviewUpdateBaseUrlCommand, {
             baseUrl: fileUrl.substring(0, fileUrl.lastIndexOf('/') + 1),
           })
         );
@@ -51,6 +62,7 @@ export class WysidocEditor extends Editor {
       this.bridge.registerCommand(hostSaveValueCommand, async ({ value }) => {
         await this.document.update(textEncoder.encode(value));
       }),
+      this.bridge.registerCommand(hostSaveThemeCommand, saveTheme),
       this.bridge.registerCommand(hostReplicationChannelCommand, payload => {
         dispatchBroadcast(
           Bridge.executeCommand(webviewReplicationChannelCommand, payload)
@@ -62,13 +74,23 @@ export class WysidocEditor extends Editor {
       this.webview.onDidReceiveMessage(action =>
         this.bridge.executeAction(action)
       ),
+      ...THEME_KEYS.map(key =>
+        vscode.workspace.onDidChangeConfiguration(event => {
+          if (!event.affectsConfiguration(key, this.document.uri)) {
+            return;
+          }
+          dispatch(
+            Bridge.executeCommand(webviewUpdateThemeCommand, getTheme())
+          );
+        })
+      ),
     ];
 
     this.webview.html = await this.buildHtmlForWebview();
 
     return new vscode.Disposable(() => {
-      dispose();
       listeners.forEach(listener => listener.dispose());
+      dispose();
     });
   }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@dineug/wysidoc-editor-vscode",
+  "name": "wysidoc-editor-vscode",
   "version": "0.1.0",
   "private": true,
   "description": "wysidoc Editor VSCode Extension",
@@ -39,7 +39,7 @@
   "devDependencies": {
     "@dineug/wysidoc-editor-vscode-bridge": "workspace:*",
     "@dineug/wysidoc-editor-vscode-webview": "workspace:*",
-    "@types/node": "^18.19.31",
+    "@types/node": "^20.16.10",
     "@types/vscode": "^1.85.0",
     "base64-arraybuffer": "^1.0.2",
     "crypto-js": "^4.2.0",
@@ -131,6 +131,69 @@
             "filenamePattern": "*.wwdoc.json"
           }
         ]
+      }
+    ],
+    "configuration": [
+      {
+        "title": "wysidoc Editor",
+        "properties": {
+          "dineug.wysidoc-editor.theme.appearance": {
+            "description": "Theme appearance",
+            "type": "string",
+            "default": "auto",
+            "enum": [
+              "auto",
+              "light",
+              "dark"
+            ]
+          },
+          "dineug.wysidoc-editor.theme.grayColor": {
+            "description": "Gray color",
+            "type": "string",
+            "default": "slate",
+            "enum": [
+              "gray",
+              "mauve",
+              "slate",
+              "sage",
+              "olive",
+              "sand"
+            ]
+          },
+          "dineug.wysidoc-editor.theme.accentColor": {
+            "description": "Accent color",
+            "type": "string",
+            "default": "indigo",
+            "enum": [
+              "gray",
+              "gold",
+              "bronze",
+              "brown",
+              "yellow",
+              "amber",
+              "orange",
+              "tomato",
+              "red",
+              "ruby",
+              "crimson",
+              "pink",
+              "plum",
+              "purple",
+              "violet",
+              "iris",
+              "indigo",
+              "blue",
+              "cyan",
+              "teal",
+              "jade",
+              "green",
+              "grass",
+              "lime",
+              "mint",
+              "sky"
+            ]
+          }
+        }
       }
     ]
   }

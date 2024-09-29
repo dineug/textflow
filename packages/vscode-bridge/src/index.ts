@@ -8,3 +8,4 @@ export {
   type Dispose,
 } from './bridge';
 export * from './commands';
+export { AccentColor, Appearance, GrayColor, type Theme } from './theme';

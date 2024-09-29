@@ -13,4 +13,5 @@ body,
   height: 100%;
   align-items: center;
   justify-content: center;
+  color: var(--vscode-editor-foreground);
 }

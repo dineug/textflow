@@ -1,4 +1,5 @@
 import { createCommand } from './bridge';
+import { Theme } from './theme';
 
 export const hostInitialCommand = createCommand('hostInitialCommand');
 export const hostSaveValueCommand = createCommand<{
@@ -7,13 +8,19 @@ export const hostSaveValueCommand = createCommand<{
 export const hostReplicationChannelCommand = createCommand<string>(
   'hostReplicationChannelCommand'
 );
+export const hostSaveThemeCommand = createCommand<Theme>(
+  'hostSaveThemeCommand'
+);
 
 export const webviewInitialValueCommand = createCommand<{
   value: string;
 }>('webviewInitialValueCommand');
-export const webviewUpdateBaseUrl = createCommand<{
+export const webviewUpdateBaseUrlCommand = createCommand<{
   baseUrl: string;
-}>('webviewUpdateBaseUrl');
+}>('webviewUpdateBaseUrlCommand');
 export const webviewReplicationChannelCommand = createCommand<string>(
   'webviewReplicationChannelCommand'
+);
+export const webviewUpdateThemeCommand = createCommand<Partial<Theme>>(
+  'webviewUpdateThemeCommand'
 );

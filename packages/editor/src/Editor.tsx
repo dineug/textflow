@@ -1,7 +1,7 @@
 import type { EditorState } from 'lexical';
-import { useCallback, useEffect, useMemo } from 'react';
+import { forwardRef, useCallback, useEffect, useMemo } from 'react';
 
-import EditorComposer from '@/components/EditorComposer';
+import EditorComposer from '@/components/editor-composer/EditorComposer';
 import { extensionCode } from '@/extensions/code/extension';
 import { extensionCollapsible } from '@/extensions/collapsible/extension';
 import { ExtensionManagerProvider } from '@/extensions/context';
@@ -26,11 +26,10 @@ type EditorProps = Omit<
   onChange?: (value: string) => void;
 };
 
-const Editor: React.FC<EditorProps> = ({
-  initialValue,
-  onChange,
-  ...props
-}) => {
+const Editor = forwardRef<
+  React.ComponentRef<typeof EditorComposer>,
+  EditorProps
+>(({ initialValue, onChange, ...props }, ref) => {
   const extensionManager = useMemo(
     () =>
       configureExtensions({
@@ -65,6 +64,7 @@ const Editor: React.FC<EditorProps> = ({
     <ExtensionManagerProvider value={extensionManager}>
       <EditorComposer
         {...props}
+        ref={ref}
         initialValue={initialValue}
         onChange={handleChange}
       >
@@ -84,7 +84,7 @@ const Editor: React.FC<EditorProps> = ({
       </EditorComposer>
     </ExtensionManagerProvider>
   );
-};
+});
 
 Editor.displayName = 'Editor';
 
