@@ -174,7 +174,7 @@ function createExtensionManager(): ExtensionManager {
   });
 }
 
-export function createExtensionContext({
+function createExtensionContext({
   store,
   registerNode,
   registerTheme,

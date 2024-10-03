@@ -43,6 +43,7 @@
     "@types/vscode": "^1.85.0",
     "base64-arraybuffer": "^1.0.2",
     "crypto-js": "^4.2.0",
+    "glob": "^11.0.0",
     "ts-loader": "^9.5.1",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typescript": "5.4.5",

@@ -4,6 +4,7 @@ export type AppContextState = {
   $root: HTMLDivElement | null;
   $editor: HTMLDivElement | null;
   absolutePath: string;
+  fsPath: string;
 };
 
 const AppContext = createContext<AppContextState | null>(null);

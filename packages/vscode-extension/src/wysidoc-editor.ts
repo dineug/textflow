@@ -2,18 +2,24 @@ import {
   AnyAction,
   Bridge,
   hostInitialCommand,
-  hostReplicationChannelCommand,
+  hostOpenReferenceCommand,
   hostSaveThemeCommand,
   hostSaveValueCommand,
+  hostUpdateReferenceListCommand,
   webviewInitialValueCommand,
-  webviewReplicationChannelCommand,
   webviewUpdateBaseUrlCommand,
+  webviewUpdateReferenceListCommand,
   webviewUpdateThemeCommand,
 } from '@dineug/wysidoc-editor-vscode-bridge';
+import { dirname, relative } from 'path';
 import * as vscode from 'vscode';
 
 import { getTheme, saveTheme } from '@/configuration';
 import { Editor } from '@/editor';
+import {
+  bridge as workerBridge,
+  ReferenceListManager,
+} from '@/referenceListManager';
 import { textDecoder, textEncoder } from '@/utils';
 
 const THEME_KEYS = [
@@ -45,12 +51,16 @@ export class WysidocEditor extends Editor {
 
     const dispose = Bridge.mergeRegister(
       this.bridge.registerCommand(hostInitialCommand, () => {
-        const fileUrl = this.webview.asWebviewUri(this.document.uri).toString();
+        const directoryUri = vscode.Uri.file(dirname(this.document.uri.fsPath));
+        const baseUrl = this.webview
+          .asWebviewUri(vscode.Uri.joinPath(directoryUri, '/'))
+          .toString();
 
         dispatch(Bridge.executeCommand(webviewUpdateThemeCommand, getTheme()));
         dispatch(
           Bridge.executeCommand(webviewUpdateBaseUrlCommand, {
-            baseUrl: fileUrl.substring(0, fileUrl.lastIndexOf('/') + 1),
+            baseUrl,
+            path: this.document.uri.fsPath,
           })
         );
         dispatch(
@@ -58,14 +68,35 @@ export class WysidocEditor extends Editor {
             value: textDecoder.decode(this.document.content),
           })
         );
+
+        ReferenceListManager.getInstance().findReferenceList();
       }),
       this.bridge.registerCommand(hostSaveValueCommand, async ({ value }) => {
         await this.document.update(textEncoder.encode(value));
       }),
       this.bridge.registerCommand(hostSaveThemeCommand, saveTheme),
-      this.bridge.registerCommand(hostReplicationChannelCommand, payload => {
-        dispatchBroadcast(
-          Bridge.executeCommand(webviewReplicationChannelCommand, payload)
+      this.bridge.registerCommand(
+        hostOpenReferenceCommand,
+        ({ relativePath }) => {
+          const directoryUri = vscode.Uri.file(
+            dirname(this.document.uri.fsPath)
+          );
+          const targetUri = vscode.Uri.joinPath(directoryUri, relativePath);
+
+          vscode.commands.executeCommand('wysidoc.showEditor', targetUri);
+        }
+      ),
+      workerBridge.registerCommand(hostUpdateReferenceListCommand, list => {
+        const directoryPath = dirname(this.document.uri.fsPath);
+
+        dispatch(
+          Bridge.executeCommand(
+            webviewUpdateReferenceListCommand,
+            list.map(value => ({
+              ...value,
+              relativePath: relative(directoryPath, value.path),
+            }))
+          )
         );
       })
     );

@@ -1,14 +1,21 @@
 import '@dineug/wysidoc-editor/wysidoc-editor.css';
 
-import { Editor, type Theme } from '@dineug/wysidoc-editor';
+import {
+  Editor,
+  openReferenceCommand,
+  setReferenceListCommand,
+  type Theme,
+} from '@dineug/wysidoc-editor';
 import {
   AnyAction,
   Bridge,
   hostInitialCommand,
+  hostOpenReferenceCommand,
   hostSaveThemeCommand,
   hostSaveValueCommand,
   webviewInitialValueCommand,
   webviewUpdateBaseUrlCommand,
+  webviewUpdateReferenceListCommand,
   webviewUpdateThemeCommand,
 } from '@dineug/wysidoc-editor-vscode-bridge';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -16,6 +23,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [absolutePath, setAbsolutePath] = useState('');
+  const [fsPath, setFsPath] = useState('');
   const [initialValue, setInitialValue] = useState<string | null | undefined>(
     null
   );
@@ -41,9 +49,13 @@ const App: React.FC = () => {
     const bridge = new Bridge();
 
     const dispose = Bridge.mergeRegister(
-      bridge.registerCommand(webviewUpdateBaseUrlCommand, ({ baseUrl }) => {
-        setAbsolutePath(baseUrl);
-      }),
+      bridge.registerCommand(
+        webviewUpdateBaseUrlCommand,
+        ({ baseUrl, path }) => {
+          setAbsolutePath(baseUrl);
+          setFsPath(path);
+        }
+      ),
       bridge.registerCommand(webviewInitialValueCommand, ({ value }) => {
         setInitialValue(value.trim() ? value : undefined);
         document.getElementById('loading')?.remove();
@@ -51,6 +63,9 @@ const App: React.FC = () => {
       }),
       bridge.registerCommand(webviewUpdateThemeCommand, theme => {
         editorRef.current?.theme()?.setTheme(theme);
+      }),
+      bridge.registerCommand(webviewUpdateReferenceListCommand, list => {
+        editorRef.current?.executeCommand(setReferenceListCommand, list);
       })
     );
 
@@ -68,6 +83,15 @@ const App: React.FC = () => {
     };
   }, [dispatch]);
 
+  useEffect(() => {
+    const $editor = editorRef.current;
+    if (!$editor) return;
+
+    return $editor.registerCommand(openReferenceCommand, payload => {
+      dispatch(Bridge.executeCommand(hostOpenReferenceCommand, payload));
+    });
+  }, [dispatch, loading]);
+
   if (loading || initialValue === null) {
     return null;
   }
@@ -78,6 +102,7 @@ const App: React.FC = () => {
       minHeight="100vh"
       initialValue={initialValue}
       absolutePath={absolutePath}
+      fsPath={fsPath}
       onChange={handleChange}
       onThemeChange={handleThemeChange}
     />

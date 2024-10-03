@@ -4,7 +4,6 @@ import {
   useBasicTypeaheadTriggerMatch,
 } from '@lexical/react/LexicalTypeaheadMenuPlugin';
 import Fuse from 'fuse.js';
-import { TextNode } from 'lexical';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -84,13 +83,10 @@ const SlashCommandPlugin: React.FC = () => {
     };
   }, [editor, queryString, registers]);
 
-  const onSelectOption = useCallback(
-    (
-      selectedOption: SlashCommandMenu,
-      nodeToRemove: TextNode | null,
-      closeMenu: () => void,
-      matchingString: string
-    ) => {
+  const onSelectOption: React.ComponentProps<
+    typeof LexicalTypeaheadMenuPlugin<SlashCommandMenu>
+  >['onSelectOption'] = useCallback(
+    (selectedOption, nodeToRemove, closeMenu, matchingString) => {
       editor.update(() => {
         nodeToRemove?.remove();
         selectedOption.onSelect(matchingString);

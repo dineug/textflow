@@ -14,6 +14,7 @@ import { extensionImage } from '@/extensions/image/extension';
 import { extensionLink } from '@/extensions/link/extension';
 import { extensionList } from '@/extensions/list/extension';
 import { extensionMarkdownShortcut } from '@/extensions/markdown-shortcut/extension';
+import { extensionReference } from '@/extensions/reference/extension';
 import { extensionRichText } from '@/extensions/rich-text/extension';
 import { extensionSlashCommand } from '@/extensions/slash-command/extension';
 import { extensionTable } from '@/extensions/table/extension';
@@ -34,6 +35,7 @@ const Editor = forwardRef<
     () =>
       configureExtensions({
         extensions: [
+          extensionReference,
           extensionRichText,
           extensionLink,
           extensionList,
@@ -68,6 +70,7 @@ const Editor = forwardRef<
         initialValue={initialValue}
         onChange={handleChange}
       >
+        <extensionReference.Plugin />
         <extensionRichText.Plugin />
         <extensionLink.Plugin />
         <extensionList.Plugin />
