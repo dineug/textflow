@@ -1,8 +1,8 @@
-import { Bridge } from '@dineug/wysidoc-editor-vscode-bridge';
+import { Bridge } from '@dineug/textflow-editor-vscode-bridge';
 import * as vscode from 'vscode';
 
+import { TextflowDocument } from '@/textflow-document';
 import { textDecoder } from '@/utils';
-import { WysidocDocument } from '@/wysidoc-document';
 
 export type CreateEditor = (
   ...args: ConstructorParameters<typeof Editor>
@@ -13,10 +13,10 @@ export abstract class Editor {
   protected abstract assetsDir: string;
 
   constructor(
-    readonly document: WysidocDocument,
+    readonly document: TextflowDocument,
     readonly webview: vscode.Webview,
     readonly context: vscode.ExtensionContext,
-    readonly docToWebviewMap: Map<WysidocDocument, Set<vscode.Webview>>
+    readonly docToWebviewMap: Map<TextflowDocument, Set<vscode.Webview>>
   ) {}
 
   get readonly() {

@@ -1,5 +1,5 @@
 {
-  "name": "@dineug/wysidoc-editor-vscode-webview",
+  "name": "@dineug/textflow-editor-vscode-webview",
   "version": "0.1.0",
   "private": true,
   "author": "SeungHwan-Lee <dineug2@gmail.com>",
@@ -10,8 +10,8 @@
     "nx:build": "nx build"
   },
   "devDependencies": {
-    "@dineug/wysidoc-editor": "workspace:*",
-    "@dineug/wysidoc-editor-vscode-bridge": "workspace:*",
+    "@dineug/textflow-editor": "workspace:*",
+    "@dineug/textflow-editor-vscode-bridge": "workspace:*",
     "@types/node": "^22.4.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",

@@ -106,7 +106,7 @@ const ReferencePlugin: React.FC = () => {
   const onSelectOption: React.ComponentProps<
     typeof LexicalTypeaheadMenuPlugin<ReferenceMenu>
   >['onSelectOption'] = useCallback(
-    (selectedOption, nodeToRemove, closeMenu, matchingString) => {
+    (selectedOption, nodeToRemove, closeMenu) => {
       editor.update(() => {
         nodeToRemove?.remove();
 

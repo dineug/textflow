@@ -1,5 +1,5 @@
 {
-  "name": "@dineug/wysidoc-editor-vscode-bridge",
+  "name": "@dineug/textflow-editor-vscode-bridge",
   "version": "0.1.0",
   "private": true,
   "type": "module",

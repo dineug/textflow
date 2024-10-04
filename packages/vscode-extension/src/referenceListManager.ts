@@ -2,7 +2,7 @@ import {
   type AnyAction,
   Bridge,
   workerFindReferenceListCommand,
-} from '@dineug/wysidoc-editor-vscode-bridge';
+} from '@dineug/textflow-editor-vscode-bridge';
 import { URL as NodeURL } from 'url';
 import * as vscode from 'vscode';
 import { Worker } from 'worker_threads';

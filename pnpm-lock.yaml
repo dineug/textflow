@@ -295,10 +295,10 @@ importers:
 
   packages/vscode-extension:
     devDependencies:
-      '@dineug/wysidoc-editor-vscode-bridge':
+      '@dineug/textflow-editor-vscode-bridge':
         specifier: workspace:*
         version: link:../vscode-bridge
-      '@dineug/wysidoc-editor-vscode-webview':
+      '@dineug/textflow-editor-vscode-webview':
         specifier: workspace:*
         version: link:../vscode-webview
       '@types/node':
@@ -334,10 +334,10 @@ importers:
 
   packages/vscode-webview:
     devDependencies:
-      '@dineug/wysidoc-editor':
+      '@dineug/textflow-editor':
         specifier: workspace:*
         version: link:../editor
-      '@dineug/wysidoc-editor-vscode-bridge':
+      '@dineug/textflow-editor-vscode-bridge':
         specifier: workspace:*
         version: link:../vscode-bridge
       '@swc/core':
@@ -10301,7 +10301,7 @@ snapshots:
       watchpack: 2.4.2
       webpack-sources: 3.2.3
     optionalDependencies:
-      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.1.0)(webpack@5.94.0)
+      webpack-cli: 5.1.4(webpack@5.94.0)
     transitivePeerDependencies:
       - '@swc/core'
       - esbuild

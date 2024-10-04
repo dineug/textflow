@@ -75,7 +75,7 @@ const EditorComposer = forwardRef<EditorComposerRef, EditorComposerProps>(
       useExtensionManager();
     const initialConfig: InitialConfigType = useMemo(
       () => ({
-        namespace: 'wysidoc',
+        namespace: 'textflow',
         nodes: [...getNodes()],
         theme: getTheme(),
         editorState: initialValue,
@@ -121,7 +121,7 @@ const EditorComposer = forwardRef<EditorComposerRef, EditorComposerProps>(
                 <CommandBar />
                 <div
                   ref={setRoot}
-                  className={clsx('wysidoc-editor', styles.shell)}
+                  className={clsx('textflow-editor', styles.shell)}
                 >
                   <ScrollArea className={styles.container}>
                     <div className={styles.layout}>

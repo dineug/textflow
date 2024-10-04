@@ -1,1 +1,1 @@
-export const VIEW_TYPE = 'editor.wysidoc';
+export const VIEW_TYPE = 'editor.textflow';

@@ -10,7 +10,8 @@ import {
   webviewUpdateBaseUrlCommand,
   webviewUpdateReferenceListCommand,
   webviewUpdateThemeCommand,
-} from '@dineug/wysidoc-editor-vscode-bridge';
+} from '@dineug/textflow-editor-vscode-bridge';
+import { existsSync } from 'fs';
 import { dirname, relative } from 'path';
 import * as vscode from 'vscode';
 
@@ -23,13 +24,13 @@ import {
 import { textDecoder, textEncoder } from '@/utils';
 
 const THEME_KEYS = [
-  'dineug.wysidoc-editor.theme.appearance',
-  'dineug.wysidoc-editor.theme.grayColor',
-  'dineug.wysidoc-editor.theme.accentColor',
+  'dineug.textflow-editor.theme.appearance',
+  'dineug.textflow-editor.theme.grayColor',
+  'dineug.textflow-editor.theme.accentColor',
   'workbench.colorTheme',
 ];
 
-export class WysidocEditor extends Editor {
+export class TextflowEditor extends Editor {
   assetsDir = 'public';
 
   async bootstrapWebview() {
@@ -83,7 +84,11 @@ export class WysidocEditor extends Editor {
           );
           const targetUri = vscode.Uri.joinPath(directoryUri, relativePath);
 
-          vscode.commands.executeCommand('wysidoc.showEditor', targetUri);
+          if (existsSync(targetUri.fsPath)) {
+            vscode.commands.executeCommand('textflow.showEditor', targetUri);
+          } else {
+            vscode.window.showWarningMessage(`File not found: ${relativePath}`);
+          }
         }
       ),
       workerBridge.registerCommand(hostUpdateReferenceListCommand, list => {

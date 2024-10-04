@@ -3,18 +3,18 @@ import * as vscode from 'vscode';
 import { VIEW_TYPE } from '@/constants/viewType';
 import { widthEditor } from '@/editor';
 import { ReferenceListManager } from '@/referenceListManager';
-import { WysidocEditor } from '@/wysidoc-editor';
-import { WysidocEditorProvider } from '@/wysidoc-editor-provider';
+import { TextflowEditor } from '@/textflow-editor';
+import { TextflowEditorProvider } from '@/textflow-editor-provider';
 
 export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
-    WysidocEditorProvider.register(context, widthEditor(WysidocEditor)),
-    vscode.commands.registerCommand('wysidoc.showSource', showSource),
-    vscode.commands.registerCommand('wysidoc.showEditor', showEditor),
-    vscode.commands.registerCommand('wysidoc.showEditorToSide', uri =>
+    TextflowEditorProvider.register(context, widthEditor(TextflowEditor)),
+    vscode.commands.registerCommand('textflow.showSource', showSource),
+    vscode.commands.registerCommand('textflow.showEditor', showEditor),
+    vscode.commands.registerCommand('textflow.showEditorToSide', uri =>
       showEditor(uri, vscode.ViewColumn.Beside)
     ),
-    vscode.commands.registerCommand('wysidoc.showSourceToSide', uri =>
+    vscode.commands.registerCommand('textflow.showSourceToSide', uri =>
       showSource(uri, vscode.ViewColumn.Beside)
     )
   );

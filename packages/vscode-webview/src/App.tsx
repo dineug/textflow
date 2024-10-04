@@ -1,11 +1,11 @@
-import '@dineug/wysidoc-editor/wysidoc-editor.css';
+import '@dineug/textflow-editor/textflow-editor.css';
 
 import {
   Editor,
   openReferenceCommand,
   setReferenceListCommand,
   type Theme,
-} from '@dineug/wysidoc-editor';
+} from '@dineug/textflow-editor';
 import {
   AnyAction,
   Bridge,
@@ -17,7 +17,7 @@ import {
   webviewUpdateBaseUrlCommand,
   webviewUpdateReferenceListCommand,
   webviewUpdateThemeCommand,
-} from '@dineug/wysidoc-editor-vscode-bridge';
+} from '@dineug/textflow-editor-vscode-bridge';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 const App: React.FC = () => {

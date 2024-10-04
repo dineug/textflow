@@ -12,7 +12,7 @@
   * {
     @apply border-border;
   }
-  .wysidoc-editor {
+  .textflow-editor {
     @apply bg-background text-foreground;
   }
 }

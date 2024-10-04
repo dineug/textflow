@@ -2,18 +2,18 @@ import * as vscode from 'vscode';
 
 import { VIEW_TYPE } from '@/constants/viewType';
 import { CreateEditor } from '@/editor';
-import { WysidocDocument } from '@/wysidoc-document';
+import { TextflowDocument } from '@/textflow-document';
 
-export class WysidocEditorProvider
-  implements vscode.CustomEditorProvider<WysidocDocument>
+export class TextflowEditorProvider
+  implements vscode.CustomEditorProvider<TextflowDocument>
 {
   private readonly _onDidChangeCustomDocument = new vscode.EventEmitter<
-    vscode.CustomDocumentContentChangeEvent<WysidocDocument>
+    vscode.CustomDocumentContentChangeEvent<TextflowDocument>
   >();
   public readonly onDidChangeCustomDocument =
     this._onDidChangeCustomDocument.event;
 
-  private docToWebviewMap = new Map<WysidocDocument, Set<vscode.Webview>>();
+  private docToWebviewMap = new Map<TextflowDocument, Set<vscode.Webview>>();
 
   constructor(
     private readonly context: vscode.ExtensionContext,
@@ -25,7 +25,7 @@ export class WysidocEditorProvider
     context: vscode.ExtensionContext,
     createEditor: CreateEditor
   ): vscode.Disposable {
-    const provider = new WysidocEditorProvider(
+    const provider = new TextflowEditorProvider(
       context,
       VIEW_TYPE,
       createEditor
@@ -40,11 +40,11 @@ export class WysidocEditorProvider
   async openCustomDocument(
     uri: vscode.Uri,
     openContext: vscode.CustomDocumentOpenContext
-  ): Promise<WysidocDocument> {
+  ): Promise<TextflowDocument> {
     const content = await vscode.workspace.fs.readFile(
       openContext.backupId ? vscode.Uri.parse(openContext.backupId) : uri
     );
-    const document = WysidocDocument.create(uri, content);
+    const document = TextflowDocument.create(uri, content);
     const listener = document.onDidChangeContent(() => {
       this._onDidChangeCustomDocument.fire({ document });
     });
@@ -64,7 +64,7 @@ export class WysidocEditorProvider
   }
 
   async resolveCustomEditor(
-    document: WysidocDocument,
+    document: TextflowDocument,
     webviewPanel: vscode.WebviewPanel
   ) {
     const webviewSet = this.docToWebviewMap.get(document)!;
@@ -85,23 +85,23 @@ export class WysidocEditorProvider
     });
   }
 
-  async saveCustomDocument(document: WysidocDocument) {
+  async saveCustomDocument(document: TextflowDocument) {
     return await document.save();
   }
 
   async saveCustomDocumentAs(
-    document: WysidocDocument,
+    document: TextflowDocument,
     destination: vscode.Uri
   ) {
     return await document.saveAs(destination);
   }
 
-  async revertCustomDocument(document: WysidocDocument) {
+  async revertCustomDocument(document: TextflowDocument) {
     return await document.revert();
   }
 
   async backupCustomDocument(
-    document: WysidocDocument,
+    document: TextflowDocument,
     context: vscode.CustomDocumentBackupContext
   ) {
     return await document.backup(context.destination);

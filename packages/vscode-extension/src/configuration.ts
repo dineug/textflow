@@ -3,7 +3,7 @@ import {
   Appearance,
   GrayColor,
   Theme,
-} from '@dineug/wysidoc-editor-vscode-bridge';
+} from '@dineug/textflow-editor-vscode-bridge';
 import * as vscode from 'vscode';
 
 function getConfigurationScope(
@@ -22,7 +22,7 @@ function getConfigurationScope(
 
 export function saveTheme(theme: Theme) {
   const config = vscode.workspace.getConfiguration(
-    'dineug.wysidoc-editor.theme'
+    'dineug.textflow-editor.theme'
   );
 
   config.update(
@@ -44,7 +44,7 @@ export function saveTheme(theme: Theme) {
 
 export function getTheme(): Theme {
   const config = vscode.workspace.getConfiguration(
-    'dineug.wysidoc-editor.theme'
+    'dineug.textflow-editor.theme'
   );
 
   return {

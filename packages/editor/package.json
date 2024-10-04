@@ -1,5 +1,5 @@
 {
-  "name": "@dineug/wysidoc-editor",
+  "name": "@dineug/textflow-editor",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -11,7 +11,7 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./wysidoc-editor.css": "./dist/style.css"
+    "./textflow-editor.css": "./dist/style.css"
   },
   "files": [
     "dist/*.js",
@@ -23,12 +23,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/dineug/wysidoc.git"
+    "url": "https://github.com/dineug/textflow.git"
   },
   "bugs": {
-    "url": "https://github.com/dineug/wysidoc/issues"
+    "url": "https://github.com/dineug/textflow/issues"
   },
-  "homepage": "https://github.com/dineug/wysidoc#readme",
+  "homepage": "https://github.com/dineug/textflow#readme",
   "author": "SeungHwan-Lee <dineug2@gmail.com>",
   "license": "MIT",
   "scripts": {

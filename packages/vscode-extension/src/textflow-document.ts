@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-export class WysidocDocument implements vscode.CustomDocument {
+export class TextflowDocument implements vscode.CustomDocument {
   private readonly _onDidDispose = new vscode.EventEmitter<void>();
   private readonly _onDidChangeContent = new vscode.EventEmitter<void>();
   public readonly onDidDispose = this._onDidDispose.event;
@@ -12,7 +12,7 @@ export class WysidocDocument implements vscode.CustomDocument {
   ) {}
 
   static create(uri: vscode.Uri, initialContent: Uint8Array) {
-    return new WysidocDocument(uri, initialContent);
+    return new TextflowDocument(uri, initialContent);
   }
 
   async save() {

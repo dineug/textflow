@@ -1,5 +1,5 @@
 {
-  "name": "@dineug/wysidoc-monorepo",
+  "name": "@dineug/textflow-monorepo",
   "private": true,
   "workspaces": [
     "packages/*"
@@ -9,12 +9,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/dineug/wysidoc.git"
+    "url": "https://github.com/dineug/textflow.git"
   },
   "bugs": {
-    "url": "https://github.com/dineug/wysidoc/issues"
+    "url": "https://github.com/dineug/textflow/issues"
   },
-  "homepage": "https://github.com/dineug/wysidoc#readme",
+  "homepage": "https://github.com/dineug/textflow#readme",
   "author": "SeungHwan-Lee <dineug2@gmail.com>",
   "license": "MIT",
   "scripts": {

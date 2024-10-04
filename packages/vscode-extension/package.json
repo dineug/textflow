@@ -1,26 +1,26 @@
 {
-  "name": "wysidoc-editor-vscode",
+  "name": "textflow-editor-vscode",
   "version": "0.1.0",
   "private": true,
-  "description": "wysidoc Editor VSCode Extension",
-  "displayName": "wysidoc",
+  "description": "textflow Editor VSCode Extension",
+  "displayName": "textflow",
   "publisher": "dineug",
   "categories": [
     "Other",
     "Visualization"
   ],
   "keywords": [
-    "wysidoc",
+    "textflow",
     "editor"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/dineug/wysidoc.git"
+    "url": "https://github.com/dineug/textflow.git"
   },
   "bugs": {
-    "url": "https://github.com/dineug/wysidoc/issues"
+    "url": "https://github.com/dineug/textflow/issues"
   },
-  "homepage": "https://github.com/dineug/wysidoc#readme",
+  "homepage": "https://github.com/dineug/textflow#readme",
   "author": "SeungHwan-Lee <dineug2@gmail.com>",
   "license": "MIT",
   "engines": {
@@ -37,8 +37,8 @@
     "nx:build": "nx build"
   },
   "devDependencies": {
-    "@dineug/wysidoc-editor-vscode-bridge": "workspace:*",
-    "@dineug/wysidoc-editor-vscode-webview": "workspace:*",
+    "@dineug/textflow-editor-vscode-bridge": "workspace:*",
+    "@dineug/textflow-editor-vscode-webview": "workspace:*",
     "@types/node": "^20.16.10",
     "@types/vscode": "^1.85.0",
     "base64-arraybuffer": "^1.0.2",
@@ -58,87 +58,81 @@
   "contributes": {
     "commands": [
       {
-        "command": "wysidoc.showSource",
-        "category": "wysidoc",
+        "command": "textflow.showSource",
+        "category": "textflow",
         "title": "Open Source",
         "icon": "$(go-to-file)"
       },
       {
-        "command": "wysidoc.showEditor",
-        "category": "wysidoc",
-        "title": "Open wysidoc Editor",
-        "icon": {
-          "dark": "./assets/temp-white-icon.svg",
-          "light": "./assets/temp-black-icon.svg"
-        }
+        "command": "textflow.showEditor",
+        "category": "textflow",
+        "title": "Open textflow Editor",
+        "icon": "$(file-text)"
       },
       {
-        "command": "wysidoc.showSourceToSide",
-        "category": "wysidoc",
+        "command": "textflow.showSourceToSide",
+        "category": "textflow",
         "title": "Open Source to the Side",
         "icon": "$(go-to-file)"
       },
       {
-        "command": "wysidoc.showEditorToSide",
-        "category": "wysidoc",
-        "title": "Open wysidoc Editor to the Side",
-        "icon": {
-          "dark": "./assets/temp-white-icon.svg",
-          "light": "./assets/temp-black-icon.svg"
-        }
+        "command": "textflow.showEditorToSide",
+        "category": "textflow",
+        "title": "Open textflow Editor to the Side",
+        "icon": "$(file-text)"
       }
     ],
     "menus": {
       "commandPalette": [
         {
-          "command": "wysidoc.showSource",
+          "command": "textflow.showSource",
           "when": "false"
         },
         {
-          "command": "wysidoc.showEditor",
+          "command": "textflow.showEditor",
           "when": "false"
         },
         {
-          "command": "wysidoc.showSourceToSide",
+          "command": "textflow.showSourceToSide",
           "when": "false"
         },
         {
-          "command": "wysidoc.showEditorToSide",
+          "command": "textflow.showEditorToSide",
           "when": "false"
         }
       ],
       "editor/title": [
         {
-          "command": "wysidoc.showEditor",
-          "alt": "wysidoc.showEditorToSide",
-          "when": "activeCustomEditorId != 'editor.wysidoc' && resourceFilename =~ /^.+\\.(wwdoc)(.json)$/",
+          "command": "textflow.showEditor",
+          "alt": "textflow.showEditorToSide",
+          "when": "activeCustomEditorId != 'editor.textflow' && resourceFilename =~ /^.+\\.(txf)(.json)$/",
           "group": "navigation"
         },
         {
-          "command": "wysidoc.showSource",
-          "alt": "wysidoc.showSourceToSide",
+          "command": "textflow.showSource",
+          "alt": "textflow.showSourceToSide",
           "group": "navigation",
-          "when": "activeCustomEditorId == 'editor.wysidoc' && resourceFilename =~ /^.+\\.(wwdoc)(.json)$/"
+          "when": "activeCustomEditorId == 'editor.textflow' && resourceFilename =~ /^.+\\.(txf)(.json)$/"
         }
       ]
     },
     "customEditors": [
       {
-        "viewType": "editor.wysidoc",
-        "displayName": "wysidoc-editor",
+        "viewType": "editor.textflow",
+        "displayName": "textflow-editor",
         "priority": "default",
         "selector": [
           {
-            "filenamePattern": "*.wwdoc.json"
+            "filenamePattern": "*.txf.json"
           }
         ]
       }
     ],
     "configuration": [
       {
-        "title": "wysidoc Editor",
+        "title": "textflow Editor",
         "properties": {
-          "dineug.wysidoc-editor.theme.appearance": {
+          "dineug.textflow-editor.theme.appearance": {
             "description": "Theme appearance",
             "type": "string",
             "default": "auto",
@@ -148,7 +142,7 @@
               "dark"
             ]
           },
-          "dineug.wysidoc-editor.theme.grayColor": {
+          "dineug.textflow-editor.theme.grayColor": {
             "description": "Gray color",
             "type": "string",
             "default": "slate",
@@ -161,7 +155,7 @@
               "sand"
             ]
           },
-          "dineug.wysidoc-editor.theme.accentColor": {
+          "dineug.textflow-editor.theme.accentColor": {
             "description": "Accent color",
             "type": "string",
             "default": "indigo",
