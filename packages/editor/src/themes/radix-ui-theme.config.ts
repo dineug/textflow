@@ -52,7 +52,7 @@ export const ThemeConfig: Theme = {
   destructiveForeground: 'gray-12',
 
   border: 'gray-6',
-  input: 'gray-12',
+  input: 'gray-6',
   ring: 'accent-8',
   selection: 'accentA-4',
 

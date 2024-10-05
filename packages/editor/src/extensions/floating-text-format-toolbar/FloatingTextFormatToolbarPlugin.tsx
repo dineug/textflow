@@ -127,7 +127,7 @@ const FloatingTextFormatToolbar: React.FC<FloatingTextFormatToolbarProps> = ({
   const [editor] = useLexicalComposerContext();
   const { refs, floatingStyles } = useFloating({
     placement: 'top-start',
-    middleware: [offset(() => 10), flip()],
+    middleware: [offset(10), flip()],
     whileElementsMounted: autoUpdate,
   });
 

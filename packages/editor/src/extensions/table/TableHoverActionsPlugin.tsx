@@ -37,14 +37,14 @@ const TableHoverActionsContainer: React.FC = () => {
 
   const { refs: rowRefs, floatingStyles: rowFloatingStyles } = useFloating({
     placement: 'bottom-start',
-    middleware: [offset(() => 5)],
+    middleware: [offset(5)],
     whileElementsMounted: autoUpdate,
   });
 
   const { refs: columnRefs, floatingStyles: columnFloatingStyles } =
     useFloating({
       placement: 'right-start',
-      middleware: [offset(() => 5)],
+      middleware: [offset(5)],
       whileElementsMounted: autoUpdate,
     });
 

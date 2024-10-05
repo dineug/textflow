@@ -63,7 +63,7 @@ const ReferencePlugin: React.FC = () => {
 
     return queryString
       ? new Fuse(list, {
-          keys: ['title'],
+          keys: ['title', 'relativePath'],
         })
           .search(queryString, { limit: MAX_SUGGESTION_COUNT })
           .map(result => new ReferenceMenu(result.item))

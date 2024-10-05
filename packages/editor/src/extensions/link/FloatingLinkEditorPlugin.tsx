@@ -44,7 +44,7 @@ const FloatingLinkEditor: React.FC = () => {
   const [editor] = useLexicalComposerContext();
   const { refs, floatingStyles } = useFloating({
     placement: 'bottom-start',
-    middleware: [offset(() => 10), flip()],
+    middleware: [offset(10), flip()],
     whileElementsMounted: autoUpdate,
   });
 

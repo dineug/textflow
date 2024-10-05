@@ -492,7 +492,7 @@ const TableCellActionMenuContainer: React.FC<
   const [editor] = useLexicalComposerContext();
   const { refs, floatingStyles } = useFloating({
     placement: 'right-start',
-    middleware: [offset(() => ({ mainAxis: -24, crossAxis: 9.25 }))],
+    middleware: [offset({ mainAxis: -24, crossAxis: 9.25 })],
     whileElementsMounted: autoUpdate,
   });
   const [tableCellNode, setTableMenuCellNode] = useState<TableCellNode | null>(
