@@ -1,7 +1,7 @@
 import { style } from '@vanilla-extract/css';
 
 export const code = style({
-  backgroundColor: 'hsl(var(--muted))',
+  backgroundColor: 'hsl(var(--code))',
   fontFamily: 'Menlo, Consolas, Monaco, monospace',
   display: 'block',
   padding: '8px 8px 8px 52px',
@@ -16,12 +16,12 @@ export const code = style({
   ':before': {
     content: 'attr(data-gutter)',
     position: 'absolute',
-    backgroundColor: 'hsl(var(--muted))',
+    backgroundColor: 'hsl(var(--code-line-number))',
     left: 0,
     top: 0,
-    borderRight: '1px solid hsl(var(--border))',
+    borderRight: '1px solid hsl(var(--code-line-number-border))',
     padding: 8,
-    color: 'hsl(var(--muted-foreground))',
+    color: 'hsl(var(--code-line-number-foreground))',
     whiteSpace: 'pre-wrap',
     textAlign: 'right',
     minWidth: 25,
@@ -29,26 +29,26 @@ export const code = style({
 });
 
 export const tokenComment = style({
-  color: 'slategray',
+  color: 'hsl(var(--code-comment))',
 });
 export const tokenPunctuation = style({
-  color: '#999',
+  color: 'hsl(var(--code-punctuation))',
 });
 export const tokenProperty = style({
-  color: '#905',
+  color: 'hsl(var(--code-property))',
 });
 export const tokenSelector = style({
-  color: '#690',
+  color: 'hsl(var(--code-selector))',
 });
 export const tokenOperator = style({
-  color: '#9a6e3a',
+  color: 'hsl(var(--code-operator))',
 });
 export const tokenAttr = style({
-  color: '#07a',
+  color: 'hsl(var(--code-attr))',
 });
 export const tokenVariable = style({
-  color: '#e90',
+  color: 'hsl(var(--code-variable))',
 });
 export const tokenFunction = style({
-  color: '#dd4a68',
+  color: 'hsl(var(--code-function))',
 });

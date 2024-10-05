@@ -1,4 +1,4 @@
-import { Theme } from '@/themes/tokens';
+import type { Theme } from '@/themes/tokens';
 
 export const ThemeConfig: Theme = {
   grayColor1: 'gray-1',
@@ -55,4 +55,17 @@ export const ThemeConfig: Theme = {
   input: 'gray-12',
   ring: 'accent-8',
   selection: 'accentA-4',
+
+  code: 'custom-slate--3',
+  codeLineNumber: 'custom-olive--3',
+  codeLineNumberForeground: 'custom-sand--10',
+  codeLineNumberBorder: 'custom-olive--7',
+  codeComment: 'custom-slate--10',
+  codePunctuation: 'custom-mauve--9',
+  codeProperty: 'custom-pink--12',
+  codeSelector: 'custom-lime--11',
+  codeOperator: 'custom-brown--10',
+  codeAttr: 'custom-sky--11',
+  codeVariable: 'custom-amber--10',
+  codeFunction: 'custom-ruby--9',
 } as const;

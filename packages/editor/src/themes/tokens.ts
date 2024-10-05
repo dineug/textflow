@@ -1,5 +1,7 @@
 import { kebabCase } from 'lodash-es';
 
+import { ThemeConfig } from './radix-ui-theme.config';
+
 export type Theme = {
   grayColor1: string;
   grayColor2: string;
@@ -55,64 +57,24 @@ export type Theme = {
   input: string;
   ring: string;
   selection: string;
+
+  code: string;
+  codeLineNumber: string;
+  codeLineNumberForeground: string;
+  codeLineNumberBorder: string;
+  codeComment: string;
+  codePunctuation: string;
+  codeProperty: string;
+  codeSelector: string;
+  codeOperator: string;
+  codeAttr: string;
+  codeVariable: string;
+  codeFunction: string;
 };
 
-export const ThemeTokens: ReadonlyArray<keyof Theme> = [
-  'grayColor1',
-  'grayColor2',
-  'grayColor3',
-  'grayColor4',
-  'grayColor5',
-  'grayColor6',
-  'grayColor7',
-  'grayColor8',
-  'grayColor9',
-  'grayColor10',
-  'grayColor11',
-  'grayColor12',
-
-  'accentColor1',
-  'accentColor2',
-  'accentColor3',
-  'accentColor4',
-  'accentColor5',
-  'accentColor6',
-  'accentColor7',
-  'accentColor8',
-  'accentColor9',
-  'accentColor10',
-  'accentColor11',
-  'accentColor12',
-
-  'background',
-  'foreground',
-
-  'card',
-  'cardForeground',
-
-  'popover',
-  'popoverForeground',
-
-  'primary',
-  'primaryForeground',
-
-  'secondary',
-  'secondaryForeground',
-
-  'muted',
-  'mutedForeground',
-
-  'accent',
-  'accentForeground',
-
-  'destructive',
-  'destructiveForeground',
-
-  'border',
-  'input',
-  'ring',
-  'selection',
-];
+export const ThemeTokens = Object.keys(ThemeConfig) as ReadonlyArray<
+  keyof Theme
+>;
 
 export const themeToTokensString = (theme: Theme) =>
   Object.keys(theme)
