@@ -2,16 +2,21 @@
   "name": "textflow-editor-vscode",
   "version": "0.1.0",
   "private": true,
-  "description": "textflow Editor VSCode Extension",
+  "description": "WYSIWYG Editor VSCode Extension",
   "displayName": "textflow",
   "publisher": "dineug",
   "categories": [
     "Other",
-    "Visualization"
+    "Visualization",
+    "Notebooks"
   ],
   "keywords": [
     "textflow",
-    "editor"
+    "editor",
+    "wysiwyg",
+    "doc",
+    "rich-text",
+    "lexical"
   ],
   "repository": {
     "type": "git",
