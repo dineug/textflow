@@ -8,6 +8,7 @@ import {
   hostUpdateReferenceListCommand,
   webviewInitialValueCommand,
   webviewUpdateBaseUrlCommand,
+  webviewUpdateReadonlyCommand,
   webviewUpdateReferenceListCommand,
   webviewUpdateThemeCommand,
 } from '@dineug/textflow-editor-vscode-bridge';
@@ -63,6 +64,9 @@ export class TextflowEditor extends Editor {
             baseUrl,
             path: this.document.uri.fsPath,
           })
+        );
+        dispatch(
+          Bridge.executeCommand(webviewUpdateReadonlyCommand, this.readonly)
         );
         dispatch(
           Bridge.executeCommand(webviewInitialValueCommand, {

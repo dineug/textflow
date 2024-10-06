@@ -1,6 +1,7 @@
 import { autoUpdate, offset, useFloating } from '@floating-ui/react';
 import { $isCodeNode, CodeNode, getLanguageFriendlyName } from '@lexical/code';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { useLexicalEditable } from '@lexical/react/useLexicalEditable';
 import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons';
 import { $getNearestNodeFromDOMNode } from 'lexical';
 import { Check, Copy } from 'lucide-react';
@@ -244,8 +245,9 @@ CodeActionMenuContainer.displayName = 'CodeActionMenuContainer';
 
 const CodeActionMenuPlugin: React.FC = () => {
   const { $editor } = useAppContext();
+  const isEditable = useLexicalEditable();
 
-  if (!$editor) {
+  if (!$editor || !isEditable) {
     return null;
   }
 

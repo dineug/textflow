@@ -1,4 +1,5 @@
 import { DraggableBlockPlugin_EXPERIMENTAL } from '@lexical/react/LexicalDraggableBlockPlugin';
+import { useLexicalEditable } from '@lexical/react/useLexicalEditable';
 import { GripVertical } from 'lucide-react';
 import { useRef } from 'react';
 
@@ -10,12 +11,13 @@ const DraggableBlockPlugin: React.FC = () => {
   const { $editor } = useAppContext();
   const menuRef = useRef<HTMLDivElement>(null);
   const targetLineRef = useRef<HTMLDivElement>(null);
+  const isEditable = useLexicalEditable();
 
   const handleIsOnMenu = (element: HTMLElement) => {
     return Boolean(element.closest(`.${styles.menu}`));
   };
 
-  if (!$editor) {
+  if (!$editor || !isEditable) {
     return null;
   }
 

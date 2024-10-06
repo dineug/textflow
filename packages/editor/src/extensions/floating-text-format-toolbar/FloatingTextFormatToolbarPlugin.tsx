@@ -1,6 +1,7 @@
 import { autoUpdate, flip, offset, useFloating } from '@floating-ui/react';
 import { $isCodeHighlightNode } from '@lexical/code';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { useLexicalEditable } from '@lexical/react/useLexicalEditable';
 import { mergeRegister } from '@lexical/utils';
 import {
   $getSelection,
@@ -25,6 +26,7 @@ const FloatingTextFormatToolbarPlugin: React.FC = () => {
   const { getFloatingTextFormatButtons } = useExtensionManager();
   const [editor] = useLexicalComposerContext();
   const { $editor } = useAppContext();
+  const isEditable = useLexicalEditable();
   const buttons = useMemo(
     () => [...getFloatingTextFormatButtons()],
     [getFloatingTextFormatButtons]
@@ -102,7 +104,7 @@ const FloatingTextFormatToolbarPlugin: React.FC = () => {
     );
   }, [editor, updatePopup]);
 
-  if (!isText || !$editor) {
+  if (!isText || !$editor || !isEditable) {
     return null;
   }
 

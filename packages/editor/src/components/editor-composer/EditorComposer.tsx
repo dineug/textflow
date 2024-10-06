@@ -33,6 +33,7 @@ import type {
   CommandPayload,
   Dispose,
 } from '@/extensions/extensionManager';
+import ReadonlyPlugin from '@/extensions/rich-text/ReadonlyPlugin';
 import { cn } from '@/lib/utils';
 
 import * as styles from './EditorComposer.css';
@@ -42,6 +43,7 @@ type EditorComposerProps = React.PropsWithChildren<{
   initialValue?: InitialConfigType['editorState'];
   absolutePath?: string;
   fsPath?: string;
+  readonly?: boolean;
   onChange?: React.ComponentProps<typeof OnChangePlugin>['onChange'];
   onThemeChange?: (theme: Theme) => void;
 }>;
@@ -65,6 +67,7 @@ const EditorComposer = forwardRef<EditorComposerRef, EditorComposerProps>(
       initialValue,
       absolutePath = '',
       fsPath = '',
+      readonly,
       children,
       onChange,
       onThemeChange,
@@ -156,6 +159,7 @@ const EditorComposer = forwardRef<EditorComposerRef, EditorComposerProps>(
                         onChange={handleChange}
                       />
                       <HistoryPlugin />
+                      <ReadonlyPlugin readonly={readonly} />
                     </div>
                   </ScrollArea>
                 </div>

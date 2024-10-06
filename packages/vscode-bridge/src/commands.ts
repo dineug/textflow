@@ -36,6 +36,9 @@ export const webviewUpdateReferenceListCommand = createCommand<
     relativePath: string;
   }>
 >('webviewUpdateReferenceListCommand');
+export const webviewUpdateReadonlyCommand = createCommand<boolean>(
+  'webviewUpdateReadonlyCommand'
+);
 
 export const workerFindReferenceListCommand = createCommand<Array<string>>(
   'workerFindReferenceListCommand'

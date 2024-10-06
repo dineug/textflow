@@ -1,5 +1,6 @@
 import { autoUpdate, offset, useFloating } from '@floating-ui/react';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { useLexicalEditable } from '@lexical/react/useLexicalEditable';
 import {
   $getTableColumnIndexFromTableCellNode,
   $getTableRowIndexFromTableCellNode,
@@ -229,8 +230,9 @@ TableHoverActionsContainer.displayName = 'TableHoverActionsContainer';
 
 const TableHoverActionsPlugin: React.FC = () => {
   const { $editor } = useAppContext();
+  const isEditable = useLexicalEditable();
 
-  if (!$editor) {
+  if (!$editor || !isEditable) {
     return null;
   }
 

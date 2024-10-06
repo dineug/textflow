@@ -15,6 +15,7 @@ import {
   hostSaveValueCommand,
   webviewInitialValueCommand,
   webviewUpdateBaseUrlCommand,
+  webviewUpdateReadonlyCommand,
   webviewUpdateReferenceListCommand,
   webviewUpdateThemeCommand,
 } from '@dineug/textflow-editor-vscode-bridge';
@@ -22,6 +23,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
+  const [readonly, setReadonly] = useState(false);
   const [absolutePath, setAbsolutePath] = useState('');
   const [fsPath, setFsPath] = useState('');
   const [initialValue, setInitialValue] = useState<string | null | undefined>(
@@ -66,7 +68,8 @@ const App: React.FC = () => {
       }),
       bridge.registerCommand(webviewUpdateReferenceListCommand, list => {
         editorRef.current?.executeCommand(setReferenceListCommand, list);
-      })
+      }),
+      bridge.registerCommand(webviewUpdateReadonlyCommand, setReadonly)
     );
 
     const handleMessage = (event: MessageEvent<any>) => {
@@ -103,6 +106,7 @@ const App: React.FC = () => {
       initialValue={initialValue}
       absolutePath={absolutePath}
       fsPath={fsPath}
+      readonly={readonly}
       onChange={handleChange}
       onThemeChange={handleThemeChange}
     />

@@ -6,6 +6,7 @@ import {
   TOGGLE_LINK_COMMAND,
 } from '@lexical/link';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { useLexicalEditable } from '@lexical/react/useLexicalEditable';
 import { $findMatchingParent, mergeRegister } from '@lexical/utils';
 import { atom, useAtom, useSetAtom } from 'jotai';
 import {
@@ -286,6 +287,7 @@ FloatingLinkEditor.displayName = 'FloatingLinkEditor';
 const FloatingLinkEditorPlugin: React.FC = () => {
   const [editor] = useLexicalComposerContext();
   const { $editor } = useAppContext();
+  const isEditable = useLexicalEditable();
   const setIsLink = useSetAtom(isLinkAtom);
 
   useEffect(() => {
@@ -343,7 +345,7 @@ const FloatingLinkEditorPlugin: React.FC = () => {
     );
   }, [editor, setIsLink]);
 
-  if (!$editor) {
+  if (!$editor || !isEditable) {
     return null;
   }
 
