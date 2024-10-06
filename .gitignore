@@ -134,3 +134,4 @@ dist
 .idea
 
 packages/vscode-extension/public
+*.vsix
