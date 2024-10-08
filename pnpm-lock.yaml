@@ -277,6 +277,31 @@ importers:
         specifier: ^4.0.3
         version: 4.0.3(@types/node@22.4.0)(rollup@4.20.0)(typescript@5.5.4)(vite@5.4.1(@types/node@22.4.0)(terser@5.32.0))
 
+  packages/shared:
+    dependencies:
+      '@egjs/agent':
+        specifier: ^2.4.4
+        version: 2.4.4
+    devDependencies:
+      '@rollup/plugin-typescript':
+        specifier: ^11.1.6
+        version: 11.1.6(rollup@4.20.0)(tslib@2.6.3)(typescript@5.5.4)
+      '@types/lodash-es':
+        specifier: ^4.17.12
+        version: 4.17.12
+      '@types/node':
+        specifier: ^22.1.0
+        version: 22.4.0
+      typescript:
+        specifier: 5.5.4
+        version: 5.5.4
+      vite:
+        specifier: ^5.3.5
+        version: 5.4.1(@types/node@22.4.0)(terser@5.32.0)
+      vite-plugin-dts:
+        specifier: ^3.9.1
+        version: 3.9.1(@types/node@22.4.0)(rollup@4.20.0)(typescript@5.5.4)(vite@5.4.1(@types/node@22.4.0)(terser@5.32.0))
+
   packages/vscode-bridge:
     dependencies:
       lodash-es:
@@ -343,6 +368,9 @@ importers:
 
   packages/vscode-webview:
     devDependencies:
+      '@dineug/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@dineug/textflow-editor':
         specifier: workspace:*
         version: link:../editor
@@ -554,6 +582,9 @@ packages:
   '@discoveryjs/json-ext@0.5.7':
     resolution: {integrity: sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==}
     engines: {node: '>=10.0.0'}
+
+  '@egjs/agent@2.4.4':
+    resolution: {integrity: sha512-cvAPSlUILhBBOakn2krdPnOGv5hAZq92f1YHxYcfu0p7uarix2C6Ia3AVizpS1SGRZGiEkIS5E+IVTLg1I2Iog==}
 
   '@emnapi/core@1.2.0':
     resolution: {integrity: sha512-E7Vgw78I93we4ZWdYCb4DGAwRROGkMIXk7/y87UmANR+J6qsWusmC3gLt0H+O0KOt5e6O38U8oJamgbudrES/w==}
@@ -5456,6 +5487,8 @@ snapshots:
       to-fast-properties: 2.0.0
 
   '@discoveryjs/json-ext@0.5.7': {}
+
+  '@egjs/agent@2.4.4': {}
 
   '@emnapi/core@1.2.0':
     dependencies:
@@ -10387,7 +10420,7 @@ snapshots:
       watchpack: 2.4.2
       webpack-sources: 3.2.3
     optionalDependencies:
-      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.1.0)(webpack@5.94.0)
+      webpack-cli: 5.1.4(webpack@5.94.0)
     transitivePeerDependencies:
       - '@swc/core'
       - esbuild

@@ -136,7 +136,7 @@ const EditorComposer = forwardRef<EditorComposerRef, EditorComposerProps>(
                               style={assignInlineVars({
                                 [styles.minHeightVar]: minHeight,
                               })}
-                              aria-placeholder={'placeholder...'}
+                              aria-placeholder="To use a command, press the '/' key."
                               placeholder={
                                 <div
                                   className={cn(

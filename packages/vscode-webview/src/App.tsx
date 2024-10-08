@@ -1,5 +1,6 @@
 import '@dineug/textflow-editor/textflow-editor.css';
 
+import { hasAppleDevice } from '@dineug/shared';
 import {
   Editor,
   openReferenceCommand,
@@ -94,6 +95,24 @@ const App: React.FC = () => {
       dispatch(Bridge.executeCommand(hostOpenReferenceCommand, payload));
     });
   }, [dispatch, loading]);
+
+  useEffect(() => {
+    const handleKeydown = (event: KeyboardEvent) => {
+      if (
+        event.code === 'KeyZ' && hasAppleDevice()
+          ? event.metaKey
+          : event.ctrlKey
+      ) {
+        event.stopPropagation();
+      }
+    };
+
+    document.body.addEventListener('keydown', handleKeydown);
+
+    return () => {
+      document.body.removeEventListener('keydown', handleKeydown);
+    };
+  }, []);
 
   if (loading || initialValue === null) {
     return null;

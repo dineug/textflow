@@ -21,6 +21,10 @@
       "path": "packages/vscode-extension",
     },
     {
+      "name": "shared",
+      "path": "packages/shared",
+    },
+    {
       "name": "monorepo",
       "path": ".",
     },
