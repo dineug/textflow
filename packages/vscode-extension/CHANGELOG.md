@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.5] - 2024-10-09
+
+### Fixed
+
+- Updated code block styling
+- Fixed bug where `Ctrl+S` had no effect; saving now requires using `File | Save`
+
 ## [0.1.4] - 2024-10-08
 
 ### Fixed

@@ -98,11 +98,9 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const handleKeydown = (event: KeyboardEvent) => {
-      if (
-        event.code === 'KeyZ' && hasAppleDevice()
-          ? event.metaKey
-          : event.ctrlKey
-      ) {
+      const $mod = hasAppleDevice() ? event.metaKey : event.ctrlKey;
+
+      if ($mod && event.code === 'KeyZ') {
         event.stopPropagation();
       }
     };
