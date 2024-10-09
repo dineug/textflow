@@ -6,6 +6,9 @@ import 'prismjs/components/prism-docker.js';
 import 'prismjs/components/prism-csharp.js';
 import 'prismjs/components/prism-json.js';
 import 'prismjs/components/prism-toml.js';
+import 'prismjs/components/prism-bash.js';
+
+export const Prism: typeof import('prismjs') = globalThis.Prism || window.Prism;
 
 export const LANGUAGES: Array<{
   label: string;
@@ -21,8 +24,8 @@ export const LANGUAGES: Array<{
   { label: 'Go', value: 'go' },
   { label: 'HTML', value: 'html' },
   { label: 'Java', value: 'java' },
-  { label: 'JavaScript', value: 'javascript', keywords: ['js'] },
-  { label: 'JSX', value: 'jsx', keywords: ['js', 'javascript'] },
+  { label: 'JavaScript', value: 'js', keywords: ['javascript'] },
+  { label: 'JSX', value: 'jsx', keywords: ['javascript'] },
   { label: 'JSON', value: 'json' },
   { label: 'Markdown', value: 'markdown', keywords: ['md'] },
   { label: 'Objective-C', value: 'objc', keywords: ['Objective-C'] },
@@ -31,12 +34,12 @@ export const LANGUAGES: Array<{
   { label: 'Python', value: 'py', keywords: ['Python'] },
   { label: 'Rust', value: 'rust' },
   { label: 'SQL', value: 'sql' },
-  { label: 'Shell', value: 'shell', keywords: ['sh', 'bash'] },
+  { label: 'Shell', value: 'shell', keywords: ['bash'] },
   { label: 'Shell Script (sh)', value: 'sh', keywords: ['shell', 'bash'] },
   { label: 'Swift', value: 'swift' },
   { label: 'TOML', value: 'toml' },
-  { label: 'TSX', value: 'tsx', keywords: ['ts', 'typescript'] },
-  { label: 'TypeScript', value: 'typescript', keywords: ['ts'] },
+  { label: 'TSX', value: 'tsx', keywords: ['typescript'] },
+  { label: 'TypeScript', value: 'ts', keywords: ['typescript'] },
   { label: 'XML', value: 'xml' },
   { label: 'YAML', value: 'yaml' },
 ];

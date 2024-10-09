@@ -45,7 +45,7 @@ const CodeActionMenuContainer: React.FC = () => {
   });
 
   const [open, setOpen] = useState(false);
-  const [lang, setLang] = useState('');
+  const [lang, setLang] = useState('plain');
   const [isShown, setShown] = useState<boolean>(false);
   const [shouldListenMouseMove, setShouldListenMouseMove] =
     useState<boolean>(false);
@@ -83,7 +83,7 @@ const CodeActionMenuContainer: React.FC = () => {
 
         if ($isCodeNode(maybeCodeNode)) {
           codeNode = maybeCodeNode;
-          _lang = codeNode.getLanguage() || '';
+          _lang = codeNode.getLanguage() || 'plain';
         }
       });
 
