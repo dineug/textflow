@@ -149,7 +149,7 @@ const ReferencePlugin: React.FC = () => {
                 {options.map((option, i) => (
                   <div
                     className={cn(
-                      'aria-[selected=true]:bg-accent aria-[selected=true]:text-accent-foreground relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none'
+                      'aria-[selected=true]:bg-accent aria-[selected=true]:text-accent-foreground relative flex cursor-default select-none items-center whitespace-nowrap rounded-sm px-2 py-1.5 text-sm outline-none'
                     )}
                     key={option.key}
                     tabIndex={-1}
@@ -165,8 +165,12 @@ const ReferencePlugin: React.FC = () => {
                     }}
                   >
                     <FileText className="mr-2 h-4 w-4" />
-                    <span>{option.title}</span>
-                    <span className={cn('text-muted-foreground ml-auto pl-6')}>
+                    <span className="whitespace-nowrap">{option.title}</span>
+                    <span
+                      className={cn(
+                        'text-muted-foreground ml-auto whitespace-nowrap pl-6'
+                      )}
+                    >
                       {option.relativePath}
                     </span>
                   </div>
