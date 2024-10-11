@@ -229,14 +229,14 @@ const TableHoverActionsContainer: React.FC = () => {
 TableHoverActionsContainer.displayName = 'TableHoverActionsContainer';
 
 const TableHoverActionsPlugin: React.FC = () => {
-  const { $editor } = useAppContext();
+  const { $root } = useAppContext();
   const isEditable = useLexicalEditable();
 
-  if (!$editor || !isEditable) {
+  if (!$root || !isEditable) {
     return null;
   }
 
-  return createPortal(<TableHoverActionsContainer />, $editor);
+  return createPortal(<TableHoverActionsContainer />, $root);
 };
 
 TableHoverActionsPlugin.displayName = 'TableHoverActionsPlugin';

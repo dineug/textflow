@@ -244,14 +244,14 @@ const CodeActionMenuContainer: React.FC = () => {
 CodeActionMenuContainer.displayName = 'CodeActionMenuContainer';
 
 const CodeActionMenuPlugin: React.FC = () => {
-  const { $editor } = useAppContext();
+  const { $root } = useAppContext();
   const isEditable = useLexicalEditable();
 
-  if (!$editor || !isEditable) {
+  if (!$root || !isEditable) {
     return null;
   }
 
-  return createPortal(<CodeActionMenuContainer />, $editor);
+  return createPortal(<CodeActionMenuContainer />, $root);
 };
 
 CodeActionMenuPlugin.displayName = 'CodeActionMenuPlugin';

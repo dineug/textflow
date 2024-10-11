@@ -22,101 +22,6 @@ import { getSelectedNode } from '@/utils/getSelectedNode';
 
 import type { FloatingTextFormatButton } from './index';
 
-const FloatingTextFormatToolbarPlugin: React.FC = () => {
-  const { getFloatingTextFormatButtons } = useExtensionManager();
-  const [editor] = useLexicalComposerContext();
-  const { $editor } = useAppContext();
-  const isEditable = useLexicalEditable();
-  const buttons = useMemo(
-    () => [...getFloatingTextFormatButtons()],
-    [getFloatingTextFormatButtons]
-  );
-  const [isText, setIsText] = useState(false);
-  const [isFormatMap, setIsFormatMap] = useState<Record<number, boolean>>({});
-
-  const updatePopup = useCallback(() => {
-    editor.getEditorState().read(() => {
-      if (editor.isComposing()) {
-        return;
-      }
-
-      const selection = $getSelection();
-      const nativeSelection = window.getSelection();
-      const rootElement = editor.getRootElement();
-
-      if (
-        nativeSelection !== null &&
-        (!$isRangeSelection(selection) ||
-          rootElement === null ||
-          !rootElement.contains(nativeSelection.anchorNode))
-      ) {
-        setIsText(false);
-        return;
-      }
-
-      if (!$isRangeSelection(selection)) {
-        return;
-      }
-
-      const node = getSelectedNode(selection);
-
-      setIsFormatMap(
-        buttons.reduce((acc: Record<number, boolean>, button, index) => {
-          acc[index] = button.$hasFormat(selection);
-          return acc;
-        }, {})
-      );
-
-      if (
-        !$isCodeHighlightNode(selection.anchor.getNode()) &&
-        selection.getTextContent() !== ''
-      ) {
-        setIsText($isTextNode(node) || $isParagraphNode(node));
-      } else {
-        setIsText(false);
-      }
-
-      const rawTextContent = selection.getTextContent().replace(/\n/g, '');
-      if (!selection.isCollapsed() && rawTextContent === '') {
-        setIsText(false);
-        return;
-      }
-    });
-  }, [buttons, editor]);
-
-  useEffect(() => {
-    document.addEventListener('selectionchange', updatePopup);
-    return () => {
-      document.removeEventListener('selectionchange', updatePopup);
-    };
-  }, [updatePopup]);
-
-  useEffect(() => {
-    return mergeRegister(
-      editor.registerUpdateListener(() => {
-        updatePopup();
-      }),
-      editor.registerRootListener(() => {
-        if (editor.getRootElement() === null) {
-          setIsText(false);
-        }
-      })
-    );
-  }, [editor, updatePopup]);
-
-  if (!isText || !$editor || !isEditable) {
-    return null;
-  }
-
-  return createPortal(
-    <FloatingTextFormatToolbar buttons={buttons} isFormatMap={isFormatMap} />,
-    $editor
-  );
-};
-
-FloatingTextFormatToolbarPlugin.displayName =
-  'extensionFloatingTextFormatToolbar.Plugin';
-
 type FloatingTextFormatToolbarProps = {
   buttons: FloatingTextFormatButton[];
   isFormatMap: Record<number, boolean>;
@@ -200,5 +105,100 @@ const FloatingTextFormatToolbar: React.FC<FloatingTextFormatToolbarProps> = ({
 };
 
 FloatingTextFormatToolbar.displayName = 'FloatingTextFormatToolbar';
+
+const FloatingTextFormatToolbarPlugin: React.FC = () => {
+  const { getFloatingTextFormatButtons } = useExtensionManager();
+  const [editor] = useLexicalComposerContext();
+  const { $root } = useAppContext();
+  const isEditable = useLexicalEditable();
+  const buttons = useMemo(
+    () => [...getFloatingTextFormatButtons()],
+    [getFloatingTextFormatButtons]
+  );
+  const [isText, setIsText] = useState(false);
+  const [isFormatMap, setIsFormatMap] = useState<Record<number, boolean>>({});
+
+  const updatePopup = useCallback(() => {
+    editor.getEditorState().read(() => {
+      if (editor.isComposing()) {
+        return;
+      }
+
+      const selection = $getSelection();
+      const nativeSelection = window.getSelection();
+      const rootElement = editor.getRootElement();
+
+      if (
+        nativeSelection !== null &&
+        (!$isRangeSelection(selection) ||
+          rootElement === null ||
+          !rootElement.contains(nativeSelection.anchorNode))
+      ) {
+        setIsText(false);
+        return;
+      }
+
+      if (!$isRangeSelection(selection)) {
+        return;
+      }
+
+      const node = getSelectedNode(selection);
+
+      setIsFormatMap(
+        buttons.reduce((acc: Record<number, boolean>, button, index) => {
+          acc[index] = button.$hasFormat(selection);
+          return acc;
+        }, {})
+      );
+
+      if (
+        !$isCodeHighlightNode(selection.anchor.getNode()) &&
+        selection.getTextContent() !== ''
+      ) {
+        setIsText($isTextNode(node) || $isParagraphNode(node));
+      } else {
+        setIsText(false);
+      }
+
+      const rawTextContent = selection.getTextContent().replace(/\n/g, '');
+      if (!selection.isCollapsed() && rawTextContent === '') {
+        setIsText(false);
+        return;
+      }
+    });
+  }, [buttons, editor]);
+
+  useEffect(() => {
+    document.addEventListener('selectionchange', updatePopup);
+    return () => {
+      document.removeEventListener('selectionchange', updatePopup);
+    };
+  }, [updatePopup]);
+
+  useEffect(() => {
+    return mergeRegister(
+      editor.registerUpdateListener(() => {
+        updatePopup();
+      }),
+      editor.registerRootListener(() => {
+        if (editor.getRootElement() === null) {
+          setIsText(false);
+        }
+      })
+    );
+  }, [editor, updatePopup]);
+
+  if (!isText || !$root || !isEditable) {
+    return null;
+  }
+
+  return createPortal(
+    <FloatingTextFormatToolbar buttons={buttons} isFormatMap={isFormatMap} />,
+    $root
+  );
+};
+
+FloatingTextFormatToolbarPlugin.displayName =
+  'extensionFloatingTextFormatToolbar.Plugin';
 
 export default FloatingTextFormatToolbarPlugin;

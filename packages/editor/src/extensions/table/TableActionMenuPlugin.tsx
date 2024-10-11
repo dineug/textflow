@@ -637,16 +637,16 @@ type TableActionMenuPluginProps = {
 const TableActionMenuPlugin: React.FC<TableActionMenuPluginProps> = ({
   hasCellMerge,
 }) => {
-  const { $editor } = useAppContext();
+  const { $root } = useAppContext();
   const isEditable = useLexicalEditable();
 
-  if (!$editor || !isEditable) {
+  if (!$root || !isEditable) {
     return null;
   }
 
   return createPortal(
     <TableCellActionMenuContainer hasCellMerge={hasCellMerge} />,
-    $editor
+    $root
   );
 };
 

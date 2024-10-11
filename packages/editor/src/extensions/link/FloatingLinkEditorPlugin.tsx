@@ -286,7 +286,7 @@ FloatingLinkEditor.displayName = 'FloatingLinkEditor';
 
 const FloatingLinkEditorPlugin: React.FC = () => {
   const [editor] = useLexicalComposerContext();
-  const { $editor } = useAppContext();
+  const { $root } = useAppContext();
   const isEditable = useLexicalEditable();
   const setIsLink = useSetAtom(isLinkAtom);
 
@@ -345,11 +345,11 @@ const FloatingLinkEditorPlugin: React.FC = () => {
     );
   }, [editor, setIsLink]);
 
-  if (!$editor || !isEditable) {
+  if (!$root || !isEditable) {
     return null;
   }
 
-  return createPortal(<FloatingLinkEditor />, $editor);
+  return createPortal(<FloatingLinkEditor />, $root);
 };
 
 FloatingLinkEditorPlugin.displayName = 'FloatingLinkEditorPlugin';
