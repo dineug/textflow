@@ -37,6 +37,7 @@ export const editor = style({
 });
 
 export const minHeightVar = createVar();
+export const paddingTopVar = createVar();
 
 export const contentEditable = style({
   border: 0,
@@ -44,7 +45,10 @@ export const contentEditable = style({
   display: 'block',
   position: 'relative',
   outline: 0,
-  padding: '40px 28px 40px',
+  paddingTop: fallbackVar(paddingTopVar, '40px'),
+  paddingRight: '28px',
+  paddingBottom: '40px',
+  paddingLeft: '28px',
   minHeight: fallbackVar(minHeightVar, '150px'),
 });
 
@@ -53,7 +57,7 @@ export const placeholder = style({
   overflow: 'hidden',
   position: 'absolute',
   textOverflow: 'ellipsis',
-  top: 40,
+  top: fallbackVar(paddingTopVar, '40px'),
   left: 28,
   right: 28,
   userSelect: 'none',

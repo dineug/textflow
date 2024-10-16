@@ -119,7 +119,7 @@ const App: React.FC = () => {
   return (
     <Editor
       ref={editorRef}
-      minHeight="100vh"
+      minHeight="calc(100vh - 65px)"
       initialValue={initialValue}
       absolutePath={absolutePath}
       fsPath={fsPath}

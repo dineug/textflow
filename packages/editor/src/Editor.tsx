@@ -18,6 +18,7 @@ import { extensionReference } from '@/extensions/reference/extension';
 import { extensionRichText } from '@/extensions/rich-text/extension';
 import { extensionSlashCommand } from '@/extensions/slash-command/extension';
 import { extensionTable } from '@/extensions/table/extension';
+import { extensionToolbar } from '@/extensions/toolbar/extension';
 
 type EditorProps = Omit<
   React.ComponentProps<typeof EditorComposer>,
@@ -49,6 +50,7 @@ const Editor = forwardRef<
           extensionEquation,
           extensionTable,
           extensionCollapsible,
+          extensionToolbar,
         ],
       }),
     []
@@ -84,6 +86,7 @@ const Editor = forwardRef<
         <extensionEquation.Plugin />
         <extensionTable.Plugin />
         <extensionCollapsible.Plugin />
+        <extensionToolbar.Plugin />
       </EditorComposer>
     </ExtensionManagerProvider>
   );

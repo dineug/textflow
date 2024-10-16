@@ -34,6 +34,7 @@ import type {
   Dispose,
 } from '@/extensions/extensionManager';
 import ReadonlyPlugin from '@/extensions/rich-text/ReadonlyPlugin';
+import Toolbar from '@/extensions/toolbar/Toolbar';
 import { cn } from '@/lib/utils';
 
 import * as styles from './EditorComposer.css';
@@ -126,6 +127,7 @@ const EditorComposer = forwardRef<EditorComposerRef, EditorComposerProps>(
                   ref={setRoot}
                   className={clsx('textflow-editor', styles.shell)}
                 >
+                  <Toolbar />
                   <ScrollArea className={styles.container}>
                     <div className={styles.layout}>
                       <RichTextPlugin

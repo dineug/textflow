@@ -7,6 +7,6 @@ const container = document.getElementById('root')!;
 const root = ReactDOM.createRoot(container);
 root.render(
   <React.StrictMode>
-    <Editor minHeight="100vh" />
+    <Editor minHeight="calc(100vh - 65px)" />
   </React.StrictMode>
 );
