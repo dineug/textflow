@@ -149,7 +149,7 @@ const ReferencePlugin: React.FC = () => {
                 {options.map((option, i) => (
                   <div
                     className={cn(
-                      'aria-[selected=true]:bg-accent aria-[selected=true]:text-accent-foreground relative flex cursor-default select-none items-center whitespace-nowrap rounded-sm px-2 py-1.5 text-sm outline-none'
+                      'aria-[selected=true]:bg-muted aria-[selected=true]:text-accent-foreground relative flex cursor-default select-none items-center whitespace-nowrap rounded-sm px-2 py-1.5 text-sm outline-none'
                     )}
                     key={option.key}
                     tabIndex={-1}

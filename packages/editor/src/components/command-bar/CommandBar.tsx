@@ -90,7 +90,7 @@ const ResultItem = forwardRef<HTMLDivElement, ResultItemProps>(
       <div
         ref={ref}
         className={cn(
-          'aria-[selected=true]:bg-accent aria-[selected=true]:text-accent-foreground relative flex cursor-default select-none items-center justify-between rounded-sm px-4 py-3 text-sm outline-none',
+          'aria-[selected=true]:bg-muted aria-[selected=true]:text-accent-foreground relative flex cursor-default select-none items-center justify-between rounded-sm px-4 py-3 text-sm outline-none',
           'aria-[selected=true]:border-l-foreground border-l-2 border-solid border-l-transparent'
         )}
         aria-selected={active}

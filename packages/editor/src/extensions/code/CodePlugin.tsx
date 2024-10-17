@@ -1,5 +1,13 @@
-import { registerCodeHighlighting } from '@lexical/code';
+import { $isCodeNode, registerCodeHighlighting } from '@lexical/code';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { $findMatchingParent, mergeRegister } from '@lexical/utils';
+import {
+  $getSelection,
+  $isRangeSelection,
+  $isRootOrShadowRoot,
+  COMMAND_PRIORITY_LOW,
+  SELECT_ALL_COMMAND,
+} from 'lexical';
 import { useEffect } from 'react';
 
 import CodeActionMenuPlugin from './CodeActionMenuPlugin';
@@ -25,7 +33,43 @@ const PrismTokenizer: Parameters<typeof registerCodeHighlighting>[1] = {
 const CodePlugin: React.FC = () => {
   const [editor] = useLexicalComposerContext();
 
-  useEffect(() => registerCodeHighlighting(editor, PrismTokenizer), [editor]);
+  useEffect(() => {
+    return mergeRegister(
+      registerCodeHighlighting(editor, PrismTokenizer),
+      editor.registerCommand(
+        SELECT_ALL_COMMAND,
+        event => {
+          const selection = $getSelection();
+          if ($isRangeSelection(selection)) {
+            const anchorNode = selection.anchor.getNode();
+            let element =
+              anchorNode.getKey() === 'root'
+                ? anchorNode
+                : $findMatchingParent(anchorNode, e => {
+                    const parent = e.getParent();
+                    return parent !== null && $isRootOrShadowRoot(parent);
+                  });
+
+            if (element === null) {
+              element = anchorNode.getTopLevelElementOrThrow();
+            }
+
+            const elementKey = element.getKey();
+            const elementDOM = editor.getElementByKey(elementKey);
+
+            if (elementDOM !== null && $isCodeNode(element)) {
+              event.stopPropagation();
+              element.select(0, element.getChildrenSize());
+              return true;
+            }
+          }
+
+          return false;
+        },
+        COMMAND_PRIORITY_LOW
+      )
+    );
+  }, [editor]);
 
   return <CodeActionMenuPlugin />;
 };
