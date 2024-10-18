@@ -119,11 +119,12 @@ const App: React.FC = () => {
   return (
     <Editor
       ref={editorRef}
-      minHeight="calc(100vh - 65px)"
+      minHeight="calc(100vh - 57px)"
       initialValue={initialValue}
       absolutePath={absolutePath}
       fsPath={fsPath}
       readonly={readonly}
+      autofocus
       onChange={handleChange}
       onThemeChange={handleThemeChange}
     />

@@ -4,9 +4,9 @@ export const toolbarLayout = style({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  height: 65,
-  minHeight: 65,
-  maxHeight: 65,
+  height: 57,
+  minHeight: 57,
+  maxHeight: 57,
 });
 
 export const toolbar = style({
@@ -15,7 +15,6 @@ export const toolbar = style({
   height: 40,
   minHeight: 40,
   padding: 8,
-  marginTop: 8,
   display: 'flex',
   alignItems: 'center',
   whiteSpace: 'nowrap',

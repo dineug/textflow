@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.7] - 2024-10-19
+
+### Fixed
+
+- code block select all
+- maximum history size
+
 ## [0.1.6] - 2024-10-18
 
 ### Added

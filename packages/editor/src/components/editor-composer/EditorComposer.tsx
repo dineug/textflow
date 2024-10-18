@@ -5,7 +5,6 @@ import {
 } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
-import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
@@ -33,9 +32,11 @@ import type {
   CommandPayload,
   Dispose,
 } from '@/extensions/extensionManager';
-import ReadonlyPlugin from '@/extensions/rich-text/ReadonlyPlugin';
 import Toolbar from '@/extensions/toolbar/Toolbar';
 import { cn } from '@/lib/utils';
+import DraggableBlockPlugin from '@/plugins/DraggableBlockPlugin';
+import LimitedHistoryPlugin from '@/plugins/LimitedHistoryPlugin';
+import ReadonlyPlugin from '@/plugins/ReadonlyPlugin';
 
 import * as styles from './EditorComposer.css';
 
@@ -45,6 +46,7 @@ type EditorComposerProps = React.PropsWithChildren<{
   absolutePath?: string;
   fsPath?: string;
   readonly?: boolean;
+  autofocus?: boolean;
   onChange?: React.ComponentProps<typeof OnChangePlugin>['onChange'];
   onThemeChange?: (theme: Theme) => void;
 }>;
@@ -69,6 +71,7 @@ const EditorComposer = forwardRef<EditorComposerRef, EditorComposerProps>(
       absolutePath = '',
       fsPath = '',
       readonly,
+      autofocus,
       children,
       onChange,
       onThemeChange,
@@ -155,13 +158,14 @@ const EditorComposer = forwardRef<EditorComposerRef, EditorComposerProps>(
                         ErrorBoundary={LexicalErrorBoundary}
                       />
                       {children}
-                      <AutoFocusPlugin />
+                      <LimitedHistoryPlugin />
+                      <DraggableBlockPlugin />
                       <OnChangePlugin
                         ignoreSelectionChange
                         onChange={handleChange}
                       />
-                      <HistoryPlugin />
                       <ReadonlyPlugin readonly={readonly} />
+                      {autofocus && <AutoFocusPlugin />}
                     </div>
                   </ScrollArea>
                 </div>

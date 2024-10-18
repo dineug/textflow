@@ -8,6 +8,7 @@ import {
   COMMAND_PRIORITY_LOW,
   SELECT_ALL_COMMAND,
 } from 'lexical';
+import { first, last } from 'lodash-es';
 import { useEffect } from 'react';
 
 import CodeActionMenuPlugin from './CodeActionMenuPlugin';
@@ -58,6 +59,17 @@ const CodePlugin: React.FC = () => {
             const elementDOM = editor.getElementByKey(elementKey);
 
             if (elementDOM !== null && $isCodeNode(element)) {
+              const childrenKeys = element.getChildrenKeys();
+              const firstKey = first(childrenKeys);
+              const lastKey = last(childrenKeys);
+
+              if (
+                firstKey === selection.anchor.key &&
+                selection.focus.key === lastKey
+              ) {
+                return false;
+              }
+
               event.stopPropagation();
               element.select(0, element.getChildrenSize());
               return true;
