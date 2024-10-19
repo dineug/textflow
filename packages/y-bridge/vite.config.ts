@@ -23,8 +23,7 @@ export default defineConfig(({ command }) => {
     define: {},
     build: {
       lib: {
-        entry: './src/index.ts',
-        fileName: () => 'index.js',
+        entry: ['./src/index.ts'],
         formats: ['es'],
       },
       rollupOptions: {

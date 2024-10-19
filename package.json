@@ -1,9 +1,6 @@
 {
   "name": "@dineug/textflow-monorepo",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "engines": {
     "node": ">=20.0"
   },
@@ -47,7 +44,7 @@
     "prettier-plugin-tailwindcss": "^0.6.6",
     "typescript": "5.5.4",
     "vite": "^5.3.5",
-    "nx": "19.5.6"
+    "nx": "20.0.3"
   },
   "lint-staged": {
     "**/*.{js,ts,tsx}": [

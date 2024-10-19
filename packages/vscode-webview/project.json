@@ -1,8 +1,7 @@
 {
   "targets": {
     "build": {
-      "outputs": ["{workspaceRoot}/packages/vscode-extension/public"],
-      "cache": false
+      "outputs": ["{workspaceRoot}/packages/vscode-extension/public"]
     }
   }
 }

@@ -9,18 +9,20 @@
     "build:analyzer": "webpack --mode production --env target=analyzer",
     "nx:build": "nx build"
   },
-  "devDependencies": {
+  "dependencies": {
     "@dineug/textflow-editor": "workspace:*",
     "@dineug/textflow-editor-vscode-bridge": "workspace:*",
     "@dineug/shared": "workspace:*",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "base64-arraybuffer": "^1.0.2"
+  },
+  "devDependencies": {
     "@types/node": "^22.4.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@types/vscode-webview": "1.57.5",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
     "@swc/core": "1.3.101",
-    "base64-arraybuffer": "^1.0.2",
     "core-js": "^3.36.1",
     "css-loader": "^7.1.1",
     "html-webpack-plugin": "^5.6.0",
