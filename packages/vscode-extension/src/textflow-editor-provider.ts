@@ -48,7 +48,6 @@ export class TextflowEditorProvider
     const listener = document.onDidChangeContent(() => {
       this._onDidChangeCustomDocument.fire({ document });
     });
-    const unsubscribe = () => {};
 
     if (!this.docToWebviewMap.has(document)) {
       this.docToWebviewMap.set(document, new Set());
@@ -56,7 +55,6 @@ export class TextflowEditorProvider
 
     document.onDidDispose(() => {
       listener.dispose();
-      unsubscribe();
       this.docToWebviewMap.delete(document);
     });
 
