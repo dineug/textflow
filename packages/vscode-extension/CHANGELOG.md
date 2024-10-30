@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.8] - 2024-10-31
+
+### Fixed
+
+- heading style
+
 ## [0.1.7] - 2024-10-19
 
 ### Fixed

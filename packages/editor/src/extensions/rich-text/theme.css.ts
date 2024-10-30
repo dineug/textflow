@@ -6,17 +6,18 @@ export const paragraph = style({
 });
 
 export const h1 = style({
-  fontSize: 24,
-  fontWeight: 400,
+  fontSize: 30,
+  fontWeight: 600,
   margin: 0,
 });
 export const h2 = style({
-  fontSize: 15,
-  fontWeight: 700,
+  fontSize: 24,
+  fontWeight: 600,
   margin: 0,
 });
 export const h3 = style({
-  fontSize: 12,
+  fontSize: 20,
+  fontWeight: 600,
   margin: 0,
 });
 export const h4 = style({});
