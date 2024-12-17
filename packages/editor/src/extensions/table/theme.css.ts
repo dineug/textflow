@@ -59,6 +59,8 @@ export const tableScrollableWrapper = style({
   overflowX: 'auto',
   scrollbarColor: 'hsl(var(--border)) transparent',
   scrollbarWidth: 'auto',
+  maxWidth: '100%',
+  width: 'fit-content',
 
   '::-webkit-scrollbar': {
     width: 8,

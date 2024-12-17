@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.10] - 2024-12-17
+
+### Fixed
+
+- rollback table horizontal scroll
+
 ## [0.1.9] - 2024-12-17
 
 ### Added

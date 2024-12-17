@@ -9,6 +9,7 @@ import {
   $isTableCellNode,
   $isTableRowNode,
   getDOMCellFromTarget,
+  getTableElement,
   type TableCellNode,
   type TableDOMCell,
   type TableMapType,
@@ -16,7 +17,7 @@ import {
 } from '@lexical/table';
 import { calculateZoomLevel } from '@lexical/utils';
 import type { LexicalEditor } from 'lexical';
-import { $getNearestNodeFromDOMNode } from 'lexical';
+import { $getNearestNodeFromDOMNode, isHTMLElement } from 'lexical';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -78,27 +79,30 @@ const TableCellResizer: React.FC<TableCellResizerProps> = ({ editor }) => {
 
   useEffect(() => {
     const onMouseMove = (event: MouseEvent) => {
-      setTimeout(() => {
-        const target = event.target;
+      const target = event.target;
+      if (!target || !isHTMLElement(target)) {
+        return;
+      }
 
-        if (draggingDirection) {
-          updateMouseCurrentPos({
-            x: event.clientX,
-            y: event.clientY,
-          });
-          return;
-        }
-        updateIsMouseDown(isMouseDownOnEvent(event));
-        if (resizerRef.current && resizerRef.current.contains(target as Node)) {
-          return;
-        }
+      if (draggingDirection) {
+        updateMouseCurrentPos({
+          x: event.clientX,
+          y: event.clientY,
+        });
+        return;
+      }
+      updateIsMouseDown(isMouseDownOnEvent(event));
+      if (resizerRef.current && resizerRef.current.contains(target)) {
+        return;
+      }
 
-        if (targetRef.current !== target) {
-          targetRef.current = target as HTMLElement;
-          const cell = getDOMCellFromTarget(target as HTMLElement);
+      if (targetRef.current !== target) {
+        targetRef.current = target;
+        const cell = getDOMCellFromTarget(target);
 
-          if (cell && activeCell !== cell) {
-            editor.update(() => {
+        if (cell && activeCell !== cell) {
+          editor.getEditorState().read(
+            () => {
               const tableCellNode = $getNearestNodeFromDOMNode(cell.elem);
               if (!tableCellNode) {
                 throw new Error('TableCellResizer: Table cell node not found.');
@@ -106,7 +110,10 @@ const TableCellResizer: React.FC<TableCellResizerProps> = ({ editor }) => {
 
               const tableNode =
                 $getTableNodeFromLexicalNodeOrThrow(tableCellNode);
-              const tableElement = editor.getElementByKey(tableNode.getKey());
+              const tableElement = getTableElement(
+                tableNode,
+                editor.getElementByKey(tableNode.getKey())
+              );
 
               if (!tableElement) {
                 throw new Error('TableCellResizer: Table element not found.');
@@ -115,24 +122,21 @@ const TableCellResizer: React.FC<TableCellResizerProps> = ({ editor }) => {
               targetRef.current = target as HTMLElement;
               tableRectRef.current = tableElement.getBoundingClientRect();
               updateActiveCell(cell);
-            });
-          } else if (cell == null) {
-            resetState();
-          }
+            },
+            { editor }
+          );
+        } else if (cell == null) {
+          resetState();
         }
-      }, 0);
+      }
     };
 
     const onMouseDown = (event: MouseEvent) => {
-      setTimeout(() => {
-        updateIsMouseDown(true);
-      }, 0);
+      updateIsMouseDown(true);
     };
 
     const onMouseUp = (event: MouseEvent) => {
-      setTimeout(() => {
-        updateIsMouseDown(false);
-      }, 0);
+      updateIsMouseDown(false);
     };
 
     const removeRootListener = editor.registerRootListener(

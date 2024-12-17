@@ -10,7 +10,7 @@ const TablePlugin: React.FC = () => (
       hasCellMerge
       hasCellBackgroundColor={false}
       hasTabHandler
-      hasHorizontalScroll
+      hasHorizontalScroll={false}
     />
     <TableCellResizerPlugin />
     <TableHoverActionsPlugin />

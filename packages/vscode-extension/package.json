@@ -1,6 +1,6 @@
 {
   "name": "textflow-editor-vscode",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "private": true,
   "description": "WYSIWYG Editor VSCode Extension",
   "icon": "./assets/textflow.png",

@@ -15,8 +15,8 @@ import {
   $isTableRowNode,
   $isTableSelection,
   $unmergeCell,
+  getTableElement,
   getTableObserverFromTableElement,
-  HTMLTableElementWithWithTableSelectionState,
   TableCellHeaderStates,
   TableCellNode,
   TableRowNode,
@@ -191,18 +191,22 @@ const TableActionMenu: React.FC<TableCellActionMenuProps> = ({
       setCanUnmergeCell($canUnmerge());
     };
 
-    editor.getEditorState().read(() => {
-      $updateCanMergeCells();
-    });
+    editor.getEditorState().read(
+      () => {
+        $updateCanMergeCells();
+      },
+      { editor }
+    );
   }, [editor]);
 
   const clearTableSelection = useCallback(() => {
     editor.update(() => {
       if (tableCellNode.isAttached()) {
         const tableNode = $getTableNodeFromLexicalNodeOrThrow(tableCellNode);
-        const tableElement = editor.getElementByKey(
-          tableNode.getKey()
-        ) as HTMLTableElementWithWithTableSelectionState;
+        const tableElement = getTableElement(
+          tableNode,
+          editor.getElementByKey(tableNode.getKey())
+        );
 
         if (!tableElement) {
           throw new Error('Expected to find tableElement in DOM');

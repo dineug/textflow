@@ -2,12 +2,14 @@ import { autoUpdate, offset, useFloating } from '@floating-ui/react';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { useLexicalEditable } from '@lexical/react/useLexicalEditable';
 import {
+  $getTableAndElementByKey,
   $getTableColumnIndexFromTableCellNode,
   $getTableRowIndexFromTableCellNode,
   $insertTableColumn__EXPERIMENTAL,
   $insertTableRow__EXPERIMENTAL,
   $isTableCellNode,
   $isTableNode,
+  getTableElement,
   TableCellNode,
   TableNode,
   TableRowNode,
@@ -15,7 +17,7 @@ import {
 import { $findMatchingParent, mergeRegister } from '@lexical/utils';
 import { $getNearestNodeFromDOMNode, NodeKey } from 'lexical';
 import { Plus } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 
@@ -33,7 +35,7 @@ const TableHoverActionsContainer: React.FC = () => {
   const [shouldListenMouseMove, setShouldListenMouseMove] =
     useState<boolean>(false);
   const [position, setPosition] = useState({});
-  const [codeSet] = useState<Set<NodeKey>>(() => new Set());
+  const [tableSetRef] = useState<Set<NodeKey>>(() => new Set());
   const tableDOMNodeRef = useRef<HTMLElement | null>(null);
 
   const { refs: rowRefs, floatingStyles: rowFloatingStyles } = useFloating({
@@ -69,41 +71,48 @@ const TableHoverActionsContainer: React.FC = () => {
       let hoveredColumnNode: TableCellNode | null = null;
       let tableDOMElement: HTMLElement | null = null;
 
-      editor.update(() => {
-        const maybeTableCell = $getNearestNodeFromDOMNode(tableDOMNode);
+      editor.getEditorState().read(
+        () => {
+          const maybeTableCell = $getNearestNodeFromDOMNode(tableDOMNode);
 
-        if ($isTableCellNode(maybeTableCell)) {
-          const table = $findMatchingParent(maybeTableCell, node =>
-            $isTableNode(node)
-          );
-          if (!$isTableNode(table)) {
-            return;
-          }
+          if ($isTableCellNode(maybeTableCell)) {
+            const table = $findMatchingParent(maybeTableCell, node =>
+              $isTableNode(node)
+            );
+            if (!$isTableNode(table)) {
+              return;
+            }
 
-          tableDOMElement = editor.getElementByKey(table?.getKey());
+            tableDOMElement = getTableElement(
+              table,
+              editor.getElementByKey(table.getKey())
+            );
 
-          if (tableDOMElement) {
-            const rowCount = table.getChildrenSize();
-            const colCount = (
-              (table as TableNode).getChildAtIndex(0) as TableRowNode
-            )?.getChildrenSize();
+            if (tableDOMElement) {
+              const rowCount = table.getChildrenSize();
+              const colCount = (
+                (table as TableNode).getChildAtIndex(0) as TableRowNode
+              )?.getChildrenSize();
 
-            const rowIndex = $getTableRowIndexFromTableCellNode(maybeTableCell);
-            const colIndex =
-              $getTableColumnIndexFromTableCellNode(maybeTableCell);
+              const rowIndex =
+                $getTableRowIndexFromTableCellNode(maybeTableCell);
+              const colIndex =
+                $getTableColumnIndexFromTableCellNode(maybeTableCell);
 
-            if (rowIndex === rowCount - 1) {
-              hoveredRowNode = maybeTableCell;
-            } else if (colIndex === colCount - 1) {
-              hoveredColumnNode = maybeTableCell;
+              if (rowIndex === rowCount - 1) {
+                hoveredRowNode = maybeTableCell;
+              } else if (colIndex === colCount - 1) {
+                hoveredColumnNode = maybeTableCell;
+              }
             }
           }
-        }
-      });
+        },
+        { editor }
+      );
 
       if (tableDOMElement) {
         const { width: tableElemWidth, height: tableElemHeight } = (
-          tableDOMElement as HTMLTableElement
+          tableDOMElement as HTMLElement
         ).getBoundingClientRect();
 
         rowRefs.setReference(tableDOMElement);
@@ -128,6 +137,13 @@ const TableHoverActionsContainer: React.FC = () => {
     250
   );
 
+  const tableResizeObserver = useMemo(() => {
+    return new ResizeObserver(() => {
+      setShownRow(false);
+      setShownColumn(false);
+    });
+  }, []);
+
   useEffect(() => {
     if (!shouldListenMouseMove) {
       return;
@@ -148,29 +164,42 @@ const TableHoverActionsContainer: React.FC = () => {
       editor.registerMutationListener(
         TableNode,
         mutations => {
-          editor.getEditorState().read(() => {
-            for (const [key, type] of mutations) {
-              switch (type) {
-                case 'created':
-                  codeSet.add(key);
-                  setShouldListenMouseMove(codeSet.size > 0);
-                  break;
+          editor.getEditorState().read(
+            () => {
+              let resetObserver = false;
+              for (const [key, type] of mutations) {
+                switch (type) {
+                  case 'created':
+                    tableSetRef.add(key);
+                    resetObserver = true;
+                    break;
 
-                case 'destroyed':
-                  codeSet.delete(key);
-                  setShouldListenMouseMove(codeSet.size > 0);
-                  break;
+                  case 'destroyed':
+                    tableSetRef.delete(key);
+                    resetObserver = true;
+                    break;
 
-                default:
-                  break;
+                  default:
+                    break;
+                }
               }
-            }
-          });
+              if (resetObserver) {
+                // Reset resize observers
+                tableResizeObserver.disconnect();
+                for (const tableKey of tableSetRef) {
+                  const { tableElement } = $getTableAndElementByKey(tableKey);
+                  tableResizeObserver.observe(tableElement);
+                }
+                setShouldListenMouseMove(tableSetRef.size > 0);
+              }
+            },
+            { editor }
+          );
         },
         { skipInitialization: false }
       )
     );
-  }, [codeSet, editor]);
+  }, [editor, tableResizeObserver, tableSetRef]);
 
   const insertAction = (insertRow: boolean) => {
     editor.update(() => {
