@@ -31,6 +31,7 @@ export const extensionTable = createExtension(
           tableRowStriping: styles.tableRowStriping,
           tableSelected: styles.tableSelected,
           tableSelection: styles.tableSelection,
+          tableScrollableWrapper: styles.tableScrollableWrapper,
         })
       )
       .add(

@@ -156,7 +156,7 @@
       },
       {
         "children": [],
-        "direction": null,
+        "direction": "ltr",
         "format": "",
         "indent": 0,
         "type": "paragraph",
@@ -216,7 +216,7 @@
       },
       {
         "children": [],
-        "direction": null,
+        "direction": "ltr",
         "format": "",
         "indent": 0,
         "type": "paragraph",
@@ -378,7 +378,7 @@
         "indent": 0,
         "type": "paragraph",
         "version": 1,
-        "textFormat": 64,
+        "textFormat": 0,
         "textStyle": ""
       },
       {
@@ -403,7 +403,7 @@
       },
       {
         "children": [],
-        "direction": null,
+        "direction": "ltr",
         "format": "",
         "indent": 0,
         "type": "paragraph",
@@ -465,7 +465,7 @@
       },
       {
         "children": [],
-        "direction": null,
+        "direction": "ltr",
         "format": "",
         "indent": 0,
         "type": "paragraph",
@@ -726,7 +726,7 @@
             "indent": 0,
             "type": "listitem",
             "version": 1,
-            "checked": false,
+            "checked": true,
             "value": 2
           },
           {
@@ -761,7 +761,7 @@
       },
       {
         "children": [],
-        "direction": null,
+        "direction": "ltr",
         "format": "",
         "indent": 0,
         "type": "paragraph",
@@ -794,7 +794,7 @@
       },
       {
         "children": [],
-        "direction": null,
+        "direction": "ltr",
         "format": "",
         "indent": 0,
         "type": "paragraph",
@@ -920,7 +920,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -943,7 +943,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -966,7 +966,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -989,7 +989,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -1012,7 +1012,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -1044,7 +1044,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -1067,7 +1067,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -1090,7 +1090,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -1113,7 +1113,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -1136,7 +1136,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -1168,7 +1168,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -1191,7 +1191,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -1214,7 +1214,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -1237,7 +1237,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -1260,7 +1260,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -1292,7 +1292,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -1315,7 +1315,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -1338,7 +1338,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -1361,7 +1361,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -1384,7 +1384,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -1416,7 +1416,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -1439,7 +1439,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -1462,7 +1462,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -1485,7 +1485,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -1508,7 +1508,7 @@
                 "children": [
                   {
                     "children": [],
-                    "direction": null,
+                    "direction": "ltr",
                     "format": "",
                     "indent": 0,
                     "type": "paragraph",
@@ -1535,7 +1535,7 @@
             "version": 1
           }
         ],
-        "direction": "ltr",
+        "direction": null,
         "format": "",
         "indent": 0,
         "type": "table",
@@ -1550,7 +1550,7 @@
       },
       {
         "children": [],
-        "direction": null,
+        "direction": "ltr",
         "format": "",
         "indent": 0,
         "type": "paragraph",
@@ -1602,7 +1602,7 @@
                 "textStyle": ""
               }
             ],
-            "direction": "ltr",
+            "direction": null,
             "format": "",
             "indent": 0,
             "type": "collapsible-title",
@@ -1631,14 +1631,14 @@
                 "textStyle": ""
               }
             ],
-            "direction": "ltr",
+            "direction": null,
             "format": "",
             "indent": 0,
             "type": "collapsible-content",
             "version": 1
           }
         ],
-        "direction": "ltr",
+        "direction": null,
         "format": "",
         "indent": 0,
         "type": "collapsible-container",
@@ -1647,7 +1647,7 @@
       },
       {
         "children": [],
-        "direction": null,
+        "direction": "ltr",
         "format": "",
         "indent": 0,
         "type": "paragraph",
@@ -1696,7 +1696,7 @@
       },
       {
         "children": [],
-        "direction": null,
+        "direction": "ltr",
         "format": "",
         "indent": 0,
         "type": "paragraph",

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.9] - 2024-12-17
+
+### Added
+
+- table horizontal scroll
+- table-cell background selection
+
 ## [0.1.8] - 2024-10-31
 
 ### Fixed

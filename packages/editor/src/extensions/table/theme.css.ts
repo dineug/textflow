@@ -37,7 +37,9 @@ export const tableCellPrimarySelected = style({});
 
 export const tableCellResizer = style({});
 
-export const tableCellSelected = style({});
+export const tableCellSelected = style({
+  backgroundColor: 'var(--selection)',
+});
 
 export const tableCellSortedIndicator = style({});
 
@@ -51,4 +53,24 @@ export const tableSelected = style({});
 export const tableSelection = style({});
 globalStyle(`${tableSelection} *::selection`, {
   backgroundColor: 'transparent',
+});
+
+export const tableScrollableWrapper = style({
+  overflowX: 'auto',
+  scrollbarColor: 'hsl(var(--border)) transparent',
+  scrollbarWidth: 'auto',
+
+  '::-webkit-scrollbar': {
+    width: 8,
+    height: 8,
+  },
+  '::-webkit-scrollbar-track': {
+    background: 'transparent',
+  },
+  '::-webkit-scrollbar-corner': {
+    background: 'transparent',
+  },
+  '::-webkit-scrollbar-thumb': {
+    background: 'hsl(var(--border))',
+  },
 });
