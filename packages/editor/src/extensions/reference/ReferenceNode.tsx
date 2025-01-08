@@ -54,9 +54,10 @@ export class ReferenceNode extends DecoratorNode<JSX.Element> {
   }
 
   static importJSON(serializedNode: SerializedReferenceNode): ReferenceNode {
-    const { title, relativePath } = serializedNode;
-    const node = $createReferenceNode({ title, relativePath });
-    return node;
+    return $createReferenceNode({
+      title: serializedNode.title,
+      relativePath: serializedNode.relativePath,
+    }).updateFromJSON(serializedNode);
   }
 
   static importDOM(): DOMConversionMap | null {
@@ -82,10 +83,9 @@ export class ReferenceNode extends DecoratorNode<JSX.Element> {
 
   exportJSON(): SerializedReferenceNode {
     return {
+      ...super.exportJSON(),
       title: this.__title,
       relativePath: this.__relativePath,
-      type: 'reference',
-      version: 1,
     };
   }
 

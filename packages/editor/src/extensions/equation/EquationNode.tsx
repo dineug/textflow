@@ -58,19 +58,17 @@ export class EquationNode extends DecoratorNode<JSX.Element> {
   }
 
   static importJSON(serializedNode: SerializedEquationNode): EquationNode {
-    const node = $createEquationNode(
+    return $createEquationNode(
       serializedNode.equation,
       serializedNode.inline
-    );
-    return node;
+    ).updateFromJSON(serializedNode);
   }
 
   exportJSON(): SerializedEquationNode {
     return {
+      ...super.exportJSON(),
       equation: this.getEquation(),
       inline: this.__inline,
-      type: 'equation',
-      version: 1,
     };
   }
 

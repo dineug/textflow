@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.11] - 2025-01-08
+
+### Fixed
+
+- check list style
+
 ## [0.1.10] - 2024-12-17
 
 ### Fixed

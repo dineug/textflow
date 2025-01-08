@@ -19,12 +19,11 @@ const baseListItem = style({
 export const listitemChecked = style([
   baseListItem,
   {
-    textDecoration: 'line-through',
     ':before': {
       content: '',
       width: 16,
       height: 16,
-      top: 2,
+      top: 4,
       left: 0,
       cursor: 'pointer',
       display: 'block',
@@ -34,6 +33,7 @@ export const listitemChecked = style([
       borderRadius: 2,
       backgroundColor: 'hsl(var(--primary))',
       backgroundRepeat: 'no-repeat',
+      boxSizing: 'content-box',
     },
     ':after': {
       content: '',
@@ -42,13 +42,14 @@ export const listitemChecked = style([
       borderStyle: 'solid',
       position: 'absolute',
       display: 'block',
-      top: 6,
+      top: 8,
       width: 3,
       left: 7,
       right: 7,
       height: 6,
       transform: 'rotate(45deg)',
       borderWidth: '0 2px 2px 0',
+      boxSizing: 'content-box',
     },
     selectors: {
       '&[dir="rtl"]:before': {
@@ -66,7 +67,7 @@ export const listitemUnchecked = style([
       content: '',
       width: 16,
       height: 16,
-      top: 2,
+      top: 4,
       left: 0,
       cursor: 'pointer',
       display: 'block',
@@ -74,6 +75,7 @@ export const listitemUnchecked = style([
       position: 'absolute',
       border: '1px solid hsl(var(--ring))',
       borderRadius: 2,
+      boxSizing: 'content-box',
     },
     selectors: {
       '&[dir="rtl"]:before': {

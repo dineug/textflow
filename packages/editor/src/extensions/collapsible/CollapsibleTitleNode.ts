@@ -79,20 +79,24 @@ export class CollapsibleTitleNode extends ElementNode {
   static importJSON(
     serializedNode: SerializedCollapsibleTitleNode
   ): CollapsibleTitleNode {
-    return $createCollapsibleTitleNode();
-  }
-
-  exportJSON(): SerializedCollapsibleTitleNode {
-    return {
-      ...super.exportJSON(),
-      type: 'collapsible-title',
-      version: 1,
-    };
+    return $createCollapsibleTitleNode().updateFromJSON(serializedNode);
   }
 
   collapseAtStart(_selection: RangeSelection): boolean {
     this.getParentOrThrow().insertBefore(this);
     return true;
+  }
+
+  static transform(): (node: LexicalNode) => void {
+    return (node: LexicalNode) => {
+      invariant(
+        $isCollapsibleTitleNode(node),
+        'node is not a CollapsibleTitleNode'
+      );
+      if (node.isEmpty()) {
+        node.remove();
+      }
+    };
   }
 
   insertNewAfter(_: RangeSelection, restoreSelection = true): ElementNode {

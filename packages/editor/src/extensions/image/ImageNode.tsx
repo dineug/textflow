@@ -78,15 +78,13 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
   }
 
   static importJSON(serializedNode: SerializedImageNode): ImageNode {
-    const { altText, height, width, maxWidth, src } = serializedNode;
-    const node = $createImageNode({
-      altText,
-      height,
-      maxWidth,
-      src,
-      width,
-    });
-    return node;
+    return $createImageNode({
+      altText: serializedNode.altText,
+      height: serializedNode.height,
+      maxWidth: serializedNode.maxWidth,
+      src: serializedNode.src,
+      width: serializedNode.width,
+    }).updateFromJSON(serializedNode);
   }
 
   exportDOM(): DOMExportOutput {
@@ -125,12 +123,11 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
 
   exportJSON(): SerializedImageNode {
     return {
+      ...super.exportJSON(),
       altText: this.getAltText(),
       height: this.__height === 'inherit' ? 0 : this.__height,
       maxWidth: this.__maxWidth,
       src: this.getSrc(),
-      type: 'image',
-      version: 1,
       width: this.__width === 'inherit' ? 0 : this.__width,
     };
   }
