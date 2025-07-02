@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.12] - 2025-07-02
+
+### Fixed
+
+- lexical version update
+
 ## [0.1.11] - 2025-01-08
 
 ### Fixed
