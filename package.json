@@ -44,7 +44,7 @@
     "prettier-plugin-tailwindcss": "^0.6.6",
     "typescript": "5.5.4",
     "vite": "^5.3.5",
-    "nx": "20.0.3"
+    "nx": "22.7.5"
   },
   "lint-staged": {
     "**/*.{js,ts,tsx}": [

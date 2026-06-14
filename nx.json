@@ -23,5 +23,9 @@
       "dependsOn": ["^build"],
       "cache": true
     }
-  }
+  },
+  "tui": {
+    "enabled": false
+  },
+  "analytics": false
 }
