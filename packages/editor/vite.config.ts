@@ -28,6 +28,9 @@ export default defineConfig(({ command }) => {
 
   return {
     define: {},
+    // Vite 7 changed the esbuild default to strip legal comments; keep them
+    // inline so the rollupOptions.output.banner license header is preserved.
+    esbuild: { legalComments: 'inline' },
     build: {
       lib: {
         entry: './src/index.ts',

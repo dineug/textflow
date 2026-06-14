@@ -2,7 +2,7 @@
   "name": "@dineug/textflow-monorepo",
   "private": true,
   "engines": {
-    "node": ">=20.0"
+    "node": ">=24.0"
   },
   "repository": {
     "type": "git",
@@ -43,7 +43,7 @@
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.6",
     "typescript": "5.5.4",
-    "vite": "^5.3.5",
+    "vite": "^7.3.5",
     "nx": "22.7.5"
   },
   "lint-staged": {
